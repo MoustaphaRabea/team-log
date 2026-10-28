@@ -352,7 +352,7 @@ details.settings[open]>summary{margin-bottom:4px}
     <div class="panel" id="detail" hidden></div>
 
     <details class="panel settings" id="settings-panel">
-      <summary>Attendance settings</summary>
+      <summary>Team settings</summary>
       <div class="row">
         <label class="f" for="set-start">Work starts at
           <input type="time" id="set-start">
@@ -376,6 +376,14 @@ details.settings[open]>summary{margin-bottom:4px}
           <button class="btn" type="submit" style="flex:0 0 auto">Add holiday</button>
         </form>
         <ul class="tasks" id="hol-list"></ul>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span class="muted small">Brands the team logs work against</span>
+        <form class="row" id="brand-form" autocomplete="off">
+          <input type="text" id="brand-name" maxlength="40" aria-label="Brand name" placeholder="e.g. Namshi" required>
+          <button class="btn" type="submit" style="flex:0 0 auto">Add brand</button>
+        </form>
+        <div class="chips" id="brand-list"></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px">
         <span class="muted small" id="access-note">Team access</span>
@@ -668,7 +676,11 @@ function renderAttTable(ids,keys,now){
     html+=`<tr><td class="name"><button class="namebtn" data-uid="${esc(u)}">${esc(nameOf(u))}</button></td>${cells}<td class="num">${c.present}</td><td class="num">${c.late}</td><td class="num" style="${c.absent?"color:var(--alert);font-weight:700":""}">${c.absent}</td><td class="num">${c.leave}</td><td class="tot">${pct==null?"—":pct+"%"}</td></tr>`}
   html+=`</tbody></table></div>`;$("ledger").innerHTML=html}
 
-function renderSettings(){const s=S.settings;const st=$("set-start"),gr=$("set-grace"),tg=$("set-target");
+function brandList(){const b=S.settings&&S.settings.brands;return Array.isArray(b)&&b.length?b:BRANDS}
+function renderBrandSelect(){const sel=$("t-brand");const cur=sel.value;const list=brandList();
+  sel.innerHTML=`<option value="">— Select —</option>`+list.map(b=>`<option>${esc(b)}</option>`).join("")+(cur&&!list.includes(cur)?`<option>${esc(cur)}</option>`:"");sel.value=cur}
+function renderSettings(){const s=S.settings;
+  $("brand-list").innerHTML=brandList().map(b=>`<span class="chip" style="display:inline-flex;gap:6px;align-items:center">${esc(b)}<button type="button" class="x" style="font-size:15px;padding:0 2px" data-unbrand="${esc(b)}" aria-label="Remove ${esc(b)}">×</button></span>`).join("");const st=$("set-start"),gr=$("set-grace"),tg=$("set-target");
   if(document.activeElement!==st)st.value=s.start||"10:00";
   if(document.activeElement!==gr)gr.value=s.grace??15;
   if(document.activeElement!==tg)tg.value=s.target??8;
@@ -774,7 +786,7 @@ async function exportCSV(){if(!S.dl)return;const keys=rangeKeys(S.range);const n
 
 /* ---------- static UI ---------- */
 function buildStatic(){
-  $("t-brand").innerHTML=`<option value="">— Select —</option>`+BRANDS.map(b=>`<option>${esc(b)}</option>`).join("");
+  renderBrandSelect();
   $("t-kind").innerHTML=KINDS.map(k=>`<option>${esc(k)}</option>`).join("");
   $("mins-chips").innerHTML=MINS.map(m=>`<button type="button" class="chip" data-m="${m}" aria-pressed="false">${m<60?m+"m":(m/60)+"h"}</button>`).join("");
   $("mins-chips").addEventListener("click",e=>{const b=e.target.closest("[data-m]");if(!b)return;const m=Number(b.dataset.m);S.mins=S.mins===m?null:m;
@@ -806,6 +818,12 @@ function buildStatic(){
     const w=[...document.querySelectorAll("#set-weekend [data-wd]")].filter(x=>x.checked).map(x=>Number(x.dataset.wd));saveSettings({weekend:w})});
   $("hol-form").addEventListener("submit",e=>{e.preventDefault();const k=$("hol-date").value;if(!k)return;
     const hs=(S.settings.holidays||[]).filter(h=>h.date!==k);hs.push({date:k,name:$("hol-name").value.trim()});saveSettings({holidays:hs});$("hol-date").value="";$("hol-name").value=""});
+  $("brand-form").addEventListener("submit",e=>{e.preventDefault();const n=$("brand-name").value.trim();if(!n)return;
+    const list=brandList();if(list.some(b=>b.toLowerCase()===n.toLowerCase())){toast(`${n} is already on the list`);return}
+    const keepLast=list.filter(b=>["Internal","Other"].includes(b)),rest=list.filter(b=>!["Internal","Other"].includes(b));
+    saveSettings({brands:[...rest,n].sort((a,b)=>a.localeCompare(b)).concat(keepLast)});$("brand-name").value=""});
+  $("brand-list").addEventListener("click",e=>{const b=e.target.closest("[data-unbrand]");if(!b)return;const n=b.dataset.unbrand;
+    const list=brandList().filter(x=>x!==n);if(!list.length){toast("Keep at least one brand");return}saveSettings({brands:list})});
   $("hol-list").addEventListener("click",e=>{const b=e.target.closest("[data-unhol]");if(b)saveSettings({holidays:(S.settings.holidays||[]).filter(h=>h.date!==b.dataset.unhol)})});
   $("detail").addEventListener("click",e=>{if(e.target.closest("[data-close]")){S.sel={uid:null,day:null};renderTeam();return}
     const lb=e.target.closest("[data-leave]");if(lb){const u=S.sel.uid,k=S.selShown;if(!u||!k)return;
@@ -865,7 +883,7 @@ function boot(){buildStatic();bindAccess();
     $("signout").addEventListener("click",()=>signOut(auth));
     $("export").hidden=false;
     subMine();
-    settingsRef().onSnapshot(s=>{S.settings=Object.assign(clone(DEF_SET),s.exists?s.data():{});TARGET_H=Number(S.settings.target)||8;rerender()},e=>console.warn(e));
+    settingsRef().onSnapshot(s=>{S.settings=Object.assign(clone(DEF_SET),s.exists?s.data():{});TARGET_H=Number(S.settings.target)||8;renderBrandSelect();rerender()},e=>console.warn(e));
     if(S.isOwner){$("tabs").hidden=false;subTeam();subMembers();setView("team")}else setView("me");
   });
 }
