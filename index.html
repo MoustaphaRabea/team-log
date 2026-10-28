@@ -205,6 +205,14 @@ details.settings[open]>summary{margin-bottom:4px}
 .signout:hover{background:rgb(248 242 220 / .1)}
 .gbtn{display:inline-flex;align-items:center;gap:10px;justify-content:center}
 .gbtn svg{width:18px;height:18px}
+.tasks li.asg{grid-template-columns:minmax(0,1fr) auto}
+.asg-act{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.asg.is-done .t-text{text-decoration:line-through;color:var(--muted)}
+.btn.sm{padding:5px 12px;font-size:13px}
+.tag.due-over{background:color-mix(in srgb,var(--alert) 15%,transparent);color:var(--alert)}
+.tag.due-today{background:color-mix(in srgb,var(--brk) 22%,transparent);color:var(--brk)}
+.chk{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--fg)}
+.chk input{accent-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -233,6 +241,14 @@ details.settings[open]>summary{margin-bottom:4px}
       <div class="panel card-time st-off" id="timecard"></div>
 
       <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+            <h2>Assigned to me</h2>
+            <span class="muted small" id="my-asg-count"></span>
+          </div>
+          <div id="my-brands"></div>
+          <ul class="tasks" id="my-asg"></ul>
+        </div>
         <div class="panel">
           <div class="row">
             <label class="f" for="cur-task">What are you working on right now?
@@ -315,6 +331,46 @@ details.settings[open]>summary{margin-bottom:4px}
       <div class="summary" id="summary"></div>
     </div>
     <div class="board" id="board"></div>
+
+    <div class="panel" id="asg-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <h2>Assigned tasks</h2>
+        <div class="tabs" id="asg-filter">
+          <button type="button" data-f="open" aria-selected="true">Open</button>
+          <button type="button" data-f="done" aria-selected="false">Done</button>
+          <button type="button" data-f="all" aria-selected="false">All</button>
+        </div>
+      </div>
+      <form id="asg-form" autocomplete="off" style="display:flex;flex-direction:column;gap:10px">
+        <label class="f" for="a-title">Task
+          <input type="text" id="a-title" maxlength="200" placeholder="e.g. Shortlist 20 KSA beauty creators for the November drop">
+        </label>
+        <div class="row">
+          <label class="f" for="a-who">Assign to
+            <select id="a-who"></select>
+          </label>
+          <label class="f" for="a-brand">Brand
+            <select id="a-brand"></select>
+          </label>
+          <label class="f" for="a-kind">Type of work
+            <select id="a-kind"></select>
+          </label>
+          <label class="f" for="a-due">Due date
+            <input type="date" id="a-due">
+          </label>
+        </div>
+        <div class="row" style="align-items:center">
+          <label class="f" for="a-notes">Notes (optional)
+            <input type="text" id="a-notes" maxlength="300" placeholder="Links, targets, anything they need">
+          </label>
+          <label class="chk" for="a-high" style="flex:0 0 auto"><input type="checkbox" id="a-high"> High priority</label>
+          <button class="btn primary" type="submit" style="flex:0 0 auto">Assign task</button>
+        </div>
+      </form>
+      <div class="chips" id="asg-people"></div>
+      <ul class="tasks" id="asg-list"></ul>
+      <p class="muted small" style="margin:0">Team members show up here after their first sign-in. When someone marks a task done, it's added to their work log for that day.</p>
+    </div>
 
     <div class="panel">
       <div class="ledger-head">
@@ -411,7 +467,7 @@ let fbApp=null,auth=null,fs=null;
 try{fbApp=initializeApp(CFG.firebase||{});auth=getAuth(fbApp);fs=getFirestore(fbApp)}catch(e){console.error(e)}
 
 /* small adapter so the app code talks to Firestore through one simple surface */
-const wrapDoc=s=>({id:s.id,exists:s.exists(),data:()=>s.data()});
+const wrapDoc=s=>({id:s.id,exists:s.exists(),data:()=>s.data(),metadata:{fromCache:!!(s.metadata&&s.metadata.fromCache)}});
 const adb={
   doc:p=>({path:p,
     set:d=>setDoc(doc(fs,p),d),
@@ -450,7 +506,7 @@ const rid=()=>Math.random().toString(36).slice(2,10);
 const S={db:null,user:null,dl:null,uid:null,me:null,isOwner:false,
   my:{status:null,days:{}},team:{statuses:{},days:{},subs:{}},profiles:{},
   view:"me",range:"week",mode:"hours",sel:{uid:null,day:null},mins:null,q:Promise.resolve(),busy:false,
-  settings:JSON.parse(JSON.stringify(DEF_SET))};
+  settings:JSON.parse(JSON.stringify(DEF_SET)),asg:{},roster:{},asgF:"open",asgP:""};
 
 /* ---------- attendance ---------- */
 const leaveOf=k=>LEAVE.find(x=>x.k===k)||LEAVE[4];
@@ -623,7 +679,7 @@ function syncInputs(){const st=S.my.status||{};const ct=$("cur-task"),lb=$("my-l
   if(document.activeElement!==ct)ct.value=st.currentTask||"";
   if(document.activeElement!==lb)lb.value=st.label||(S.me&&S.me.name)||""}
 
-function renderMe(){renderTimecard();renderToday();renderWeek();renderLeaves();syncInputs()}
+function renderMe(){renderTimecard();renderMyAsg();renderToday();renderWeek();renderLeaves();syncInputs()}
 
 /* ---------- team view ---------- */
 function teamIds(){return Object.keys(S.team.statuses)}
@@ -642,13 +698,14 @@ async function renderTeam(){const ids=teamIds();await resolveProfiles(ids);const
       return `<button class="mcard st-${st.state}" data-uid="${esc(u)}" aria-current="${S.sel.uid===u}">
         <div class="mhead">${avatarOf(u)?`<img class="av lg" src="${esc(avatarOf(u))}" alt="" referrerpolicy="no-referrer">`:`<span class="av lg"></span>`}<span class="nm">${esc(nameOf(u))}</span><span class="pill ${st.state}">${stateLabel[st.state]}</span></div>
         <div class="now">${st.state!=="off"&&st.currentTask?`Working on: <b>${esc(st.currentTask)}</b>`:esc(since)}</div>
+        ${memberAsgLine(u)}
         ${(()=>{const a=tAtt[u];return ["late","leave","pending"].includes(a.c)?`<div class="attline">${attBadge(a)}<span class="${a.c==="pending"?"flag":"muted"}">${esc(attLabel(a))}${a.c==="late"?` (in at ${fmtClock(a.fi)})`:""}</span></div>`:""})()}
         <div class="target"><i data-livebar="${esc(u)}" style="width:${Math.min(100,ms/(TARGET_H*36e3))}%"></i></div>
         <div class="mstats"><span class="num" data-live="${esc(u)}" data-fmt="hm">${fmtHM(ms)}</span><span class="muted small">${plural(tk,"task")} · ${st.state!=="off"?esc(since):"today"}</span></div>
         ${stale?`<span class="flag">Clocked in since ${fmtClock(open.in)} on ${esc(fmtShort(st.dayKey))}. Probably forgot to clock out.</span>`:""}
       </button>`}).join("")
     :`<div class="empty" style="grid-column:1/-1">No one on the team has logged yet. Share this page with the team; as soon as someone clicks "Clock in" they'll show up here.</div>`;
-  renderLedger(ids);renderDetail();renderSettings()}
+  renderAsgAdmin(ids);renderLedger(ids);renderDetail();renderSettings()}
 function relDay(ms){const k=dayKey(new Date(ms));if(k===todayKey())return fmtClock(ms);if(k===dayKey(addDays(new Date(),-1)))return "yesterday "+fmtClock(ms);return fmtShort(k)}
 
 function renderLedger(ids){const keys=rangeKeys(S.range);const now=Date.now();
@@ -677,8 +734,7 @@ function renderAttTable(ids,keys,now){
   html+=`</tbody></table></div>`;$("ledger").innerHTML=html}
 
 function brandList(){const b=S.settings&&S.settings.brands;return Array.isArray(b)&&b.length?b:BRANDS}
-function renderBrandSelect(){const sel=$("t-brand");const cur=sel.value;const list=brandList();
-  sel.innerHTML=`<option value="">— Select —</option>`+list.map(b=>`<option>${esc(b)}</option>`).join("")+(cur&&!list.includes(cur)?`<option>${esc(cur)}</option>`:"");sel.value=cur}
+function renderBrandSelect(){fillBrandSelect($("t-brand"),S.uid);const w=$("a-who");if(w)fillBrandSelect($("a-brand"),w.value)}
 function renderSettings(){const s=S.settings;
   $("brand-list").innerHTML=brandList().map(b=>`<span class="chip" style="display:inline-flex;gap:6px;align-items:center">${esc(b)}<button type="button" class="x" style="font-size:15px;padding:0 2px" data-unbrand="${esc(b)}" aria-label="Remove ${esc(b)}">×</button></span>`).join("");const st=$("set-start"),gr=$("set-grace"),tg=$("set-target");
   if(document.activeElement!==st)st.value=s.start||"10:00";
@@ -718,6 +774,7 @@ function renderDetail(){const el=$("detail");const u=S.sel.uid;if(!u||!statusOf(
       <div class="kpi"><div class="v" style="color:var(--alert)">${c.absent}</div><div class="l">Absent</div></div>
       <div class="kpi"><div class="v" style="color:var(--leave)">${c.leave}</div><div class="l">Days off</div></div>
     </div>`})()}
+    ${detailAssignHTML(u)}
     <div class="detail-grid">
       <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
         <h3>Work by brand <span class="muted small">${useMins?"(by logged time)":"(by task count)"}</span></h3>
@@ -751,8 +808,106 @@ function stripHTML(d,now){const ss=d&&d.sessions||[];if(!ss.length)return "";
   return `<div><div class="strip" role="img" aria-label="Timeline of the day: green is work, striped is break">${segs}</div><div class="axis">${ticks}</div></div>`}
 
 /* ---------- subscriptions ---------- */
+/* ---------- assigned tasks & brand assignment ---------- */
+const asgRef=id=>S.db.doc(`assignments/${id}`);
+const ASG_ST={todo:"To do",doing:"In progress",done:"Done"};
+const asgList=()=>Object.values(S.asg||{});
+const rosterBrands=uid=>((S.roster||{})[uid]||{}).brands||[];
+function sortAsg(a,b){const o={doing:0,todo:1,done:2};
+  return ((o[a.status]??1)-(o[b.status]??1))||((b.priority==="high")-(a.priority==="high"))||String(a.due||"9999").localeCompare(String(b.due||"9999"))||((b.createdAt||0)-(a.createdAt||0))}
+function dueTag(a){if(!a.due)return "";const t=todayKey();
+  if(a.status!=="done"&&a.due<t)return `<span class="tag due-over">Overdue · ${fmtShort(a.due)}</span>`;
+  if(a.status!=="done"&&a.due===t)return `<span class="tag due-today">Due today</span>`;
+  return `<span class="tag">Due ${fmtShort(a.due)}</span>`}
+function asgPill(s){return `<span class="pill" style="--st:${s==="done"?"var(--work)":s==="doing"?"var(--accent)":"var(--off)"}">${ASG_ST[s]||s}</span>`}
+function asgRow(a,admin){
+  const tags=`${a.priority==="high"?'<span class="tag due-over">High priority</span>':""}${a.brand?`<span class="tag brand">${esc(a.brand)}</span>`:""}${a.kind?`<span class="tag">${esc(a.kind)}</span>`:""}${dueTag(a)}${admin?`<span class="tag">→ ${esc(nameOf(a.assignee))}</span>`:""}`;
+  let act=asgPill(a.status);
+  if(admin)act+=`<button class="x" data-asg-del="${esc(a.id)}" aria-label="Delete task">×</button>`;
+  else if(a.status==="todo")act+=`<button class="btn sm" data-asg-st="doing" data-id="${esc(a.id)}">Start</button><button class="btn sm primary" data-asg-st="done" data-id="${esc(a.id)}">Done</button>`;
+  else if(a.status==="doing")act+=`<button class="btn sm primary" data-asg-st="done" data-id="${esc(a.id)}">Done</button>`;
+  else act+=`<button class="linkbtn" data-asg-st="todo" data-id="${esc(a.id)}">Reopen</button>`;
+  return `<li class="asg ${a.status==="done"?"is-done":""}"><div style="min-width:0"><div class="t-text">${esc(a.title)}</div><div style="margin-top:4px">${tags}</div>${a.notes?`<div class="muted small" style="margin-top:4px">${esc(a.notes)}</div>`:""}</div><div class="asg-act">${act}</div></li>`}
+
+function fillBrandSelect(sel,uid){if(!sel)return;const cur=sel.value;const list=brandList();
+  const mine=uid?rosterBrands(uid).filter(b=>list.includes(b)):[];const rest=list.filter(b=>!mine.includes(b));
+  const opt=b=>`<option>${esc(b)}</option>`;
+  sel.innerHTML=`<option value="">— Select —</option>`+(mine.length?`<optgroup label="Assigned brands">${mine.map(opt).join("")}</optgroup><optgroup label="All brands">${rest.map(opt).join("")}</optgroup>`:list.map(opt).join(""))+(cur&&!list.includes(cur)?opt(cur):"");
+  sel.value=cur}
+
+function renderMyAsg(){const mine=asgList().filter(a=>a.assignee===S.uid).sort(sortAsg);
+  const open=mine.filter(a=>a.status!=="done");const done=mine.filter(a=>a.status==="done"&&(Date.now()-(a.doneAt||0))<3*864e5);
+  $("my-asg-count").textContent=open.length?plural(open.length,"open task"):"";
+  const br=rosterBrands(S.uid);
+  $("my-brands").innerHTML=br.length?`<span class="muted small">Your brands:</span> ${br.map(b=>`<span class="tag brand">${esc(b)}</span>`).join("")}`:"";
+  $("my-asg").innerHTML=(open.length||done.length)?[...open,...done].map(a=>asgRow(a,false)).join("")
+    :`<li style="display:block;border:0;padding:0"><div class="empty">No tasks assigned to you right now.</div></li>`}
+
+function setAsgStatus(id,st){const a=S.asg[id];if(!a)return;
+  enqueue(async()=>{const now=Date.now();const n=clone(a);delete n.id;n.status=st;n.updatedAt=now;n.doneAt=st==="done"?now:null;await asgRef(id).set(n);
+    if(st==="done"&&a.assignee===S.uid){const k=todayKey();const day=await getDay(k);day.date=k;day.sessions=day.sessions||[];day.tasks=day.tasks||[];
+      if(!day.tasks.some(t=>t.asg===id)){day.tasks.push({id:rid(),at:now,text:a.title,brand:a.brand||"",kind:a.kind||"",mins:0,asg:id});await writeDay(k,day)}}
+    toast(st==="done"?"Done. Added to today's work":st==="doing"?"Started":"Reopened")})}
+
+function renderAsgAdmin(ids){
+  const who=$("a-who");const cur=who.value;const people=ids.slice().sort((a,b)=>nameOf(a).localeCompare(nameOf(b)));
+  const html=`<option value="">— Choose —</option>`+people.map(u=>`<option value="${esc(u)}">${esc(nameOf(u))}${u===S.uid?" (you)":""}</option>`).join("");
+  if(who.innerHTML!==html){who.innerHTML=html;who.value=people.includes(cur)?cur:""}
+  fillBrandSelect($("a-brand"),who.value);
+  document.querySelectorAll("#asg-filter button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.f===S.asgF)));
+  const all=asgList();
+  $("asg-people").innerHTML=`<button type="button" class="chip" data-p="" aria-pressed="${!S.asgP}">Everyone</button>`+people.map(u=>{const n=all.filter(a=>a.assignee===u&&a.status!=="done").length;
+    return `<button type="button" class="chip" data-p="${esc(u)}" aria-pressed="${S.asgP===u}">${esc(nameOf(u))}${n?` · ${n}`:""}</button>`}).join("");
+  const list=all.filter(a=>(!S.asgP||a.assignee===S.asgP)&&(S.asgF==="all"||(S.asgF==="done"?a.status==="done":a.status!=="done"))).sort(sortAsg);
+  $("asg-list").innerHTML=list.length?list.map(a=>asgRow(a,true)).join("")
+    :`<li style="display:block;border:0;padding:0"><div class="empty">${all.length?"Nothing here for this filter.":"No tasks assigned yet. Use the form above to give someone their first task."}</div></li>`}
+
+function memberAsgLine(u){const open=asgList().filter(a=>a.assignee===u&&a.status!=="done");const over=open.filter(a=>a.due&&a.due<todayKey()).length;const br=rosterBrands(u);
+  if(!open.length&&!br.length)return "";
+  return `<div class="muted small">${open.length?`${plural(open.length,"open task")}${over?` · <span style="color:var(--alert);font-weight:600">${over} overdue</span>`:""}`:"No open tasks"}${br.length?` · ${br.slice(0,3).map(esc).join(", ")}${br.length>3?` +${br.length-3}`:""}`:""}</div>`}
+
+function detailAssignHTML(u){const rb=rosterBrands(u);const open=asgList().filter(a=>a.assignee===u&&a.status!=="done").sort(sortAsg);
+  return `<div class="detail-grid">
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0"><h3>Brands ${esc(nameOf(u))} covers</h3>
+      <div class="chips">${brandList().filter(b=>!["Internal","Other"].includes(b)).map(b=>`<button type="button" class="chip" data-rbrand="${esc(b)}" aria-pressed="${rb.includes(b)}">${esc(b)}</button>`).join("")}</div>
+      <span class="muted small">Tap a brand to assign or unassign it. Assigned brands show first in their brand list.</span></div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0"><h3>Open tasks</h3>
+      <ul class="tasks">${open.length?open.map(a=>asgRow(a,true)).join(""):'<li style="display:block;border:0;padding:0"><div class="empty">No open tasks.</div></li>'}</ul></div>
+  </div>`}
+
+function toggleRosterBrand(u,b){const cur=rosterBrands(u);const next=cur.includes(b)?cur.filter(x=>x!==b):[...cur,b];
+  enqueue(async()=>{await S.db.doc(`roster/${u}`).set({brands:next,updatedAt:Date.now()});S.roster=Object.assign({},S.roster,{[u]:{brands:next}});toast(cur.includes(b)?`${b} unassigned`:`${b} assigned to ${nameOf(u)}`)})}
+
+function bindAsg(){
+  S.asgF="open";S.asgP="";
+  $("a-kind").innerHTML=KINDS.map(k=>`<option>${esc(k)}</option>`).join("");
+  $("a-who").addEventListener("change",()=>fillBrandSelect($("a-brand"),$("a-who").value));
+  $("asg-form").addEventListener("submit",e=>{e.preventDefault();const title=$("a-title").value.trim(),who=$("a-who").value;
+    if(!title){toast("Write the task first");return}if(!who){toast("Choose who to assign it to");return}
+    const id=Date.now().toString(36)+rid();const now=Date.now();
+    const doc={title,assignee:who,brand:$("a-brand").value,kind:$("a-kind").value,due:$("a-due").value||"",priority:$("a-high").checked?"high":"normal",notes:$("a-notes").value.trim(),status:"todo",createdAt:now,updatedAt:now,createdBy:(S.me&&S.me.email)||"",doneAt:null};
+    enqueue(async()=>{await asgRef(id).set(doc);S.asg=Object.assign({},S.asg,{[id]:Object.assign({id},doc)});toast(`Assigned to ${nameOf(who)}`);
+      $("a-title").value="";$("a-notes").value="";$("a-due").value="";$("a-high").checked=false;renderTeam()})});
+  $("asg-filter").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(!b)return;S.asgF=b.dataset.f;renderTeam()});
+  $("asg-people").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;S.asgP=b.dataset.p;renderTeam()});
+  const del=e=>{const b=e.target.closest("[data-asg-del]");if(!b)return;const a=S.asg[b.dataset.asgDel];if(!a)return;
+    if(!window.confirm(`Delete "${a.title}"?`))return;
+    enqueue(async()=>{await asgRef(a.id).delete();const m=Object.assign({},S.asg);delete m[a.id];S.asg=m;toast("Task deleted");renderTeam()})};
+  $("asg-list").addEventListener("click",del);$("detail").addEventListener("click",e=>{del(e);const r=e.target.closest("[data-rbrand]");if(r&&S.sel.uid)toggleRosterBrand(S.sel.uid,r.dataset.rbrand)});
+  $("my-asg").addEventListener("click",e=>{const b=e.target.closest("[data-asg-st]");if(b)setAsgStatus(b.dataset.id,b.dataset.asgSt)});
+}
+
+function subAsg(){
+  const q=S.isOwner?S.db.collection("assignments"):S.db.collection("assignments").where("assignee","==",S.uid);
+  q.onSnapshot(r=>{const m={};r.docs.forEach(d=>m[d.id]=Object.assign({id:d.id},d.data()));S.asg=m;rerender()},e=>console.warn(e));
+  if(S.isOwner)S.db.collection("roster").onSnapshot(r=>{const m={};r.docs.forEach(d=>m[d.id]=d.data());S.roster=m;renderBrandSelect();rerender()},e=>console.warn(e));
+  else S.db.doc(`roster/${S.uid}`).onSnapshot(s=>{S.roster={[S.uid]:s.exists?s.data():{}};renderBrandSelect();rerender()},e=>console.warn(e));
+}
+
 function subMine(){
-  statusRef().onSnapshot(s=>{S.my.status=s.exists?s.data():null;rerender()},e=>console.warn(e));
+  statusRef().onSnapshot(s=>{S.my.status=s.exists?s.data():null;
+    if(!s.exists&&!S.seeded&&!(s.metadata&&s.metadata.fromCache)){S.seeded=true;writeStatus({}).catch(()=>{})}
+    rerender()},e=>console.warn(e));
   const since=dayKey(addDays(new Date(),-HISTORY_DAYS));
   S.db.collection(`logs/${S.uid}/days`).where("date",">=",since).onSnapshot(q=>{const m={};q.docs.forEach(d=>m[d.id]=d.data());S.my.days=m;rerender()},e=>console.warn(e));
 }
@@ -830,6 +985,7 @@ function buildStatic(){
       if(lb.dataset.leave==="clear")setLeaveFor(u,k,null);else setLeaveFor(u,k,{type:$("d-leave-type").value,note:($("d-leave-note").value||"").trim(),by:"manager"});return}
     const c=e.target.closest("[data-day]");if(c){S.sel.day=c.dataset.day;renderDetail();renderLedger(teamIds())}});
   $("export").addEventListener("click",exportCSV);
+  bindAsg();
 }
 
 function gate(title,body){const g=$("gate");g.hidden=false;g.innerHTML=`<h2>${esc(title)}</h2><p class="muted small">${esc(body)}</p>`}
@@ -882,7 +1038,7 @@ function boot(){buildStatic();bindAccess();
     $("who").querySelector("span").textContent=S.me.name;
     $("signout").addEventListener("click",()=>signOut(auth));
     $("export").hidden=false;
-    subMine();
+    subMine();subAsg();
     settingsRef().onSnapshot(s=>{S.settings=Object.assign(clone(DEF_SET),s.exists?s.data():{});TARGET_H=Number(S.settings.target)||8;renderBrandSelect();rerender()},e=>console.warn(e));
     if(S.isOwner){$("tabs").hidden=false;subTeam();subMembers();setView("team")}else setView("me");
   });
