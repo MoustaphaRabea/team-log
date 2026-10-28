@@ -1234,7 +1234,7 @@ function threadHTML(a){const cs=(S.comments[a.id]||[]).slice().sort((x,y)=>x.at-
   return `<div class="thread">${cs.length?cs.map(c=>`<div class="cmt"><b>${esc(nameOf(c.uid))}</b> <span class="muted small">${relDay(c.at)}</span><div>${esc(c.text)}</div></div>`).join(""):'<div class="muted small">No comments yet.</div>'}
     <form class="row cform" data-cform="${esc(a.id)}" autocomplete="off"><input type="text" data-keep="c-${esc(a.id)}" maxlength="1000" placeholder="Write a comment or paste a link" aria-label="Comment"><button class="btn sm" type="submit" style="flex:0 0 auto">Send</button></form></div>`}
 function asgRow(a,manage){
-  const tags=`${a.priority==="high"?'<span class="tag due-over">High priority</span>':""}${a.recurringId?'<span class="tag">Repeats</span>':""}${a.brand?`<span class="tag brand">${esc(a.brand)}</span>`:""}${a.kind?`<span class="tag">${esc(a.kind)}</span>`:""}${dueTag(a)}${manage?`<span class="tag">→ ${esc(nameOf(a.assignee))}</span>`:""}${a.qty?`<span class="tag qty">${esc(a.qty)} ${esc(a.unit||"")}</span>`:""}`;
+  const tags=`${a.priority==="high"?'<span class="tag due-over">High priority</span>':""}${a.recurringId?'<span class="tag">Repeats</span>':""}${a.brand?`<span class="tag brand">${esc(a.brand)}</span>`:""}${a.kind?`<span class="tag">${esc(a.kind)}</span>`:""}${dueTag(a)}${manage?`<span class="tag">→ ${esc(nameOf(a.assignee))}</span>`:""}${manage&&a.notifiedHow==="sent"?'<span class="tag" title="The assignee got an email about this task">✉ Emailed</span>':""}${a.qty?`<span class="tag qty">${esc(a.qty)} ${esc(a.unit||"")}</span>`:""}`;
   let act=asgPill(a.status);
   if(manage)act+=`<button class="x" data-asg-del="${esc(a.id)}" aria-label="Delete task">×</button>`;
   else if(a.status==="todo")act+=`<button class="btn sm" data-asg-st="doing" data-id="${esc(a.id)}">Start</button><button class="btn sm primary" data-asg-st="done" data-id="${esc(a.id)}">Done</button>`;
@@ -1308,7 +1308,7 @@ function bindAsg(){
     enqueue(async()=>{if(rep){const id=now.toString(36)+rid();const r=Object.assign({},base,{repeat:rep,active:true,createdAt:now});await S.db.doc(`recurring/${id}`).set(r);
         S.recurring=Object.assign({},S.recurring,{[id]:Object.assign({id},r)});S.loaded.genFor=null;await genRecurring();toast(`${REPEAT_LABEL(rep)} for ${nameOf(who)}`)}
       else{const id=now.toString(36)+rid();const d=Object.assign({},base,{due:$("a-due").value||"",status:"todo",createdAt:now,updatedAt:now,doneAt:null});await asgRef(id).set(d);
-        S.asg=Object.assign({},S.asg,{[id]:Object.assign({id},d)});toast(`Assigned to ${nameOf(who)}`)}
+        S.asg=Object.assign({},S.asg,{[id]:Object.assign({id},d)});toast(who===S.uid?"Added to your tasks":`Assigned to ${nameOf(who)}. They'll get an email in about a minute.`)}
       $("a-title").value="";$("a-notes").value="";$("a-due").value="";$("a-high").checked=false;$("a-repeat").value="";$("a-kind-other").value="";rerender()})});
   $("asg-filter").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(!b)return;S.asgF=b.dataset.f;rerender()});
   $("asg-people").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;S.asgP=b.dataset.p;rerender()});
