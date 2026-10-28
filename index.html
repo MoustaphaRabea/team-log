@@ -1194,7 +1194,7 @@ function renderSettings(){const s=S.settings;
   const tb=$("people-rows");if(tb.contains(document.activeElement))return;
   tb.innerHTML=rows.map(([u,p])=>`<tr><td class="name"><b>${esc(nameOf(u))}</b><br><span class="muted small">${esc(p.email||"")}</span></td>
     <td><select data-pteam="${esc(u)}" aria-label="Team for ${esc(nameOf(u))}">${opts.replace(`value="${esc(p.team||"")}"`,`value="${esc(p.team||"")}" selected`)}</select></td>
-    <td><select data-prole="${esc(u)}" aria-label="Role for ${esc(nameOf(u))}">${Object.entries(ROLES).map(([k,l])=>`<option value="${k}" ${(p.role||"member")===k?"selected":""}>${l}</option>`).join("")}</select></td>
+    <td>${(CFG.owners||[]).map(x=>String(x).toLowerCase()).includes(String(p.email||"").toLowerCase())?'<span class="tag">Owner (admin)</span>':`<select data-prole="${esc(u)}" aria-label="Role for ${esc(nameOf(u))}">${Object.entries(ROLES).map(([k,l])=>`<option value="${k}" ${(p.role||"member")===k?"selected":""}>${l}</option>`).join("")}</select>`}</td>
     <td><input type="number" min="0" max="60" step="1" data-pleave="${esc(u)}" value="${p.annualLeave??""}" placeholder="${esc(S.settings.annualLeave??21)}" aria-label="Annual leave days for ${esc(nameOf(u))}" style="max-width:90px"></td></tr>`).join("")}
 async function seedFirstTeam(){try{const t={name:SEED_TEAM.name,kinds:SEED_TEAM.kinds,createdAt:Date.now()};await S.db.doc(`teams/${SEED_TEAM.id}`).set(t);
   S.teams=Object.assign({},S.teams,{[SEED_TEAM.id]:t});
