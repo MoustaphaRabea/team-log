@@ -330,7 +330,7 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <span class="nav-label">My work</span>
         <a href="#today" data-page="today"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Today</span></a>
         <a href="#mytasks" data-page="mytasks"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/></svg><span>My tasks</span><b class="badge" id="b-mytasks"></b></a>
-        <a href="#timeoff" data-page="timeoff"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><span>Time off</span><b class="badge" id="b-timeoff"></b></a>
+        <a href="#timeoff" data-page="timeoff"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><span>My requests</span><b class="badge" id="b-timeoff"></b></a>
         <a href="#week" data-page="week"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span>My week</span></a>
       </div>
       <div class="nav-group" id="nav-team" hidden>
@@ -438,7 +438,7 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <div class="col">
     <div class="panel" style="margin-top:20px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
-        <h2>Time off</h2>
+        <h2>Leave</h2>
       </div>
       <div class="balance" id="leave-balance"></div>
       <form class="row" id="leave-form" autocomplete="off">
@@ -454,7 +454,7 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <label class="f" for="lv-note">Note (optional)
           <input type="text" id="lv-note" maxlength="120" placeholder="e.g. family trip">
         </label>
-        <button class="btn" type="submit" style="flex:0 0 auto">Request time off</button>
+        <button class="btn" type="submit" style="flex:0 0 auto">Request leave</button>
       </form>
       <p class="muted small" style="margin:0">Your lead approves or declines the request. Approved days count as leave, not absence.</p>
       <ul class="tasks" id="leave-list"></ul>
@@ -588,7 +588,7 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <div class="col">
     <div class="panel" id="leave-panel">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
-        <h2>Time-off requests</h2>
+        <h2>Leave requests</h2>
         <span class="muted small" id="leave-req-count"></span>
       </div>
       <ul class="tasks" id="leave-req-list"></ul>
@@ -1004,7 +1004,7 @@ function fixesOf(uid,sinceDays){const from=dayKey(addDays(new Date(),-(sinceDays
 const leaveRef=id=>S.db.doc(`leaves/${id}`);
 function requestLeave(from,to,type,note){enqueue(async()=>{if(to<from)throw fail("“To” has to be on or after “From”.");
   if((keyToDate(to)-keyToDate(from))/864e5>60)throw fail("Requests can cover up to 60 days. Split longer leave into two requests.");
-  if(leavesOf(S.uid).some(l=>l.status!=="rejected"&&l.from<=to&&l.to>=from))throw fail("You already have time off on some of those days.");
+  if(leavesOf(S.uid).some(l=>l.status!=="rejected"&&l.from<=to&&l.to>=from))throw fail("You already have leave on some of those days.");
   const id=Date.now().toString(36)+rid();const docu={uid:S.uid,team:S.myTeam||"",from,to,type,note:note||"",status:"pending",createdAt:Date.now()};
   await leaveRef(id).set(docu);S.leaves=Object.assign({},S.leaves,{[id]:Object.assign({id},docu)});
   toast(`Requested ${plural(workdaysBetween(from,to),"workday")} off`);rerender()})}
@@ -1097,7 +1097,7 @@ function renderLeaves(){const now=Date.now();const c=attCounts(S.uid,rangeKeys("
   const from=dayKey(addDays(new Date(),-60));
   const list=leavesOf(S.uid).filter(l=>l.to>=from).sort((a,b)=>b.from.localeCompare(a.from));
   $("leave-list").innerHTML=list.length?list.map(l=>`<li class="asg"><div style="min-width:0"><div class="t-text"><span class="a-badge a-leave">${leaveOf(l.type).s}</span> ${esc(leaveRange(l))} · ${esc(leaveOf(l.type).l)} <span class="muted small">(${plural(workdaysBetween(l.from,l.to),"workday")})</span></div>${l.note?`<div class="muted small">${esc(l.note)}</div>`:""}</div><div class="asg-act">${leaveStatusPill(l.status)}${l.status==="pending"?`<button class="linkbtn" data-cancel-leave="${esc(l.id)}">Cancel</button>`:""}</div></li>`).join("")
-    :`<li style="display:block;border:0;padding:0"><div class="empty">No time off in the last 60 days.</div></li>`}
+    :`<li style="display:block;border:0;padding:0"><div class="empty">No leave in the last 60 days.</div></li>`}
 function renderMyFixes(){const list=fixesOf(S.uid,14);
   $("my-fixes").innerHTML=list.length?list.map(f=>`<li class="asg"><div style="min-width:0"><div class="t-text">${DAYS[keyToDate(f.k).getDay()]} ${fmtShort(f.k)} · ${esc(describeFix(f.s))}</div>${fixReason(f.s)?`<div class="muted small">${esc(fixReason(f.s))}</div>`:""}</div><div class="asg-act">${stPillFix(f.s._st)}${f.s.manual&&f.s._st==="pending"?`<button class="x" data-unmanual="${esc(f.k)}|${esc(f.s.id)}" aria-label="Remove entry">×</button>`:""}</div></li>`).join(""):""}
 function syncInputs(){const st=S.my.status||{};const ct=$("cur-task"),lb=$("my-label");
@@ -1148,7 +1148,7 @@ function renderLeaveReqs(ids){const set=new Set(ids);const from=dayKey(addDays(n
     return `<li class="asg"><div style="min-width:0"><div class="t-text"><b>${esc(nameOf(l.uid))}</b> · ${esc(leaveRange(l))} · ${esc(leaveOf(l.type).l)} <span class="muted small">(${plural(workdaysBetween(l.from,l.to),"workday")})</span></div>
       <div class="muted small">${l.note?`“${esc(l.note)}” · `:""}${b.left} of ${b.allow} annual days left</div></div>
       <div class="asg-act">${l.status==="pending"&&!mine?`<button class="btn sm" data-lv="rejected" data-id="${esc(l.id)}">Decline</button><button class="btn sm primary" data-lv="approved" data-id="${esc(l.id)}">Approve</button>`:leaveStatusPill(l.status)}</div></li>`}).join("")
-    :`<li style="display:block;border:0;padding:0"><div class="empty">No time-off requests right now.</div></li>`}
+    :`<li style="display:block;border:0;padding:0"><div class="empty">No leave requests right now.</div></li>`}
 
 function headDays(keys){return keys.map(k=>{const d=keyToDate(k);return `<th class="dname ${isWeekend(k)?"col-fri":""}">${DAYS[d.getDay()]}<br><span class="num">${d.getDate()}/${d.getMonth()+1}</span></th>`}).join("")}
 function renderLedger(ids){const keys=rangeKeys(S.range);const now=Date.now();
@@ -1232,7 +1232,7 @@ function buildReport(ids,keys){const now=Date.now();const tk=todayKey();const si
     L.push("")}
   const set=new Set(ids);const over=asgList().filter(a=>set.has(a.assignee)&&a.status!=="done"&&a.due&&a.due<tk).sort((a,b)=>a.due.localeCompare(b.due));
   if(over.length){L.push(`*Overdue tasks (${over.length})*`);over.slice(0,10).forEach(a=>L.push(`  • ${a.title} — ${nameOf(a.assignee)} (due ${fmtShort(a.due)})`));L.push("")}
-  const pl=Object.values(S.leaves).filter(l=>set.has(l.uid)&&l.status==="pending");if(pl.length)L.push(`Time-off requests waiting: ${pl.length}`);
+  const pl=Object.values(S.leaves).filter(l=>set.has(l.uid)&&l.status==="pending");if(pl.length)L.push(`Leave requests waiting: ${pl.length}`);
   return L.join("\n").replace(/\n{3,}/g,"\n\n").trim()}
 
 /* person detail */
@@ -1532,10 +1532,10 @@ function renderChrome(){const p=S.page;if(!p)return;$("page-head").hidden=false;
   const sc=scopeLabel();
   const meta={today:["Today",`${["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]}, ${fmtShort(todayKey())}. Clock in and log what you finish.`],
     mytasks:["My tasks","Tasks assigned to you. Press Start when you begin and Done when you finish."],
-    timeoff:["Time off & corrections","Request leave, or add time you forgot to log. Your lead reviews both."],
+    timeoff:["My requests","Ask for leave, or add time you forgot to log. Your lead approves both."],
     week:["My week","Your hours this week and your attendance this month."],
     overview:["Overview",`Today across ${sc}.`],tasks:["Tasks",`Assign work and follow it up · ${sc}.`],
-    approvals:["Approvals","Time corrections and time-off requests waiting for a decision."],
+    approvals:["Approvals","Time corrections and leave requests waiting for your decision."],
     reports:["Reports",`Hours, attendance, output and work by client · ${sc}.`],people:["People",`Everyone in ${sc}. Click a person to open their page.`],
     settings:["Settings",S.isAdmin?"Teams, types of work, clients, working hours and access.":"Types of work and clients for your team."]};
   let[t,sub]=meta[p]||["",""];
