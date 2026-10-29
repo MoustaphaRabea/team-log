@@ -237,45 +237,147 @@ table.people select,table.people input{padding:6px 8px}
 #team-filter{width:auto;padding:6px 10px;border-radius:999px;font-weight:600}
 .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media (max-width:560px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ---------- app shell: dark teal sidebar + cream workspace ---------- */
+.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh;min-height:100dvh}
+@media (min-width:901px){.shell{background:linear-gradient(90deg,var(--band) 248px,transparent 248px)}}
+.side{position:sticky;top:0;height:100vh;height:100dvh;background:var(--band);color:var(--band-fg);display:grid;grid-template-rows:auto 1fr auto;grid-template-areas:"brand" "nav" "who";gap:22px;padding:22px 14px 18px;overflow-y:auto;
+  background-image:radial-gradient(140% 60% at 0% 0%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 60%)}
+.side .brand{grid-area:brand;display:flex;flex-direction:column;gap:6px;padding:0 10px;text-decoration:none;color:inherit}
+.side .brand .wordmark{height:18px;width:auto;align-self:flex-start}
+.appname{font-weight:800;font-size:17px;letter-spacing:-.01em;color:#F8F2DC}
+.nav{grid-area:nav;display:flex;flex-direction:column;gap:18px;align-content:start}
+.nav-group{display:flex;flex-direction:column;gap:2px}
+.nav-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgb(248 242 220 / .45);padding:0 12px;margin-bottom:6px;font-weight:700}
+.nav a{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;color:rgb(248 242 220 / .78);text-decoration:none;font-weight:600;font-size:14px;white-space:nowrap}
+.nav a:hover{background:rgb(248 242 220 / .08);color:#F8F2DC}
+.nav a[aria-current="page"]{background:#F8F2DC;color:#1B2F33}
+.nav a[aria-current="page"] .ico{color:#FF4F00}
+.ico{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.badge{margin-left:auto;background:#FF4F00;color:#fff;border-radius:999px;font-size:11px;font-weight:700;padding:1px 7px;min-width:20px;text-align:center;line-height:1.5}
+.badge:empty{display:none}
+.side .who{grid-area:who;display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid rgb(248 242 220 / .12);color:rgb(248 242 220 / .85);font-size:13px;flex-wrap:wrap}
+.side .who span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.main{min-width:0;width:100%;max-width:1200px;margin:0 auto;padding-block:28px 64px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+.page{display:flex;flex-direction:column;gap:20px}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 20px;flex-wrap:wrap}
+.page-head h1{font-size:26px;font-weight:800;letter-spacing:-.015em;color:var(--fg)}
+.page-head p{margin:4px 0 0;font-size:14px}
+.ph-text{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+.back{margin-bottom:6px;font-weight:600}
+.page-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;gap:20px;min-width:0}
+.grid2.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.newtask{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.newtask[hidden]{display:none!important}
+.set-tabs{align-self:flex-start;max-width:100%;overflow-x:auto;flex-wrap:nowrap}
+.set-tabs button{white-space:nowrap}
+.settings-body .set-sec{border-top:0;padding-top:0}
+/* KPI tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.tile{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--fg);font:inherit}
+button.tile{cursor:pointer}
+button.tile:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.tile .v{font-size:28px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile .v small{font-size:14px;font-weight:600;color:var(--muted)}
+.tile .l{font-size:13px;color:var(--muted);font-weight:600}
+.tile.warn-t .v{color:var(--alert)}
+.tile.ok-t .v{color:var(--work)}
+.tile.brk-t .v{color:var(--brk)}
+.tile.lv-t .v{color:var(--leave)}
+.tile.acc-t{border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.tile.acc-t .v{color:var(--accent)}
+.tiles.small{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.tiles.small .tile{background:var(--bg);border:0;padding:10px 12px}
+.tiles.small .v{font-size:22px}
+/* people list */
+table.plist td,table.plist th{text-align:left}
+table.plist tbody tr{cursor:pointer}
+table.plist tbody tr:hover td{background:var(--sunk)}
+.pcell{display:flex;align-items:center;gap:10px;min-width:0}
+/* phones & tablets: top bar + scrolling section menu */
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{position:sticky;top:0;z-index:15;height:auto;grid-template-rows:auto auto;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand who" "nav nav";gap:10px;
+    padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:10px;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));overflow:visible}
+  .side .brand{flex-direction:row;align-items:center;gap:10px;padding:0}
+  .side .brand .wordmark{height:15px}
+  .appname{font-size:15px}
+  .side .who{border-top:0;padding:0;flex-wrap:nowrap}
+  .side .who span{display:none}
+  .nav{flex-direction:row;gap:4px;overflow-x:auto;scrollbar-width:none;margin:0 -4px;padding:0 4px}
+  .nav::-webkit-scrollbar{display:none}
+  .nav-group{display:contents}
+  .nav-label{display:none}
+  .nav a{padding:7px 12px;font-size:13px;gap:7px;border-radius:999px;background:rgb(248 242 220 / .06)}
+  .nav a .ico{width:16px;height:16px}
+  .nav a+a,.nav-group+.nav-group a:first-of-type{flex:none}
+  #nav-team a:first-of-type{margin-left:10px}
+  .main{padding-top:18px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .page-head h1{font-size:22px}
+  .grid2.even{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:420px){.side .brand .appname{display:none}}
 </style>
 </head>
 <body>
 
-<div class="wrap" dir="ltr" lang="en">
-  <header class="top">
-    <div class="brand">
-      <img class="wordmark" src="data:image/png;base64,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" alt="Growth Squad" width="132" height="19">
-      <h1>Team Work Log</h1>
-    </div>
-    <div class="tabs" id="tabs" role="tablist" hidden>
-      <button role="tab" id="tab-team" aria-selected="true" data-view="team">Team</button>
-      <button role="tab" id="tab-me" aria-selected="false" data-view="me">My day</button>
-    </div>
-    <div class="who" id="who"></div>
-  </header>
-
-  <section id="gate" class="panel gate">
-    <h2>Loading…</h2>
-    <p class="muted small">Connecting to the log.</p>
-  </section>
-
-  <!-- MEMBER VIEW -->
-  <section id="view-me" hidden>
-    <div class="grid2">
-      <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
-        <div class="panel card-time st-off" id="timecard"></div>
-
+<div class="shell" dir="ltr" lang="en">
+  <aside class="side">
+    <a class="brand" href="#" id="home-link"><img class="wordmark" src="data:image/png;base64,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" alt="Growth Squad" width="132" height="19"><span class="appname">Team Work Log</span></a>
+    <nav class="nav" id="nav" aria-label="Sections" hidden>
+      <div class="nav-group">
+        <span class="nav-label">My work</span>
+        <a href="#today" data-page="today"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Today</span></a>
+        <a href="#mytasks" data-page="mytasks"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/></svg><span>My tasks</span><b class="badge" id="b-mytasks"></b></a>
+        <a href="#timeoff" data-page="timeoff"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><span>Time off</span><b class="badge" id="b-timeoff"></b></a>
+        <a href="#week" data-page="week"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span>My week</span></a>
       </div>
+      <div class="nav-group" id="nav-team" hidden>
+        <span class="nav-label" id="nav-team-label">Team</span>
+        <a href="#overview" data-page="overview"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span>Overview</span></a>
+        <a href="#tasks" data-page="tasks"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h1M4 12h1M4 18h1"/></svg><span>Tasks</span><b class="badge" id="b-tasks"></b></a>
+        <a href="#approvals" data-page="approvals"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13l3-8h10l3 8v6H4z"/><path d="M4 13h5l1 2h4l1-2h5"/></svg><span>Approvals</span><b class="badge" id="b-approvals"></b></a>
+        <a href="#reports" data-page="reports"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"/><path d="M6 15l4-4 3 3 5-6"/></svg><span>Reports</span></a>
+        <a href="#people" data-page="people"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2 .7 3 2.8 3 6"/></svg><span>People</span></a>
+        <a href="#settings" data-page="settings"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg><span>Settings</span></a>
+      </div>
+    </nav>
+    <div class="who" id="who"></div>
+  </aside>
 
-      <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+  <main class="main">
+    <section id="gate" class="panel gate">
+      <h2>Loading…</h2>
+      <p class="muted small">Connecting to the log.</p>
+    </section>
+
+    <header class="page-head" id="page-head" hidden>
+      <div class="ph-text">
+        <button class="linkbtn back" type="button" id="back-btn" hidden>← Back</button>
+        <h1 id="page-title"></h1>
+        <p class="muted" id="page-sub"></p>
+      </div>
+      <div class="page-tools" id="page-tools">
+        <select id="team-filter" aria-label="Show team" hidden></select>
+        <span class="tag" id="team-label" hidden></span>
+      </div>
+    </header>
+
+    <!-- MY WORK -->
+    <section class="page" data-page="today" hidden>
+      <div class="grid2">
+        <div class="col">
+        <div class="panel card-time st-off" id="timecard"></div>
         <div class="panel">
           <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
-            <h2>Assigned to me</h2>
-            <span class="muted small" id="my-asg-count"></span>
+            <h2>Today's work</h2>
+            <span class="muted small" id="today-count"></span>
           </div>
-          <div id="my-brands"></div>
-          <ul class="tasks" id="my-asg"></ul>
+          <ul class="tasks" id="today-tasks"></ul>
         </div>
+        </div>
+        <div class="col">
         <div class="panel">
           <div class="row">
             <label class="f" for="cur-task">What are you working on right now?
@@ -287,7 +389,6 @@ table.people select,table.people input{padding:6px 8px}
           </div>
           <p class="muted small" style="margin:0" id="cur-note">Your lead sees this line next to your name while you're clocked in.</p>
         </div>
-
         <form class="panel" id="task-form" autocomplete="off">
           <h2>Log a finished task</h2>
           <label class="f" for="t-text">What did you do?
@@ -317,27 +418,50 @@ table.people select,table.people input{padding:6px 8px}
             <button class="btn primary" type="submit" id="t-add" style="flex:0 0 auto">Add task</button>
           </div>
         </form>
-
-        <div class="panel">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
-            <h2>Today's work</h2>
-            <span class="muted small" id="today-count"></span>
-          </div>
-          <ul class="tasks" id="today-tasks"></ul>
         </div>
       </div>
-    </div>
+    </section>
 
+    <section class="page" data-page="mytasks" hidden>
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+            <h2>Assigned to me</h2>
+            <span class="muted small" id="my-asg-count"></span>
+          </div>
+          <div id="my-brands"></div>
+          <ul class="tasks" id="my-asg"></ul>
+        </div>
+    </section>
+
+    <section class="page" data-page="timeoff" hidden>
+      <div class="grid2 even">
+        <div class="col">
     <div class="panel" style="margin-top:20px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
-        <h2>This week</h2>
-        <span class="muted small" id="week-total"></span>
+        <h2>Time off</h2>
       </div>
-      <div class="week" id="week-bars"></div>
-      <p class="muted small" style="margin:0" id="week-note">Dashed line = daily target.</p>
+      <div class="balance" id="leave-balance"></div>
+      <form class="row" id="leave-form" autocomplete="off">
+        <label class="f" for="lv-from" style="flex:0 1 160px">From
+          <input type="date" id="lv-from" required>
+        </label>
+        <label class="f" for="lv-to" style="flex:0 1 160px">To
+          <input type="date" id="lv-to" required>
+        </label>
+        <label class="f" for="lv-type" style="flex:0 1 170px">Type
+          <select id="lv-type"></select>
+        </label>
+        <label class="f" for="lv-note">Note (optional)
+          <input type="text" id="lv-note" maxlength="120" placeholder="e.g. family trip">
+        </label>
+        <button class="btn" type="submit" style="flex:0 0 auto">Request time off</button>
+      </form>
+      <p class="muted small" style="margin:0">Your lead approves or declines the request. Approved days count as leave, not absence.</p>
+      <ul class="tasks" id="leave-list"></ul>
     </div>
-
-        <form class="panel" id="manual-form" style="margin-top:20px" autocomplete="off">
+        </div>
+        <div class="col">
+        <form class="panel" id="manual-form" autocomplete="off">
       <h2>Add time you forgot to log</h2>
       <p class="muted small" style="margin:0">Worked late at night, or started without clocking in? Add the time here. Your lead reviews it.</p>
       <div class="row">
@@ -360,56 +484,37 @@ table.people select,table.people input{padding:6px 8px}
       </div>
       <ul class="tasks" id="my-fixes"></ul>
     </form>
+        </div>
+      </div>
+    </section>
 
+    <section class="page" data-page="week" hidden>
     <div class="panel" style="margin-top:20px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
-        <h2>Time off</h2>
+        <h2>This week</h2>
+        <span class="muted small" id="week-total"></span>
+      </div>
+      <div class="week" id="week-bars"></div>
+      <p class="muted small" style="margin:0" id="week-note">Dashed line = daily target.</p>
+    </div>
+      <div class="panel">
+        <h2>This month</h2>
+        <div class="tiles small" id="month-tiles"></div>
         <span class="muted small" id="att-month"></span>
       </div>
-      <div class="balance" id="leave-balance"></div>
-      <form class="row" id="leave-form" autocomplete="off">
-        <label class="f" for="lv-from" style="flex:0 1 160px">From
-          <input type="date" id="lv-from" required>
-        </label>
-        <label class="f" for="lv-to" style="flex:0 1 160px">To
-          <input type="date" id="lv-to" required>
-        </label>
-        <label class="f" for="lv-type" style="flex:0 1 170px">Type
-          <select id="lv-type"></select>
-        </label>
-        <label class="f" for="lv-note">Note (optional)
-          <input type="text" id="lv-note" maxlength="120" placeholder="e.g. family trip">
-        </label>
-        <button class="btn" type="submit" style="flex:0 0 auto">Request time off</button>
-      </form>
-      <p class="muted small" style="margin:0">Your lead approves or declines the request. Approved days count as leave, not absence.</p>
-      <ul class="tasks" id="leave-list"></ul>
-    </div>
-  </section>
+    </section>
 
-  <!-- TEAM VIEW (leads and admins) -->
-  <section id="view-team" hidden style="display:flex;flex-direction:column;gap:20px">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-        <h2>Who's working now</h2>
-        <select id="team-filter" aria-label="Show team" hidden></select>
-        <span class="tag" id="team-label" hidden></span>
-      </div>
-      <div class="summary" id="summary"></div>
-    </div>
-    <div class="board" id="board"></div>
+    <!-- TEAM -->
+    <section class="page" data-page="overview" hidden>
+      <div class="tiles" id="kpi-tiles"></div>
+      <div class="sec-head"><h2>Who's working now</h2><div class="summary" id="summary" hidden></div></div>
+      <div class="board" id="board"></div>
+    </section>
 
-    <div class="panel" id="review-panel" hidden>
-      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
-        <h2>Needs your review</h2>
-        <span class="muted small" id="review-count"></span>
-      </div>
-      <ul class="tasks" id="review-list"></ul>
-    </div>
-
+    <section class="page" data-page="tasks" hidden>
     <div class="panel" id="asg-panel">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-        <h2>Assigned tasks</h2>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h2>Assigned tasks</h2><button class="btn primary sm" type="button" id="new-task-btn">+ New task</button></div>
         <div class="tabs" id="asg-filter">
           <button type="button" data-f="open" aria-selected="true">Open</button>
           <button type="button" data-f="done" aria-selected="false">Done</button>
@@ -417,7 +522,7 @@ table.people select,table.people input{padding:6px 8px}
           <button type="button" data-f="repeat" aria-selected="false">Repeating</button>
         </div>
       </div>
-      <form id="asg-form" autocomplete="off" style="display:flex;flex-direction:column;gap:10px">
+      <form id="asg-form" class="newtask" autocomplete="off" hidden>
         <label class="f" for="a-title">Task
           <input type="text" id="a-title" maxlength="200" placeholder="e.g. Shortlist 20 KSA beauty creators for the November drop">
         </label>
@@ -466,6 +571,21 @@ table.people select,table.people input{padding:6px 8px}
       <p class="muted small" style="margin:0">People show up here after their first sign-in. When someone marks a task done, it's added to their work log for that day. Repeating tasks appear on their list each matching workday.</p>
     </div>
 
+    </section>
+
+    <section class="page" data-page="approvals" hidden>
+      <div class="grid2 even">
+        <div class="col">
+    <div class="panel" id="review-panel">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <h2>Needs your review</h2>
+        <span class="muted small" id="review-count"></span>
+      </div>
+      <ul class="tasks" id="review-list"></ul>
+    </div>
+
+        </div>
+        <div class="col">
     <div class="panel" id="leave-panel">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
         <h2>Time-off requests</h2>
@@ -474,6 +594,11 @@ table.people select,table.people input{padding:6px 8px}
       <ul class="tasks" id="leave-req-list"></ul>
     </div>
 
+        </div>
+      </div>
+    </section>
+
+    <section class="page" data-page="reports" hidden>
     <div class="panel">
       <div class="ledger-head">
         <h2 id="ledger-title">Hours ledger</h2>
@@ -521,13 +646,30 @@ table.people select,table.people input{padding:6px 8px}
       <p class="muted small" style="margin:0" id="ledger-note">Numbers are net working hours (breaks excluded). Click any cell to see that day's details.</p>
     </div>
 
-    <div class="panel" id="detail" hidden></div>
+    </section>
 
-    <details class="panel settings" id="settings-panel">
-      <summary>Settings</summary>
+    <section class="page" data-page="people" hidden>
+      <div class="panel">
+        <div class="tablewrap"><table class="plist"><thead><tr><th class="name">Person</th><th>Team</th><th>Status</th><th>Today</th><th>This week</th><th>Open tasks</th><th>Annual leave left</th></tr></thead><tbody id="people-list"></tbody></table></div>
+        <p class="muted small" style="margin:0">Click someone to open their page: hours, attendance, output, tasks and day-by-day details.</p>
+      </div>
+    </section>
 
+    <section class="page" data-page="person" hidden>
+      <div class="panel" id="detail" hidden></div>
+    </section>
+
+    <section class="page" data-page="settings" hidden id="settings-panel">
+      <div class="tabs set-tabs" id="set-tabs" role="tablist">
+        <button type="button" data-sec="teams">Teams &amp; people</button>
+        <button type="button" data-sec="kinds">Types of work</button>
+        <button type="button" data-sec="brands">Clients &amp; brands</button>
+        <button type="button" data-sec="att">Working hours</button>
+        <button type="button" data-sec="access">Access</button>
+      </div>
+      <div class="panel settings-body">
       <section class="set-sec" id="sec-teams" hidden>
-        <h3>Teams &amp; people</h3>
+        <h2>Teams &amp; people</h2>
         <form class="row" id="team-form" autocomplete="off">
           <input type="text" id="team-name" maxlength="40" aria-label="New team name" placeholder="New team, e.g. Performance Marketing" required>
           <button class="btn" type="submit" style="flex:0 0 auto">Add team</button>
@@ -538,7 +680,7 @@ table.people select,table.people input{padding:6px 8px}
       </section>
 
       <section class="set-sec" id="sec-kinds">
-        <h3>Types of work</h3>
+        <h2>Types of work</h2>
         <div class="row" style="align-items:center">
           <label class="f" for="kind-team" id="kind-team-wrap">For team
             <select id="kind-team"></select>
@@ -561,7 +703,7 @@ table.people select,table.people input{padding:6px 8px}
       </section>
 
       <section class="set-sec" id="sec-brands">
-        <h3>Clients &amp; brands</h3>
+        <h2>Clients &amp; brands</h2>
         <form class="row" id="brand-form" autocomplete="off">
           <input type="text" id="brand-name" maxlength="40" aria-label="Brand name" placeholder="e.g. Namshi" required>
           <button class="btn" type="submit" style="flex:0 0 auto">Add brand</button>
@@ -570,7 +712,7 @@ table.people select,table.people input{padding:6px 8px}
       </section>
 
       <section class="set-sec" id="sec-att" hidden>
-        <h3>Working hours &amp; attendance</h3>
+        <h2>Working hours &amp; attendance</h2>
         <div class="row">
           <label class="f" for="set-start">Work starts at
             <input type="time" id="set-start">
@@ -601,7 +743,7 @@ table.people select,table.people input{padding:6px 8px}
       </section>
 
       <section class="set-sec" id="sec-access" hidden>
-        <h3>Access</h3>
+        <h2>Access</h2>
         <span class="muted small" id="access-note">Team access</span>
         <form class="row" id="mem-form" autocomplete="off">
           <input type="email" id="mem-email" maxlength="120" aria-label="Email to allow" placeholder="name@gmail.com" required>
@@ -610,8 +752,9 @@ table.people select,table.people input{padding:6px 8px}
         <ul class="tasks" id="mem-list"></ul>
       </section>
       <p class="muted small" style="margin:0">Changes save as soon as you make them.</p>
-    </details>
-  </section>
+      </div>
+    </section>
+  </main>
 </div>
 <div class="toast" id="toast" hidden></div>
 
@@ -677,7 +820,7 @@ const S={db:null,dl:null,uid:null,me:null,isAdmin:false,isLead:false,canManage:f
   my:{status:null,days:{},raw:{}},team:{statuses:{},days:{},raw:{},subs:{}},
   people:{},teams:{},reviews:{},leaves:{},recurring:{},asg:{},roster:{},comments:{},threads:{},
   view:"me",range:"week",mode:"hours",sel:{uid:null,day:null},mins:null,q:Promise.resolve(),busy:false,
-  settings:clone(DEF_SET),brandsDoc:null,asgF:"open",asgP:"",teamF:"",kindTeam:"",loaded:{}};
+  settings:clone(DEF_SET),brandsDoc:null,page:null,lastPage:null,setSec:"",asgF:"open",asgP:"",teamF:"",kindTeam:"",loaded:{}};
 
 /* ---------- people & teams ---------- */
 const personOf=uid=>S.people[uid]||null;
@@ -960,7 +1103,7 @@ function renderMyFixes(){const list=fixesOf(S.uid,14);
 function syncInputs(){const st=S.my.status||{};const ct=$("cur-task"),lb=$("my-label");
   if(document.activeElement!==ct)ct.value=st.currentTask||"";
   if(document.activeElement!==lb)lb.value=st.label||(S.me&&S.me.name)||""}
-function renderMe(){renderTimecard();renderMyAsg();renderToday();renderWeek();renderLeaves();renderMyFixes();syncInputs();refreshKindSelects()}
+function renderMe(){renderTimecard();renderMyAsg();renderToday();renderWeek();renderLeaves();renderMonth();renderMyFixes();syncInputs();refreshKindSelects()}
 
 /* ---------- team view ---------- */
 function relDay(ms){const k=dayKey(new Date(ms));if(k===todayKey())return fmtClock(ms);if(k===dayKey(addDays(new Date(),-1)))return "yesterday "+fmtClock(ms);return fmtShort(k)}
@@ -991,11 +1134,12 @@ function renderTeam(){const ids=teamIds();const now=Date.now();renderTeamFilter(
         ${stale?`<span class="flag">Clocked in since ${fmtClock(open.in)} on ${esc(fmtShort(st.dayKey))}. Probably forgot to clock out.</span>`:""}
       </button>`}).join("")
     :`<div class="empty" style="grid-column:1/-1">${S.isAdmin&&S.teamF?"No one is in this team yet. Assign people to it in Settings → Teams & people.":"No one has signed in yet. Share the link; people show up here after their first sign-in."}</div>`;
-  renderReviews(ids);renderAsgAdmin(ids);renderLeaveReqs(ids);renderLedger(ids);renderDetail();renderSettings()}
+  renderOverview(ids);renderPeopleList(ids);renderReviews(ids);renderAsgAdmin(ids);renderLeaveReqs(ids);renderLedger(ids);renderDetail();renderSettings()}
 
 function renderReviews(ids){const items=[];ids.filter(canReview).forEach(u=>fixesOf(u,30).filter(f=>f.s._st==="pending").forEach(f=>items.push(f)));
-  $("review-panel").hidden=!items.length;$("review-count").textContent=items.length?plural(items.length,"time correction"):"";
-  $("review-list").innerHTML=items.map(f=>`<li class="asg"><div style="min-width:0"><div class="t-text"><b>${esc(nameOf(f.uid))}</b> · ${DAYS[keyToDate(f.k).getDay()]} ${fmtShort(f.k)}</div><div class="small">${esc(describeFix(f.s))}</div>${fixReason(f.s)?`<div class="muted small">“${esc(fixReason(f.s))}”</div>`:""}</div><div class="asg-act"><button class="btn sm" data-rv="rejected" data-u="${esc(f.uid)}" data-k="${f.k}" data-s="${esc(f.id)}">Decline</button><button class="btn sm primary" data-rv="approved" data-u="${esc(f.uid)}" data-k="${f.k}" data-s="${esc(f.id)}">Approve</button></div></li>`).join("")}
+  $("review-count").textContent=items.length?plural(items.length,"time correction"):"";
+  $("review-list").innerHTML=items.length?"":`<li style="display:block;border:0;padding:0"><div class="empty">Nothing to review. Time people add or correct shows up here.</div></li>`;
+  if(items.length)$("review-list").innerHTML=items.map(f=>`<li class="asg"><div style="min-width:0"><div class="t-text"><b>${esc(nameOf(f.uid))}</b> · ${DAYS[keyToDate(f.k).getDay()]} ${fmtShort(f.k)}</div><div class="small">${esc(describeFix(f.s))}</div>${fixReason(f.s)?`<div class="muted small">“${esc(fixReason(f.s))}”</div>`:""}</div><div class="asg-act"><button class="btn sm" data-rv="rejected" data-u="${esc(f.uid)}" data-k="${f.k}" data-s="${esc(f.id)}">Decline</button><button class="btn sm primary" data-rv="approved" data-u="${esc(f.uid)}" data-k="${f.k}" data-s="${esc(f.id)}">Approve</button></div></li>`).join("")}
 
 function renderLeaveReqs(ids){const set=new Set(ids);const from=dayKey(addDays(new Date(),-14));
   const list=Object.values(S.leaves).filter(l=>set.has(l.uid)&&(l.status==="pending"||(l.to>=from))).sort((a,b)=>(a.status==="pending"?0:1)-(b.status==="pending"?0:1)||a.from.localeCompare(b.from));
@@ -1106,10 +1250,6 @@ function renderDetail(){const el=$("detail");const u=S.sel.uid;if(!u||!personOf(
   const o=outputOf(u,keys);const exp=expectedDays(u,keys);const outKinds=kindsFor(u).filter(k=>k.unit);
   const manage=canManageUid(u),review=canReview(u);
   el.innerHTML=`
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-      <div class="mhead">${avatarOf(u)?`<img class="av lg" src="${esc(avatarOf(u))}" alt="" referrerpolicy="no-referrer">`:""}<div><h2>${esc(nameOf(u))}</h2><div class="muted small">${esc(teamName(p.team||""))}${p.role&&p.role!=="member"?` · ${ROLES[p.role]}`:""}${p.email?` · ${esc(p.email)}`:""}</div></div></div>
-      <button class="btn" data-close="1">Close details</button>
-    </div>
     <div class="kpis">
       <div class="kpi"><div class="v">${fmtHM(tot)}</div><div class="l">Hours · ${esc(RANGE_LABEL[S.range].toLowerCase())}</div></div>
       <div class="kpi"><div class="v">${dw}</div><div class="l">Days worked</div></div>
@@ -1164,14 +1304,13 @@ function saveKinds(tid,kinds){enqueue(async()=>{const t=clone(S.teams[tid]||{nam
 function savePerson(uid,patch){enqueue(async()=>{const p=Object.assign(clone(personOf(uid)||{}),patch,{updatedAt:Date.now()});await S.db.doc(`people/${uid}`).set(p);
   S.people=Object.assign({},S.people,{[uid]:p});toast(`${nameOf(uid)} updated`);ensureMemberSubs();rerender()})}
 function renderSettings(){const s=S.settings;
-  $("sec-teams").hidden=!S.isAdmin;$("sec-att").hidden=!S.isAdmin;$("sec-access").hidden=!S.isAdmin;
+  applySetTabs();
   $("brand-list").innerHTML=brandList().map(b=>`<span class="chip" style="display:inline-flex;gap:6px;align-items:center">${esc(b)}<button type="button" class="x" style="font-size:15px;padding:0 2px" data-unbrand="${esc(b)}" aria-label="Remove ${esc(b)}">×</button></span>`).join("");
   /* types of work */
   const kt=$("kind-team");const teamsSorted=Object.entries(S.teams).sort((a,b)=>a[1].name.localeCompare(b[1].name));
   if(S.isAdmin){$("kind-team-wrap").hidden=false;const html=teamsSorted.map(([id,t])=>`<option value="${esc(id)}">${esc(t.name)}</option>`).join("");if(kt.innerHTML!==html)kt.innerHTML=html;
     if(!S.kindTeam||!S.teams[S.kindTeam])S.kindTeam=S.myTeam&&S.teams[S.myTeam]?S.myTeam:(teamsSorted[0]||[""])[0];kt.value=S.kindTeam}
   else{$("kind-team-wrap").hidden=true;S.kindTeam=S.myTeam}
-  $("sec-kinds").hidden=!S.kindTeam;
   const ks=S.kindTeam&&S.teams[S.kindTeam]&&S.teams[S.kindTeam].kinds||[];
   $("kind-list").innerHTML=ks.length?ks.map((k,i)=>`<li class="asg"><div style="min-width:0"><div class="t-text"><b>${esc(k.name)}</b></div><div class="muted small">${k.unit?`Counted in ${esc(k.unit)}`:"Not counted"}${k.target?` · target ${esc(k.target)} a day`:""}</div></div><div class="asg-act"><button class="x" data-unkind="${i}" aria-label="Remove ${esc(k.name)}">×</button></div></li>`).join("")
     :`<li style="display:block;border:0;padding:0"><div class="empty">No types of work yet for this team. Add the first one below.</div></li>`;
@@ -1365,13 +1504,86 @@ function subShared(){
         :`<li style="display:block;border:0;padding:0"><div class="empty">No extra emails added.</div></li>`},e=>console.warn(e))}
 }
 
-let rr=0;function rerender(){cancelAnimationFrame(rr);rr=requestAnimationFrame(()=>{if(!S.uid)return;if(S.view==="me")renderMe();else renderTeam()})}
+let rr=0;function rerender(){cancelAnimationFrame(rr);rr=requestAnimationFrame(()=>{if(!S.uid||!S.page)return;renderMe();if(S.canManage)renderTeam();renderChrome()})}
 setInterval(()=>{if(!S.uid)return;const now=Date.now();
   document.querySelectorAll("[data-live]").forEach(el=>{const ms=todayWork(el.dataset.live,now);el.textContent=el.dataset.fmt==="hms"?fmtHMS(ms):fmtHM(ms)});
   document.querySelectorAll("[data-livebar]").forEach(el=>{el.style.width=Math.min(100,todayWork(el.dataset.livebar,now)/(TARGET_H*36e3))+"%"})},1000);
-setInterval(()=>{if(S.uid){genRecurring();if(S.view==="team")renderTeam()}},60000);
-function setView(v){S.view=v;$("view-me").hidden=v!=="me";$("view-team").hidden=v!=="team";
-  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.view===v)));rerender()}
+setInterval(()=>{if(S.uid){genRecurring();rerender()}},60000);
+/* ---------- pages & navigation ---------- */
+const ME_PAGES=["today","mytasks","timeoff","week"];
+const TEAM_PAGES=["overview","tasks","approvals","reports","people","person","settings"];
+function go(p){if(!S.uid)return;
+  if(!ME_PAGES.includes(p)&&!(S.canManage&&TEAM_PAGES.includes(p)))p=S.canManage?"overview":"today";
+  if(p==="person"&&!S.sel.uid)p="people";
+  if(p!=="person")S.lastPage=p;
+  const changed=S.page!==p;S.page=p;
+  if(location.hash.slice(1)!==p)location.hash=p;
+  document.querySelectorAll(".page").forEach(x=>x.hidden=x.dataset.page!==p);
+  if(changed)window.scrollTo(0,0);rerender()}
+function goBack(){go(S.lastPage&&S.lastPage!=="person"?S.lastPage:"people")}
+function openPerson(uid,day){S.sel={uid,day:day||null};go("person")}
+function route(){const p=location.hash.slice(1);go(p||(S.canManage?"overview":"today"))}
+const setBadge=(k,n)=>{const b=$("b-"+k);if(b)b.textContent=n?String(n):""};
+function approvalsCount(ids){const set=new Set(ids);let n=0;ids.forEach(u=>{if(canReview(u))n+=fixesOf(u,30).filter(f=>f.s._st==="pending").length});
+  n+=Object.values(S.leaves).filter(l=>set.has(l.uid)&&l.status==="pending"&&(S.isAdmin||l.uid!==S.uid)).length;return n}
+function scopeLabel(){return S.isAdmin?(S.teamF?(S.teamF==="__none"?"people with no team":teamName(S.teamF)):"the whole company"):teamName(S.myTeam)}
+function renderChrome(){const p=S.page;if(!p)return;$("page-head").hidden=false;
+  document.querySelectorAll("#nav a").forEach(a=>a.setAttribute("aria-current",(a.dataset.page===p||(p==="person"&&a.dataset.page==="people"))?"page":"false"));
+  const sc=scopeLabel();
+  const meta={today:["Today",`${["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]}, ${fmtShort(todayKey())}. Clock in and log what you finish.`],
+    mytasks:["My tasks","Tasks assigned to you. Press Start when you begin and Done when you finish."],
+    timeoff:["Time off & corrections","Request leave, or add time you forgot to log. Your lead reviews both."],
+    week:["My week","Your hours this week and your attendance this month."],
+    overview:["Overview",`Today across ${sc}.`],tasks:["Tasks",`Assign work and follow it up · ${sc}.`],
+    approvals:["Approvals","Time corrections and time-off requests waiting for a decision."],
+    reports:["Reports",`Hours, attendance, output and work by client · ${sc}.`],people:["People",`Everyone in ${sc}. Click a person to open their page.`],
+    settings:["Settings",S.isAdmin?"Teams, types of work, clients, working hours and access.":"Types of work and clients for your team."]};
+  let[t,sub]=meta[p]||["",""];
+  if(p==="person"){const u=S.sel.uid;const pp=personOf(u)||{};t=nameOf(u);sub=[teamName(pp.team||""),pp.role&&pp.role!=="member"?ROLES[pp.role]:"",pp.email||""].filter(Boolean).join(" · ")}
+  $("page-title").textContent=t;$("page-sub").textContent=sub;$("back-btn").hidden=p!=="person";
+  $("page-tools").hidden=!(S.canManage&&["overview","tasks","approvals","reports","people"].includes(p));
+  setBadge("mytasks",asgList().filter(a=>a.assignee===S.uid&&a.status!=="done").length);
+  if(S.canManage){const ids=teamIds();const set=new Set(ids);setBadge("approvals",approvalsCount(ids));
+    setBadge("tasks",asgList().filter(a=>set.has(a.assignee)&&a.status!=="done"&&a.due&&a.due<todayKey()).length)}}
+function tileHTML(t){const inner=`<span class="v">${t.v}</span><span class="l">${esc(t.l)}</span>`;
+  return t.go?`<button type="button" class="tile ${t.c||""}" data-go="${t.go}">${inner}</button>`:`<div class="tile ${t.c||""}">${inner}</div>`}
+function renderOverview(ids){const now=Date.now();let working=0,brk=0,late=0,notin=0,leave=0,hours=0;
+  ids.forEach(u=>{const st=statusOf(u);if(st&&st.state==="working")working++;if(st&&st.state==="break")brk++;
+    const a=attOf(u,todayKey(),now);if(a.c==="late")late++;if(a.c==="pending"||a.c==="absent")notin++;if(a.c==="leave")leave++;hours+=todayWork(u,now)});
+  const set=new Set(ids);const open=asgList().filter(a=>set.has(a.assignee)&&a.status!=="done");const over=open.filter(a=>a.due&&a.due<todayKey()).length;const appr=approvalsCount(ids);
+  $("kpi-tiles").innerHTML=[
+    {v:`${working}<small> / ${ids.length}</small>`,l:"Working now",c:"ok-t",go:"people"},{v:brk,l:"On a break",c:brk?"brk-t":""},
+    {v:late,l:"Late today",c:late?"brk-t":""},{v:notin,l:"Not in yet",c:notin?"warn-t":""},{v:leave,l:"On leave today",c:leave?"lv-t":""},
+    {v:fmtHM(hours),l:"Hours logged today",go:"reports"},{v:open.length,l:"Open tasks",go:"tasks"},{v:over,l:"Overdue tasks",c:over?"warn-t":"",go:"tasks"},
+    {v:appr,l:"Waiting for your approval",c:appr?"acc-t":"",go:"approvals"}].map(tileHTML).join("")}
+function renderPeopleList(ids){const now=Date.now();const wk=rangeKeys("week");
+  const list=ids.slice().sort((a,b)=>teamName(teamOf(a)).localeCompare(teamName(teamOf(b)))||nameOf(a).localeCompare(nameOf(b)));
+  $("people-list").innerHTML=list.length?list.map(u=>{const st=statusOf(u)||{state:"off"};let w=0;for(const k of wk)w+=k===todayKey()?todayWork(u,now):dayWork(daysOf(u)[k],now);
+      const open=asgList().filter(a=>a.assignee===u&&a.status!=="done").length;const lb=leaveBalance(u);const p=personOf(u)||{};
+      return `<tr data-uid="${esc(u)}" tabindex="0"><td class="name"><div class="pcell">${avatarOf(u)?`<img class="av" src="${esc(avatarOf(u))}" alt="" referrerpolicy="no-referrer">`:'<span class="av"></span>'}<div style="min-width:0"><b>${esc(nameOf(u))}</b><div class="muted small">${esc(p.email||"")}</div></div></div></td>
+        <td>${esc(teamName(p.team||""))}${p.role&&p.role!=="member"?` <span class="tag">${ROLES[p.role]}</span>`:""}</td><td><span class="pill ${st.state} st-${st.state}">${stateLabel[st.state]}</span></td>
+        <td class="num">${fmtHM(todayWork(u,now))}</td><td class="num">${fmtHM(w)}</td><td class="num">${open}</td><td class="num">${lb.left} / ${lb.allow}</td></tr>`}).join("")
+    :`<tr><td colspan="7"><div class="empty">No one here yet. People show up after their first sign-in.</div></td></tr>`}
+function renderMonth(){const now=Date.now();const keys=rangeKeys("month");const c=attCounts(S.uid,keys,now);let hrs=0;
+  for(const k of keys)hrs+=k===todayKey()?todayWork(S.uid,now):dayWork(S.my.days[k],now);const b=leaveBalance(S.uid);
+  $("month-tiles").innerHTML=[{v:c.present,l:"On time",c:"ok-t"},{v:c.late,l:"Late",c:c.late?"brk-t":""},{v:c.absent,l:"Absent",c:c.absent?"warn-t":""},
+    {v:c.leave,l:"Days off",c:"lv-t"},{v:fmtHM(hrs),l:"Hours this month"},{v:`${b.left}<small> / ${b.allow}</small>`,l:"Annual leave left",c:"lv-t",go:"timeoff"}].map(tileHTML).join("");
+  $("att-month").hidden=true}
+function applySetTabs(){const allow={teams:S.isAdmin,kinds:true,brands:true,att:S.isAdmin,access:S.isAdmin};
+  if(!allow[S.setSec])S.setSec=S.isAdmin?"teams":"kinds";
+  document.querySelectorAll("#set-tabs [data-sec]").forEach(b=>{b.hidden=!allow[b.dataset.sec];b.setAttribute("aria-selected",String(b.dataset.sec===S.setSec))});
+  ["teams","kinds","brands","att","access"].forEach(k=>{$("sec-"+k).hidden=!(allow[k]&&S.setSec===k)})}
+function bindShell(){
+  window.addEventListener("hashchange",()=>{const p=location.hash.slice(1);if(S.uid&&p&&p!==S.page)go(p)});
+  $("back-btn").addEventListener("click",goBack);
+  $("home-link").addEventListener("click",e=>{e.preventDefault();if(S.uid)go(S.canManage?"overview":"today")});
+  const pl=e=>{const r=e.target.closest("tr[data-uid]");if(r)openPerson(r.dataset.uid)};
+  $("people-list").addEventListener("click",pl);$("people-list").addEventListener("keydown",e=>{if(e.key==="Enter")pl(e)});
+  $("set-tabs").addEventListener("click",e=>{const b=e.target.closest("[data-sec]");if(!b)return;S.setSec=b.dataset.sec;applySetTabs()});
+  $("new-task-btn").addEventListener("click",()=>{const f=$("asg-form");f.hidden=!f.hidden;$("new-task-btn").textContent=f.hidden?"+ New task":"Close";if(!f.hidden)$("a-title").focus()});
+  const goTile=e=>{const t=e.target.closest("[data-go]");if(t)go(t.dataset.go)};
+  $("kpi-tiles").addEventListener("click",goTile);$("month-tiles").addEventListener("click",goTile);
+}
 
 /* ---------- export ---------- */
 async function exportCSV(){const keys=rangeKeys(S.range);const now=Date.now();
@@ -1414,17 +1626,17 @@ function buildStatic(){
     requestLeave(f,t,$("lv-type").value,$("lv-note").value.trim());$("lv-note").value=""});
   $("leave-list").addEventListener("click",e=>{const b=e.target.closest("[data-cancel-leave]");if(b)cancelLeave(b.dataset.cancelLeave)});
   /* team view */
-  $("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-view]");if(b)setView(b.dataset.view)});
+  bindShell();
   $("team-filter").addEventListener("change",e=>{S.teamF=e.target.value;S.asgP="";S.sel={uid:null,day:null};lsSet("tl-teamF",S.teamF);rerender()});
   $("range-tabs").addEventListener("click",e=>{const b=e.target.closest("[data-range]");if(!b)return;S.range=b.dataset.range;S.sel.day=null;rerender()});
   $("mode-tabs").addEventListener("click",e=>{const b=e.target.closest("[data-mode]");if(!b)return;S.mode=b.dataset.mode;rerender()});
-  $("board").addEventListener("click",e=>{const b=e.target.closest("[data-uid]");if(!b)return;S.sel={uid:b.dataset.uid,day:null};renderTeam();$("detail").scrollIntoView({behavior:"smooth",block:"start"})});
-  const pick=e=>{const c=e.target.closest("td.cell,.namebtn");if(!c)return;S.sel={uid:c.dataset.uid,day:c.dataset.day||null};renderTeam();$("detail").scrollIntoView({behavior:"smooth",block:"nearest"})};
+  $("board").addEventListener("click",e=>{const b=e.target.closest("[data-uid]");if(!b)return;openPerson(b.dataset.uid)});
+  const pick=e=>{const c=e.target.closest("td.cell,.namebtn");if(!c)return;openPerson(c.dataset.uid,c.dataset.day||null)};
   $("ledger").addEventListener("click",pick);$("ledger").addEventListener("keydown",e=>{if(e.key==="Enter")pick(e)});
   const onReview=e=>{const b=e.target.closest("[data-rv]");if(!b)return;setReview(b.dataset.u,b.dataset.k,b.dataset.s,b.dataset.rv||null)};
   $("review-list").addEventListener("click",onReview);$("detail").addEventListener("click",onReview);
   $("leave-req-list").addEventListener("click",e=>{const b=e.target.closest("[data-lv]");if(b)decideLeave(b.dataset.id,b.dataset.lv)});
-  $("detail").addEventListener("click",e=>{if(e.target.closest("[data-close]")){S.sel={uid:null,day:null};renderTeam();return}
+  $("detail").addEventListener("click",e=>{if(e.target.closest("[data-close]")){goBack();return}
     const lb2=e.target.closest("[data-leave]");if(lb2){const u=S.sel.uid,k=S.selShown;if(!u||!k)return;
       if(lb2.dataset.leave==="clear")removeDayOff(u,k);else markDayOff(u,k,$("d-leave-type").value,($("d-leave-note").value||"").trim());return}
     const c=e.target.closest("[data-day]");if(c&&!c.closest("[data-rv]")){S.sel.day=c.dataset.day;renderDetail();renderLedger(teamIds())}});
@@ -1515,9 +1727,9 @@ function boot(){buildStatic();
     $("who").querySelector("span").textContent=S.me.name;
     $("signout").addEventListener("click",()=>signOut(auth));
     $("export").hidden=false;
-    $("tab-team").textContent=S.isAdmin?"Company":"My team";
     subMine();subShared();
-    if(S.canManage){$("tabs").hidden=false;setView("team")}else setView("me");
+    $("nav").hidden=false;$("nav-team").hidden=!S.canManage;$("nav-team-label").textContent=S.isAdmin?"Company":"My team";
+    route();
   });
 }
 boot();
