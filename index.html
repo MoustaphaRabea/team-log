@@ -248,6 +248,39 @@ a.tag.link:hover{border-color:var(--accent);color:var(--accent)}
 div.f{display:flex;flex-direction:column;gap:6px;min-width:0}
 #a-who .chip{padding:6px 12px}
 .newtask textarea{background:var(--bg);font-size:14px}
+/* time management */
+.plan-sum{display:flex;flex-direction:column;gap:10px}
+.hint{background:color-mix(in srgb,var(--accent) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:12px;padding:10px 14px;font-size:14px}
+.now-card{border-color:var(--accent);gap:8px}
+.now-card.is-over{border-color:var(--alert)}
+.now-title{font-size:20px;font-weight:800;line-height:1.25}
+.now-time{font-size:15px}.now-time .num{font-size:26px;font-weight:800}
+.estline{display:flex;gap:8px 10px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.estbar{flex:1 1 120px;max-width:220px;height:6px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.estbar.big{max-width:none;height:9px}
+.estbar i{display:block;height:100%;background:var(--work);border-radius:99px;transition:width .4s}
+.estbar.over i{background:var(--alert)}
+.over-t{color:var(--alert);font-weight:600}
+.plan-list li.asg{grid-template-columns:minmax(0,1fr)}
+.plan-list .asg-act{justify-content:flex-start}
+select.est-mini{width:auto;padding:4px 8px;font-size:12.5px;border-radius:999px}
+.plan-row.running{background:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:8px;padding-left:8px;padding-right:8px}
+.overrun{display:flex;flex-direction:column;gap:10px;background:color-mix(in srgb,var(--alert) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--alert) 40%,var(--line));border-radius:12px;padding:12px 14px;font-size:14px}
+.overrun .btns{gap:8px}
+.overrun-wrap{position:sticky;top:8px;z-index:4}
+.overrun-wrap .overrun{box-shadow:0 8px 24px rgb(0 0 0 / .12)}
+.planlink{display:block;font-size:14px;color:var(--fg);text-decoration:none;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.planlink:hover{border-color:var(--accent)}
+.planline{font-size:13px;text-align:left}
+.planline ul{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:2px}
+.planline li{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.planline li.done{color:var(--muted);text-decoration:line-through}
+.brow.untracked i{background:repeating-linear-gradient(45deg,var(--line),var(--line) 4px,transparent 4px,transparent 8px)}
+.day-chips{margin-bottom:2px}
+.page[data-page="myday"] .brow,.page[data-page="insights"] .brow{grid-template-columns:minmax(80px,36%) minmax(40px,1fr) auto}
+.plan-sum .tiles.small .tile,#md-tiles .tile,#in-tiles .tile{background:var(--surface);border:1px solid var(--line)}
+#review-list li.seen{opacity:.6}
+@media (max-width:900px){.overrun-wrap{position:static}}
 .tpl-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px dashed var(--line)}
 .tpl-row .f{flex:1 1 260px;max-width:420px}
 .tpl-row .linkbtn{padding-bottom:10px}
@@ -388,6 +421,12 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <a href="#timeoff" data-page="timeoff"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><span>My requests</span><b class="badge" id="b-timeoff"></b></a>
         <a href="#week" data-page="week"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span>My week</span></a>
       </div>
+      <div class="nav-group" id="nav-tm">
+        <span class="nav-label">Time management</span>
+        <a href="#plan" data-page="plan"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11"/><path d="m3.5 5 1.5 1.5L7.5 4M3.5 12l1.5 1.5L7.5 11"/><circle cx="5" cy="19" r="1.2"/></svg><span>My plan</span><b class="badge" id="b-plan"></b></a>
+        <a href="#myday" data-page="myday"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.4 6.4"/></svg><span>Where my day went</span></a>
+        <a href="#insights" data-page="insights"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-3.5 10.9V17h7v-3.1A6 6 0 0 0 12 3z"/><path d="M9.5 20.5h5"/></svg><span>My insights</span></a>
+      </div>
       <div class="nav-group" id="nav-team" hidden>
         <span class="nav-label" id="nav-team-label">Team</span>
         <a href="#overview" data-page="overview"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span>Overview</span></a>
@@ -396,6 +435,7 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <a href="#reports" data-page="reports"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"/><path d="M6 15l4-4 3 3 5-6"/></svg><span>Reports</span></a>
         <a href="#people" data-page="people"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2 .7 3 2.8 3 6"/></svg><span>People</span></a>
         <a href="#settings" data-page="settings"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg><span>Settings</span></a>
+        <a href="#attendance" data-page="attendance" id="nav-att" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="m9 15 2 2 4-4"/></svg><span>Attendance</span></a>
       </div>
     </nav>
     <div class="who" id="who"></div>
@@ -418,6 +458,8 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <span class="tag" id="team-label" hidden></span>
       </div>
     </header>
+
+    <div id="overrun-bar" class="overrun-wrap" hidden></div>
 
     <!-- MY WORK -->
     <section class="page" data-page="today" hidden>
@@ -442,7 +484,7 @@ table.plist tbody tr:hover td{background:var(--sunk)}
               <input type="text" id="my-label" maxlength="40" placeholder="Your name">
             </label>
           </div>
-          <p class="muted small" style="margin:0" id="cur-note">Your lead sees this line next to your name while you're clocked in.</p>
+          <p class="muted small" style="margin:0" id="cur-note">Your lead sees this line next to your name while your day is running.</p>
         </div>
         <form class="panel" id="task-form" autocomplete="off">
           <h2>Log a finished task</h2>
@@ -489,7 +531,7 @@ table.plist tbody tr:hover td{background:var(--sunk)}
           <div id="my-brands"></div>
           <ul class="tasks" id="my-asg"></ul>
           <div class="kanban" id="my-asg-board" hidden></div>
-          <p class="muted small" style="margin:0">Press Start when you begin a task, Pause when you step away, and Done when you finish. The time you spend is counted for you and stops when you clock out.</p>
+          <p class="muted small" style="margin:0">Press Start when you begin a task, Pause when you step away, and Done when you finish. The time you spend is counted for you and stops when you end your day.</p>
         </div>
     </section>
 
@@ -523,7 +565,7 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <div class="col">
         <form class="panel" id="manual-form" autocomplete="off">
       <h2>Add time you forgot to log</h2>
-      <p class="muted small" style="margin:0">Worked late at night, or started without clocking in? Add the time here. Your lead reviews it.</p>
+      <p class="muted small" style="margin:0">Worked late at night, or started without pressing Start my day? Add the time here. Your lead gets a note about it.</p>
       <div class="row">
         <label class="f" for="m-date">Date
           <input type="date" id="m-date" required>
@@ -562,6 +604,100 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <div class="tiles small" id="month-tiles"></div>
         <span class="muted small" id="att-month"></span>
       </div>
+    </section>
+
+    <!-- TIME MANAGEMENT -->
+    <section class="page" data-page="plan" hidden>
+      <div class="plan-sum" id="plan-sum"></div>
+      <div id="plan-now"></div>
+      <div class="grid2">
+        <div class="col">
+          <div class="panel">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+              <h2>Today's plan</h2><span class="muted small" id="plan-count"></span>
+            </div>
+            <ul class="tasks plan-list" id="plan-list"></ul>
+            <p class="muted small" style="margin:0">Pick the 2 or 3 tasks that matter most today and give each a time. Start one, pause when you switch, press Done when it's finished.</p>
+          </div>
+        </div>
+        <div class="col">
+          <form class="panel" id="self-form" autocomplete="off">
+            <h2>Add a task for yourself</h2>
+            <label class="f" for="s-title">Task
+              <input type="text" id="s-title" maxlength="200" placeholder="e.g. Reply to Mango's creator feedback">
+            </label>
+            <div class="row">
+              <label class="f" for="s-brand">Client / brand
+                <select id="s-brand"></select>
+              </label>
+              <label class="f" for="s-kind">Type of work
+                <select id="s-kind"></select>
+              </label>
+            </div>
+            <div class="row" style="align-items:flex-end">
+              <label class="f" for="s-est" style="flex:1 1 150px">How long will it take?
+                <select id="s-est" class="est-sel"></select>
+              </label>
+              <label class="chk" for="s-today" style="flex:0 0 auto;padding-bottom:9px"><input type="checkbox" id="s-today" checked> Plan it for today</label>
+              <button class="btn primary" type="submit" style="flex:0 0 auto">Add</button>
+            </div>
+          </form>
+          <div class="panel">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+              <h2>Your other open tasks</h2><span class="muted small" id="pick-count"></span>
+            </div>
+            <ul class="tasks plan-list" id="pick-list"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" data-page="myday" hidden>
+      <div class="chips day-chips" id="md-days"></div>
+      <div class="tiles small" id="md-tiles"></div>
+      <div class="grid2 even">
+        <div class="col">
+          <div class="panel">
+            <h2>Time by task</h2>
+            <div class="bars" id="md-tasks"></div>
+          </div>
+          <div class="panel">
+            <h2>Planned vs. what happened</h2>
+            <ul class="tasks" id="md-plan"></ul>
+          </div>
+        </div>
+        <div class="col">
+          <div class="panel">
+            <h2>By client</h2>
+            <div class="bars" id="md-brands"></div>
+          </div>
+          <div class="panel">
+            <h2>By type of work</h2>
+            <div class="bars" id="md-kinds"></div>
+          </div>
+          <p class="muted small" style="margin:0 4px" id="md-note">Only you see this page. Your lead gets a short weekly summary. Time is counted from Start to Pause or Done on each task, plus anything you logged on the Today page.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" data-page="insights" hidden>
+      <div class="tabs" id="in-range" style="align-self:flex-start">
+        <button type="button" data-r="week" aria-selected="true">This week</button>
+        <button type="button" data-r="lastweek" aria-selected="false">Last week</button>
+        <button type="button" data-r="month" aria-selected="false">This month</button>
+      </div>
+      <div class="tiles small" id="in-tiles"></div>
+      <div class="grid2 even">
+        <div class="col">
+          <div class="panel"><h2>Where your time went</h2><div class="bars" id="in-kinds"></div></div>
+          <div class="panel"><h2>By client</h2><div class="bars" id="in-brands"></div></div>
+        </div>
+        <div class="col">
+          <div class="panel"><h2>Tasks that took longer than planned</h2><ul class="tasks" id="in-over"></ul></div>
+          <div class="panel"><h2>Days spent mostly on one task</h2><ul class="tasks" id="in-heavy"></ul></div>
+        </div>
+      </div>
+      <p class="muted small" style="margin:0 4px">Every first workday of the week you and your lead get this summary for the week before by email.</p>
     </section>
 
     <!-- TEAM -->
@@ -617,6 +753,9 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <div class="row">
           <label class="f" for="a-due">Due date
             <input type="date" id="a-due">
+          </label>
+          <label class="f" for="a-est">Expected time
+            <select id="a-est" class="est-sel"></select>
           </label>
           <label class="f" for="a-repeat">Repeat
             <select id="a-repeat">
@@ -691,7 +830,7 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <div class="col">
     <div class="panel" id="review-panel">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
-        <h2>Needs your review</h2>
+        <h2>Time changes</h2>
         <span class="muted small" id="review-count"></span>
       </div>
       <ul class="tasks" id="review-list"></ul>
@@ -718,7 +857,6 @@ table.plist tbody tr:hover td{background:var(--sunk)}
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <div class="tabs" id="mode-tabs">
             <button data-mode="hours" id="m-hours" aria-selected="true">Hours</button>
-            <button data-mode="att" id="m-att" aria-selected="false">Attendance</button>
             <button data-mode="out" id="m-out" aria-selected="false">Output</button>
             <button data-mode="brands" id="m-brands" aria-selected="false">Brands</button>
           </div>
@@ -759,6 +897,35 @@ table.plist tbody tr:hover td{background:var(--sunk)}
       <p class="muted small" style="margin:0" id="ledger-note">Numbers are net working hours (breaks excluded). Click any cell to see that day's details.</p>
     </div>
 
+    </section>
+
+    <section class="page" data-page="attendance" hidden>
+      <div class="panel">
+        <div class="ledger-head">
+          <h2>Attendance</h2>
+          <div class="tabs" id="att-range">
+            <button data-range="week">This week</button>
+            <button data-range="lastweek">Last week</button>
+            <button data-range="month">This month</button>
+            <button data-range="lastmonth">Last month</button>
+          </div>
+        </div>
+        <div id="att-table"></div>
+        <div class="legend">
+          <span><span class="a-badge a-present">P</span>Present</span>
+          <span><span class="a-badge a-late">LT</span>Late</span>
+          <span><span class="a-badge a-absent">A</span>Absent</span>
+          <span><span class="a-badge a-pending">?</span>Not in yet</span>
+          <span><span class="a-badge a-leave">AL</span>Annual</span>
+          <span><span class="a-badge a-leave">SL</span>Sick</span>
+          <span><span class="a-badge a-leave">EL</span>Emergency</span>
+          <span><span class="a-badge a-leave">UL</span>Unpaid</span>
+          <span><span class="a-badge a-pending">LV?</span>Requested</span>
+          <span><span class="a-badge a-holiday">H</span>Holiday</span>
+          <span><span class="a-badge a-weekend">–</span>Weekend</span>
+        </div>
+        <p class="muted small" style="margin:0" id="att-note"></p>
+      </div>
     </section>
 
     <section class="page" data-page="people" hidden>
@@ -897,6 +1064,9 @@ table.plist tbody tr:hover td{background:var(--sunk)}
       </label>
       <label class="f" for="ed-repeat" id="ed-repeat-wrap" hidden>Repeat
         <select id="ed-repeat"></select>
+      </label>
+      <label class="f" for="ed-est">Expected time
+        <select id="ed-est" class="est-sel"></select>
       </label>
       <label class="chk" for="ed-high" style="flex:0 0 auto;padding-bottom:9px"><input type="checkbox" id="ed-high"> High priority</label>
     </div>
@@ -1058,7 +1228,7 @@ function attOf(uid,k,now){const d=daysOf(uid)[k],tk=todayKey();const lv=leaveOn(
     const n=new Date(now);return n.getHours()*60+n.getMinutes()>startMin()+graceMin()?{c:"pending"}:{c:"future"}}
   return{c:"absent"}}
 function attLabel(a){switch(a.c){case"present":return a.extra?"Worked on a day off":"Present";case"late":return `Late by ${fmtDur(a.lateBy*60000)}`;
-  case"absent":return "Absent";case"pending":return "Not clocked in yet";case"leave":return leaveOf(a.t).l+(a.note?`: ${a.note}`:"");
+  case"absent":return "Absent";case"pending":return "Not started yet";case"leave":return leaveOf(a.t).l+(a.note?`: ${a.note}`:"");
   case"leavereq":return `${leaveOf(a.t).l} requested`;
   case"holiday":return "Holiday"+(a.name?`: ${a.name}`:"");case"weekend":return "Weekend";case"na":return "Before first day";default:return ""}}
 function attBadge(a){const m={present:["P","a-present"],late:["LT","a-late"],absent:["A","a-absent"],pending:["?","a-pending"],leavereq:["LV?","a-pending"],holiday:["H","a-holiday"],weekend:["–","a-weekend"],na:["·","a-na"],future:["","a-future"]};
@@ -1084,7 +1254,8 @@ const fail=m=>{const e=new Error(m);e.userMsg=m;return e};
 function enqueue(fn){S.busy=true;renderTimecard();S.q=S.q.then(fn).catch(e=>{console.error(e);toast(errMsg(e))}).finally(()=>{S.busy=false;renderTimecard()});return S.q}
 function nameOf(uid){const st=statusOf(uid),p=personOf(uid);return (st&&st.label)||(p&&p.name)||(st&&st.name)||(uid===S.uid&&S.me&&S.me.name)||(p&&p.email)||"Unnamed member"}
 function avatarOf(uid){const st=statusOf(uid),p=personOf(uid);return (p&&p.photo)||(st&&st.photo)||(uid===S.uid&&S.me&&S.me.avatarUrl)||""}
-const stateLabel={working:"Working",break:"On break",off:"Clocked out"};
+const stateLabel={working:"Working",break:"On break",off:"Off"};
+const softBadge=a=>["leave","leavereq","holiday"].includes(a.c)||S.isAdmin?attBadge(a):"";
 /* keep what people are typing when a list re-renders */
 function keepInputs(root,fn){const vals={};let focus=null,sel=null;
   root.querySelectorAll("input[data-keep],textarea[data-keep]").forEach(i=>{vals[i.dataset.keep]=i.value;if(document.activeElement===i){focus=i.dataset.keep;sel=[i.selectionStart,i.selectionEnd]}});
@@ -1101,22 +1272,26 @@ async function writeDay(k,day){day=clean(day);day.date=k;day.sessions=day.sessio
 async function writeStatus(patch){const cur=clone(S.my.status)||{state:"off",since:Date.now(),currentTask:"",label:"",dayKey:""};
   const st=Object.assign(cur,patch,{updatedAt:Date.now(),name:(S.me&&S.me.name)||"",email:(S.me&&S.me.email)||"",photo:(S.me&&S.me.avatarUrl)||""});await statusRef().set(st);S.my.status=st}
 
-/* ---------- actions: clock & corrections ---------- */
+/* ---------- actions: start/end of day & time changes ---------- */
+/* time changes don't need approval; the lead gets an email and sees them under Approvals */
+function noteChange(k,text,reason){const now=Date.now();
+  S.db.doc(`changes/${now.toString(36)+rid()}`).set({uid:S.uid,team:S.myTeam||"",day:k,text,reason:reason||"",at:now,email:(S.me&&S.me.email)||""}).catch(e=>console.warn("change note",e))}
 function prevOutBefore(day,t){let p=null;for(const s of day.sessions||[]){if(s.out!=null&&s.out<=t+1&&(p==null||s.out>p))p=s.out}return p}
 function overlaps(day,a,b,skip){return (day.sessions||[]).some(s=>s!==skip&&!s._rej&&a<(s.out??Date.now())&&b>s.in)}
 const act={
   clockIn:(at,reason)=>enqueue(async()=>{const now=Date.now(),k=todayKey();const day=await getDay(k);day.sessions=day.sessions||[];
     let t=now;if(at){if(at>now)throw fail("That time is in the future.");if(dayKey(new Date(at))!==k)throw fail("Pick a time from today. For other days, use “Add time you forgot to log”.");
       const po=prevOutBefore(day,now);if(po&&at<po)throw fail(`You were clocked out until ${fmtClock(po)}. Pick a later start time.`);t=at}
-    const s={id:rid(),in:t,out:null,breaks:[]};if(now-t>FIX_SLACK)s.edit={origIn:now,reason:reason||"Started before clocking in",at:now};
+    const s={id:rid(),in:t,out:null,breaks:[]};if(now-t>FIX_SLACK)s.edit={origIn:now,reason:reason||"Started before pressing Start my day",at:now};
     day.sessions.push(s);await writeDay(k,day);
     const patch={state:"working",since:t,dayKey:k};if(!(S.my.status&&S.my.status.startedOn))patch.startedOn=k;if(!(S.my.status&&S.my.status.label)&&S.me&&S.me.name)patch.label=S.me.name;
-    await writeStatus(patch);toast(t<now-FIX_SLACK?`Clocked in from ${fmtClock(t)}. Your lead will review the change.`:"Clocked in")}),
+    await writeStatus(patch);if(t<now-FIX_SLACK)noteChange(k,`Started the day at ${fmtClock(t)} (pressed Start at ${fmtClock(now)})`,reason);
+    toast(t<now-FIX_SLACK?`Day started from ${fmtClock(t)}. Your lead gets a note about it.`:"Your day has started. Open My plan to pick today's tasks.")}),
   fixStart:(at,reason)=>enqueue(async()=>{const st=S.my.status;if(!st||st.state==="off")return;const day=await getDay(st.dayKey);const s=openSession(day);if(!s)return;
     if(at>=s.in)throw fail(`Pick a time before ${fmtClock(s.in)}.`);if(dayKey(new Date(at))!==st.dayKey)throw fail("The start time has to be on the same day.");
     const others={sessions:(day.sessions||[]).filter(x=>x!==s)};if(overlaps(others,at,s.in))throw fail("That overlaps time you already logged.");
-    const now=Date.now(),oldIn=s.in;s.edit=Object.assign(s.edit||{},{origIn:s.edit&&s.edit.origIn!=null?s.edit.origIn:s.in,reason:reason||"Started before clocking in",at:now});s.in=at;
-    await writeDay(st.dayKey,day);await writeStatus({since:st.since===oldIn?at:st.since});toast(`Start time set to ${fmtClock(at)}. Your lead will review it.`)}),
+    const now=Date.now(),oldIn=s.in;s.edit=Object.assign(s.edit||{},{origIn:s.edit&&s.edit.origIn!=null?s.edit.origIn:s.in,reason:reason||"Started before pressing Start my day",at:now});s.in=at;
+    await writeDay(st.dayKey,day);await writeStatus({since:st.since===oldIn?at:st.since});noteChange(st.dayKey,`Moved the start of the day from ${fmtClock(oldIn)} to ${fmtClock(at)}`,reason);toast(`Start time set to ${fmtClock(at)}. Your lead gets a note about it.`)}),
   breakStart:()=>enqueue(async()=>{const st=S.my.status;if(!st||st.state!=="working")return;const now=Date.now();const day=await getDay(st.dayKey);const s=openSession(day);if(!s)return;
     s.breaks=s.breaks||[];s.breaks.push({s:now,e:null});await writeDay(st.dayKey,day);await writeStatus({state:"break",since:now})}),
   breakEnd:()=>enqueue(async()=>{const st=S.my.status;if(!st||st.state!=="break")return;const now=Date.now();const day=await getDay(st.dayKey);const s=openSession(day);if(!s)return;
@@ -1124,14 +1299,15 @@ const act={
   clockOut:(at)=>enqueue(async()=>{const st=S.my.status;if(!st||st.state==="off")return;const day=await getDay(st.dayKey);const s=openSession(day);const now=Date.now();
     let t=at||now;if(s&&t<s.in)t=s.in;if(t>now)t=now;
     if(s){for(const b of s.breaks||[]){if(b.e==null)b.e=Math.max(b.s,t);if(b.e>t)b.e=t}s.breaks=(s.breaks||[]).filter(b=>b.s<t);s.out=t;
-      if(now-t>FIX_SLACK)s.edit=Object.assign(s.edit||{},{origOut:now,reason:(s.edit&&s.edit.reason)||"Forgot to clock out",at:now});await writeDay(st.dayKey,day)}
-    await writeStatus({state:"off",since:t});await pauseMyRunning(t);toast(`Clocked out · ${fmtDur(dayWork(S.my.days[st.dayKey],now))} worked that day`)}),
+      if(now-t>FIX_SLACK)s.edit=Object.assign(s.edit||{},{origOut:now,reason:(s.edit&&s.edit.reason)||"Forgot to end the day",at:now});await writeDay(st.dayKey,day)}
+    await writeStatus({state:"off",since:t});await pauseMyRunning(t);if(s&&now-t>FIX_SLACK)noteChange(st.dayKey,`Ended the day at ${fmtClock(t)} (pressed End at ${fmtClock(now)})`,"");
+    toast(`Day ended · ${fmtDur(dayWork(S.my.days[st.dayKey],now))} worked`)}),
   addManual:(k,from,to,reason)=>enqueue(async()=>{const now=Date.now();let a=hmToDate(k,from),b=hmToDate(k,to);if(b<=a)b+=864e5;
     if(b>now)throw fail("That time hasn't happened yet.");if(b-a>16*36e5)throw fail("That's more than 16 hours. Split it into two entries.");
     if(k<dayKey(addDays(new Date(),-31)))throw fail("You can only add time from the last 30 days.");
     const day=await getDay(k);if(overlaps(day,a,b))throw fail("That overlaps time you already logged that day.");
     day.sessions=day.sessions||[];day.sessions.push({id:rid(),in:a,out:b,breaks:[],manual:true,reason,at:now});day.sessions.sort((x,y)=>x.in-y.in);
-    await writeDay(k,day);if(!S.my.status)await writeStatus({});toast(`Added ${fmtDur(b-a)} on ${fmtShort(k)}. Your lead will review it.`)}),
+    await writeDay(k,day);if(!S.my.status)await writeStatus({});noteChange(k,`Added ${fmtClock(a)}–${fmtClock(b)} (${fmtDur(b-a)}) by hand`,reason);toast(`Added ${fmtDur(b-a)} on ${fmtShort(k)}. Your lead gets a note about it.`)}),
   removeManual:(k,id)=>enqueue(async()=>{const day=await getDay(k);day.sessions=(day.sessions||[]).filter(s=>!(s.manual&&s.id===id));await writeDay(k,day);toast("Entry removed")}),
   addTask:(t)=>enqueue(async()=>{const k=todayKey();const day=await getDay(k);day.tasks=day.tasks||[];
     day.tasks.push(Object.assign({id:rid(),at:Date.now()},t));await writeDay(k,day);toast("Task logged")}),
@@ -1143,14 +1319,14 @@ const act={
 /* reviews (lead/admin) */
 function setReview(uid,k,id,status){enqueue(async()=>{const ref=S.db.doc(`logs/${uid}/reviews/${k}__${id}`);
   if(status)await ref.set({day:k,sid:id,status,by:(S.me&&S.me.email)||"",at:Date.now()});else await ref.delete();
-  toast(status==="approved"?"Approved":status==="rejected"?"Declined. Original time restored":"Review undone")})}
+  toast(status==="seen"?"Marked as seen":status==="approved"?"Approved":status==="rejected"?"Declined. Original time restored":"Undone")})}
 function describeFix(s){const r=[];
   if(s.manual)r.push(`Added ${fmtClock(s.in)}–${fmtClock(s.out)} manually (${fmtDur(s.out-s.in)})`);
-  if(s.edit&&s.edit.origIn!=null)r.push(`Start moved ${fmtClock(s.edit.origIn)} → ${fmtClock(s.in)}`);
-  if(s.edit&&s.edit.origOut!=null)r.push(`Clock-out set to ${fmtClock(s.out)} (clicked at ${fmtClock(s.edit.origOut)})`);
+  if(s.edit&&s.edit.origIn!=null)r.push(`Start of day moved ${fmtClock(s.edit.origIn)} → ${fmtClock(s.in)}`);
+  if(s.edit&&s.edit.origOut!=null)r.push(`End of day set to ${fmtClock(s.out)} (pressed at ${fmtClock(s.edit.origOut)})`);
   return r.join(" · ")}
 const fixReason=s=>s.manual?s.reason:(s.edit&&s.edit.reason)||"";
-const stPillFix=st=>st==="approved"?'<span class="pill" style="--st:var(--work)">Approved</span>':st==="rejected"?'<span class="pill" style="--st:var(--alert)">Declined</span>':'<span class="pill" style="--st:var(--brk)">Waiting for review</span>';
+const stPillFix=st=>st==="approved"||st==="seen"?'<span class="pill" style="--st:var(--work)">Seen by lead</span>':st==="rejected"?'<span class="pill" style="--st:var(--alert)">Declined</span>':'<span class="pill" style="--st:var(--off)">Lead notified</span>';
 function fixesOf(uid,sinceDays){const from=dayKey(addDays(new Date(),-(sinceDays||30)));const out=[];
   for(const[k,d]of Object.entries(daysOf(uid))){if(k<from)continue;(d.sessions||[]).forEach((s,i)=>{if(needsReview(s))out.push({uid,k,s,id:sid(s,i)})})}
   return out.sort((a,b)=>b.k.localeCompare(a.k)||b.s.in-a.s.in)}
@@ -1190,11 +1366,11 @@ function renderTimecard(){const el=$("timecard");if(!el||!S.uid)return;const st=
   const brk=dayBreak(tDay,now)+(open&&st.dayKey!==todayKey()?sessionBreak(open,now):0);
   const dis=S.busy?"disabled":"";
   let btns="";
-  if(state==="off")btns=`<button class="btn primary big" data-act="in" ${dis}>Clock in</button>`;
-  else if(state==="working")btns=`<button class="btn big" data-act="brk" ${dis}>Take a break</button><button class="btn danger big" data-act="out" ${dis}>Clock out</button>`;
-  else btns=`<button class="btn primary big" data-act="back" ${dis}>Back from break</button><button class="btn danger big" data-act="out" ${dis}>Clock out</button>`;
-  const fixOut=`<div class="row"><input type="time" id="fix-out" aria-label="Actual clock-out time"><button class="btn" data-act="fix" style="flex:0 0 auto" ${dis}>Clock out at this time</button></div>`;
-  const fixIn=(btn,label)=>`<div class="row"><input type="time" id="fix-in" aria-label="${label}"><input type="text" id="fix-in-reason" maxlength="120" placeholder="Reason (optional)" aria-label="Reason"><button class="btn" data-act="${btn}" style="flex:0 0 auto" ${dis}>${state==="off"?"Clock in from this time":"Set start time"}</button></div>`;
+  if(state==="off")btns=`<button class="btn primary big" data-act="in" ${dis}>Start my day</button>`;
+  else if(state==="working")btns=`<button class="btn big" data-act="brk" ${dis}>Take a break</button><button class="btn danger big" data-act="out" ${dis}>End my day</button>`;
+  else btns=`<button class="btn primary big" data-act="back" ${dis}>Back from break</button><button class="btn danger big" data-act="out" ${dis}>End my day</button>`;
+  const fixOut=`<div class="row"><input type="time" id="fix-out" aria-label="Time you actually finished"><button class="btn" data-act="fix" style="flex:0 0 auto" ${dis}>End my day at this time</button></div>`;
+  const fixIn=(btn,label)=>`<div class="row"><input type="time" id="fix-in" aria-label="${label}"><input type="text" id="fix-in-reason" maxlength="120" placeholder="Reason (optional)" aria-label="Reason"><button class="btn" data-act="${btn}" style="flex:0 0 auto" ${dis}>${state==="off"?"Start my day from this time":"Set start time"}</button></div>`;
   el.innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
       <span class="pill ${state}">${stateLabel[state]}${st&&state!=="off"?` · since ${fmtClock(st.since)}`:""}</span>
@@ -1205,18 +1381,19 @@ function renderTimecard(){const el=$("timecard");if(!el||!S.uid)return;const st=
       <div class="muted small" style="text-align:right">Target<br><span class="num" style="font-size:18px;color:var(--fg)">${TARGET_H}:00</span></div>
     </div>
     <div class="target"><i data-livebar="${S.uid}" style="width:${Math.min(100,todayWork(S.uid,now)/(TARGET_H*36e3))}%"></i></div>
-    ${(()=>{const a=attOf(S.uid,todayKey(),now);return ["late","leave","leavereq","pending","holiday"].includes(a.c)||a.extra?`<div class="attline">${attBadge(a)}<span>${esc(attLabel(a))}${a.c==="pending"?` · work starts ${esc(S.settings.start)}`:""}</span></div>`:""})()}
+    ${(()=>{const a=attOf(S.uid,todayKey(),now);return ["leave","leavereq","holiday"].includes(a.c)?`<div class="attline">${attBadge(a)}<span>${esc(attLabel(a))}</span></div>`:""})()}
+    ${(()=>{const pl=planToday();const d=pl.filter(a=>a.status==="done").length;return state==="off"&&!pl.length?"":`<a class="planlink" href="#plan">${pl.length?`<b>Today's plan:</b> ${d} of ${pl.length} done`:"<b>Plan your day:</b> pick 2 or 3 tasks"} →</a>`})()}
     <div class="meta-row">
       <span>First in: <span class="num">${fi?fmtClock(fi):"—"}</span></span>
       <span>Breaks: ${brk?fmtDur(brk):"—"}</span>
       <span>Sessions: <span class="num">${(tDay&&tDay.sessions||[]).length}</span></span>
     </div>
-    ${stale?`<div class="warn"><strong>You've been clocked in since ${fmtClock(open.in)} on ${esc(fmtShort(st.dayKey))}.</strong>
-      <span>If you forgot to clock out, pick the time you actually finished:</span>${fixOut}</div>`:""}
+    ${stale?`<div class="warn"><strong>Your day has been running since ${fmtClock(open.in)} on ${esc(fmtShort(st.dayKey))}.</strong>
+      <span>If you forgot to end it, pick the time you actually finished:</span>${fixOut}</div>`:""}
     <div class="btns">${btns}</div>
     <div class="fixlinks">
-      ${state==="off"?`<button class="linkbtn" data-act="show" data-t="fixin-row">Started earlier and forgot to clock in?</button>`
-        :`${!stale?`<button class="linkbtn" data-act="show" data-t="fixout-row">Forgot to clock out earlier?</button>`:""}<button class="linkbtn" data-act="show" data-t="fixin-row">Started before you clocked in?</button>`}
+      ${state==="off"?`<button class="linkbtn" data-act="show" data-t="fixin-row">Started earlier and forgot to press Start?</button>`
+        :`${!stale?`<button class="linkbtn" data-act="show" data-t="fixout-row">Forgot to end your day earlier?</button>`:""}<button class="linkbtn" data-act="show" data-t="fixin-row">Started before you pressed Start?</button>`}
     </div>
     <div id="fixin-row" hidden>${fixIn(state==="off"?"in-at":"start-at",state==="off"?"Time you started":"Actual start time")}</div>
     ${state!=="off"&&!stale?`<div id="fixout-row" hidden>${fixOut}</div>`:""}
@@ -1241,7 +1418,7 @@ function weekKeys(){const t=new Date();t.setHours(0,0,0,0);const a=addDays(t,-((
 function renderWeek(){const keys=weekKeys();const now=Date.now();let tot=0;
   $("week-bars").innerHTML=keys.map(k=>{const d=keyToDate(k);const ms=k===todayKey()?todayWork(S.uid,now):dayWork(S.my.days[k],now);tot+=ms;const h=ms/36e5;
     const scale=Math.max(10,TARGET_H+2);
-    return `<div class="wk ${k===todayKey()?"today":""} ${isWeekend(k)?"off":""}"><span class="num">${ms?fmtHM(ms):"—"}</span><div class="bar"><b style="bottom:${TARGET_H/scale*100}%"></b><i style="height:${Math.min(100,h/scale*100)}%"></i></div><span>${DAYS[d.getDay()]}</span>${attBadge(attOf(S.uid,k,now))}</div>`}).join("");
+    return `<div class="wk ${k===todayKey()?"today":""} ${isWeekend(k)?"off":""}"><span class="num">${ms?fmtHM(ms):"—"}</span><div class="bar"><b style="bottom:${TARGET_H/scale*100}%"></b><i style="height:${Math.min(100,h/scale*100)}%"></i></div><span>${DAYS[d.getDay()]}</span>${softBadge(attOf(S.uid,k,now))}</div>`}).join("");
   $("week-total").textContent=`Total: ${fmtDur(tot)}`;$("week-note").textContent=`Dashed line = ${TARGET_H}-hour daily target.`}
 function leaveStatusPill(s){return s==="approved"?'<span class="pill" style="--st:var(--work)">Approved</span>':s==="rejected"?'<span class="pill" style="--st:var(--alert)">Declined</span>':'<span class="pill" style="--st:var(--brk)">Waiting</span>'}
 const leaveRange=l=>l.from===l.to?`${DAYS[keyToDate(l.from).getDay()]} ${fmtShort(l.from)}`:`${fmtShort(l.from)} – ${fmtShort(l.to)}`;
@@ -1258,7 +1435,7 @@ function renderMyFixes(){const list=fixesOf(S.uid,14);
 function syncInputs(){const st=S.my.status||{};const ct=$("cur-task"),lb=$("my-label");
   if(document.activeElement!==ct)ct.value=st.currentTask||"";
   if(document.activeElement!==lb)lb.value=st.label||(S.me&&S.me.name)||""}
-function renderMe(){renderTimecard();renderMyAsg();renderToday();renderWeek();renderLeaves();renderMonth();renderMyFixes();syncInputs();refreshKindSelects()}
+function renderMe(){renderTimecard();renderPlan();renderMyDay();renderInsights();renderOverrunBar();renderMyAsg();renderToday();renderWeek();renderLeaves();renderMonth();renderMyFixes();syncInputs();refreshKindSelects()}
 
 /* ---------- team view ---------- */
 function relDay(ms){const k=dayKey(new Date(ms));if(k===todayKey())return fmtClock(ms);if(k===dayKey(addDays(new Date(),-1)))return "yesterday "+fmtClock(ms);return fmtShort(k)}
@@ -1273,28 +1450,30 @@ function renderTeam(){const ids=teamIds();const now=Date.now();renderTeamFilter(
   const cnt={working:0,break:0,off:0};ids.forEach(u=>{const s=statusOf(u);cnt[s?s.state:"off"]++});
   const tAtt={};ids.forEach(u=>tAtt[u]=attOf(u,todayKey(),now));
   const nIn=ids.filter(u=>["pending","absent"].includes(tAtt[u].c)).length,nLeave=ids.filter(u=>tAtt[u].c==="leave").length,nLate=ids.filter(u=>tAtt[u].c==="late").length;
-  $("summary").innerHTML=ids.length?`<span class="pill working st-working">${cnt.working} working</span><span class="pill st-break">${cnt.break} on break</span><span class="pill st-off">${cnt.off} clocked out</span>${nLate?`<span class="pill st-break">${nLate} late</span>`:""}${nIn?`<span class="pill" style="--st:var(--alert)">${nIn} not in yet</span>`:""}${nLeave?`<span class="pill" style="--st:var(--leave)">${nLeave} on leave</span>`:""}`:"";
+  $("summary").innerHTML=ids.length?`<span class="pill working st-working">${cnt.working} working</span><span class="pill st-break">${cnt.break} on break</span><span class="pill st-off">${cnt.off} off</span>${nLate&&S.isAdmin?`<span class="pill st-break">${nLate} late</span>`:""}${nIn&&S.isAdmin?`<span class="pill" style="--st:var(--alert)">${nIn} not in yet</span>`:""}${nLeave?`<span class="pill" style="--st:var(--leave)">${nLeave} on leave</span>`:""}`:"";
   const showTeam=S.isAdmin&&!S.teamF;
   $("board").innerHTML=ids.length?ids.map(u=>{const st=statusOf(u)||{state:"off"};const days=daysOf(u);const open=st.state!=="off"?openSession(days[st.dayKey]):null;
       const stale=open&&(now-open.in)>STALE_MS;const tk=(days[todayKey()]&&days[todayKey()].tasks||[]).length;const ms=todayWork(u,now);
-      let since="";if(st.state==="off"){const lo=lastOut(days[todayKey()]);since=lo?`Out at ${fmtClock(lo)}`:(st.since&&st.updatedAt?`Last active ${relDay(st.since)}`:"Hasn't clocked in yet")}else since=`since ${fmtClock(st.since)}`;
+      let since="";if(st.state==="off"){const lo=lastOut(days[todayKey()]);since=lo?(S.isAdmin?`Ended the day at ${fmtClock(lo)}`:"Day ended"):(S.isAdmin&&st.since&&st.updatedAt?`Last active ${relDay(st.since)}`:"Day not started")}else since=S.isAdmin?`since ${fmtClock(st.since)}`:"";
       return `<button class="mcard st-${st.state}" data-uid="${esc(u)}" aria-current="${S.sel.uid===u}">
         <div class="mhead">${avatarOf(u)?`<img class="av lg" src="${esc(avatarOf(u))}" alt="" referrerpolicy="no-referrer">`:`<span class="av lg"></span>`}<span class="nm">${esc(nameOf(u))}</span><span class="pill ${st.state}">${stateLabel[st.state]}</span></div>
         ${showTeam?`<div class="muted small">${esc(teamName(teamOf(u)))}${(personOf(u)||{}).role&&personOf(u).role!=="member"?` · ${ROLES[personOf(u).role]}`:""}</div>`:""}
-        <div class="now">${st.state!=="off"&&st.currentTask?`Working on: <b>${esc(st.currentTask)}</b>`:esc(since)}</div>
+        <div class="now">${(()=>{const r=asgList().find(a=>a.assignee===u&&a.runSince);return r?`Working on: <b>${esc(r.title)}</b>`:st.state!=="off"&&st.currentTask?`Working on: <b>${esc(st.currentTask)}</b>`:esc(since)})()}</div>
+        ${planLineHTML(u)}
         ${memberAsgLine(u)}
-        ${(()=>{const a=tAtt[u];return ["late","leave","leavereq","pending"].includes(a.c)?`<div class="attline">${attBadge(a)}<span class="${a.c==="pending"?"flag":"muted"}">${esc(attLabel(a))}${a.c==="late"?` (in at ${fmtClock(a.fi)})`:""}</span></div>`:""})()}
+        ${(()=>{const a=tAtt[u];return (S.isAdmin?["late","leave","leavereq","pending"]:["leave","leavereq"]).includes(a.c)?`<div class="attline">${attBadge(a)}<span class="${a.c==="pending"?"flag":"muted"}">${esc(attLabel(a))}${a.c==="late"?` (in at ${fmtClock(a.fi)})`:""}</span></div>`:""})()}
         <div class="target"><i data-livebar="${esc(u)}" style="width:${Math.min(100,ms/(TARGET_H*36e3))}%"></i></div>
         <div class="mstats"><span class="num" data-live="${esc(u)}" data-fmt="hm">${fmtHM(ms)}</span><span class="muted small">${plural(tk,"task")} today</span></div>
-        ${stale?`<span class="flag">Clocked in since ${fmtClock(open.in)} on ${esc(fmtShort(st.dayKey))}. Probably forgot to clock out.</span>`:""}
+        ${stale?`<span class="flag">Day still running since ${esc(fmtShort(st.dayKey))}. Probably forgot to end it.</span>`:""}
       </button>`}).join("")
     :`<div class="empty" style="grid-column:1/-1">${S.isAdmin&&S.teamF?"No one is in this team yet. Assign people to it in Settings → Teams & people.":"No one has signed in yet. Share the link; people show up here after their first sign-in."}</div>`;
-  renderOverview(ids);renderPeopleList(ids);renderReviews(ids);renderAsgAdmin(ids);renderLeaveReqs(ids);renderLedger(ids);renderDetail();renderSettings()}
+  renderOverview(ids);renderPeopleList(ids);renderReviews(ids);renderAsgAdmin(ids);renderLeaveReqs(ids);renderLedger(ids);renderAttendance(ids);renderDetail();renderSettings()}
 
-function renderReviews(ids){const items=[];ids.filter(canReview).forEach(u=>fixesOf(u,30).filter(f=>f.s._st==="pending").forEach(f=>items.push(f)));
-  $("review-count").textContent=items.length?plural(items.length,"time correction"):"";
-  $("review-list").innerHTML=items.length?"":`<li style="display:block;border:0;padding:0"><div class="empty">Nothing to review. Time people add or correct shows up here.</div></li>`;
-  if(items.length)$("review-list").innerHTML=items.map(f=>`<li class="asg"><div style="min-width:0"><div class="t-text"><b>${esc(nameOf(f.uid))}</b> · ${DAYS[keyToDate(f.k).getDay()]} ${fmtShort(f.k)}</div><div class="small">${esc(describeFix(f.s))}</div>${fixReason(f.s)?`<div class="muted small">“${esc(fixReason(f.s))}”</div>`:""}</div><div class="asg-act"><button class="btn sm" data-rv="rejected" data-u="${esc(f.uid)}" data-k="${f.k}" data-s="${esc(f.id)}">Decline</button><button class="btn sm primary" data-rv="approved" data-u="${esc(f.uid)}" data-k="${f.k}" data-s="${esc(f.id)}">Approve</button></div></li>`).join("")}
+function renderReviews(ids){const items=[];ids.filter(canReview).forEach(u=>fixesOf(u,14).forEach(f=>items.push(f)));
+  items.sort((a,b)=>((a.s._st==="pending"?0:1)-(b.s._st==="pending"?0:1))||b.k.localeCompare(a.k));const nNew=items.filter(f=>f.s._st==="pending").length;
+  $("review-count").textContent=nNew?`${nNew} new`:"";
+  $("review-list").innerHTML=items.length?items.slice(0,40).map(f=>`<li class="asg ${f.s._st==="pending"?"":"seen"}"><div style="min-width:0"><div class="t-text"><b>${esc(nameOf(f.uid))}</b> · ${DAYS[keyToDate(f.k).getDay()]} ${fmtShort(f.k)}</div><div class="small">${esc(describeFix(f.s))}</div>${fixReason(f.s)?`<div class="muted small">“${esc(fixReason(f.s))}”</div>`:""}</div><div class="asg-act">${f.s._st==="pending"?`<button class="btn sm" data-rv="seen" data-u="${esc(f.uid)}" data-k="${f.k}" data-s="${esc(f.id)}">Got it</button>`:f.s._st==="rejected"?'<span class="pill" style="--st:var(--alert)">Declined</span>':'<span class="muted small">Seen</span>'}</div></li>`).join("")
+    :`<li style="display:block;border:0;padding:0"><div class="empty">No time changes in the last 2 weeks. When someone fixes their start or end time, or adds time they forgot, it shows up here and you get an email.</div></li>`}
 
 function renderLeaveReqs(ids){const set=new Set(ids);const from=dayKey(addDays(new Date(),-14));
   const list=Object.values(S.leaves).filter(l=>set.has(l.uid)&&(l.status==="pending"||(l.to>=from))).sort((a,b)=>(a.status==="pending"?0:1)-(b.status==="pending"?0:1)||a.from.localeCompare(b.from));
@@ -1309,10 +1488,10 @@ function headDays(keys){return keys.map(k=>{const d=keyToDate(k);return `<th cla
 function renderLedger(ids){const keys=rangeKeys(S.range);const now=Date.now();
   document.querySelectorAll("#range-tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.range===S.range)));
   document.querySelectorAll("#mode-tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.mode===S.mode)));
-  const m=S.mode;$("att-legend").hidden=m!=="att";
+  if(S.mode==="att")S.mode="hours";const m=S.mode;$("att-legend").hidden=true;
   $("ledger-title").textContent={hours:"Hours ledger",att:"Attendance",out:"Output vs. targets",brands:"Work by client"}[m];
-  $("ledger-note").textContent={hours:"Net working hours (breaks excluded), with first clock-in and last clock-out. Declined time corrections are left out. Click a cell to see that day.",
-    att:`Late = first clock-in after ${S.settings.start} + ${graceMin()} min. Click a cell to see the day or mark leave.`,
+  $("ledger-note").textContent={hours:`Net working hours (breaks excluded)${S.isAdmin?", with when the day started and ended":""}. Click a cell to see that day.`,
+    att:"",
     out:"Totals of what people logged against each type of work. Target = daily target × workdays in the period (leave days excluded).",
     brands:"Everything logged against each client in this period: tasks, time people entered, output, and who worked on it."}[m];
   if(!ids.length){$("ledger").innerHTML=`<div class="empty">This fills in once people start logging.</div>`;return}
@@ -1324,19 +1503,23 @@ function renderLedger(ids){const keys=rangeKeys(S.range);const now=Date.now();
   for(const u of ids){let tot=0,dw=0,tk=0;const days=daysOf(u);
     const cells=keys.map(k=>{const ms=cellMs(u,k);tot+=ms;if(ms>0)dw++;tk+=(days[k]&&days[k].tasks||[]).length;const sel=S.sel.uid===u&&S.sel.day===k;const fri=isWeekend(k);
       const dd=days[k];const fi=firstIn(dd),lo=lastOut(dd);const pend=(dd&&dd.sessions||[]).some(s=>s._st==="pending");
-      return ms>0?`<td class="cell ${sel?"sel":""} ${fri?"col-fri":""}" data-uid="${esc(u)}" data-day="${k}" tabindex="0"><span class="h">${fmtHM(ms)}${pend?'<span class="dot" title="Has a time correction waiting for review"></span>':""}</span><span class="mini"><i style="width:${Math.min(100,ms/(TARGET_H*36e3))}%"></i></span>${fi?`<span class="a-time">${sClock(fi)}–${lo?sClock(lo):"now"}</span>`:""}</td>`
+      return ms>0?`<td class="cell ${sel?"sel":""} ${fri?"col-fri":""}" data-uid="${esc(u)}" data-day="${k}" tabindex="0"><span class="h">${fmtHM(ms)}${pend?'<span class="dot" title="Time was changed by hand"></span>':""}</span><span class="mini"><i style="width:${Math.min(100,ms/(TARGET_H*36e3))}%"></i></span>${fi&&S.isAdmin?`<span class="a-time">${sClock(fi)}–${lo?sClock(lo):"now"}</span>`:""}</td>`
         :`<td class="cell zero ${sel?"sel":""} ${fri?"col-fri":""}" data-uid="${esc(u)}" data-day="${k}" tabindex="0">—</td>`}).join("");
     html+=`<tr><td class="name"><button class="namebtn" data-uid="${esc(u)}">${esc(nameOf(u))}</button></td>${cells}<td class="tot">${fmtHM(tot)}</td><td class="num">${dw}</td><td class="num">${dw?fmtHM(tot/dw):"—"}</td><td class="num">${tk}</td></tr>`}
   html+=`</tbody></table></div>`;$("ledger").innerHTML=html}
 
-function renderAttTable(ids,keys,now){
+function renderAttendance(ids){if(!S.isAdmin||S.page!=="attendance")return;const r=S.attRange||"week";const now=Date.now();
+  document.querySelectorAll("#att-range [data-range]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.range===r)));
+  $("att-note").textContent=`Late = day started after ${S.settings.start} + ${graceMin()} min (change this in Settings → Working hours). Click a cell to open that person's day.`;
+  if(!ids.length){$("att-table").innerHTML=`<div class="empty">No one here yet.</div>`;return}renderAttTable(ids,rangeKeys(r),now,$("att-table"))}
+function renderAttTable(ids,keys,now,el){
   let html=`<div class="tablewrap"><table><thead><tr><th class="name">Name</th>${headDays(keys)}<th>On time</th><th>Late</th><th>Absent</th><th>Off</th><th>Attendance</th></tr></thead><tbody>`;
   for(const u of ids){const c={present:0,late:0,absent:0,leave:0};
     const cells=keys.map(k=>{const a=attOf(u,k,now);if(a.c in c&&!a.extra)c[a.c]++;const sel=S.sel.uid===u&&S.sel.day===k;
       return `<td class="cell ${sel?"sel":""} ${isWeekend(k)?"col-fri":""}" data-uid="${esc(u)}" data-day="${k}" tabindex="0">${attBadge(a)}${a.fi?`<span class="a-time">${sClock(a.fi)}</span>`:""}</td>`}).join("");
     const base=c.present+c.late+c.absent;const pct=base?Math.round((c.present+c.late)/base*100):null;
     html+=`<tr><td class="name"><button class="namebtn" data-uid="${esc(u)}">${esc(nameOf(u))}</button></td>${cells}<td class="num">${c.present}</td><td class="num">${c.late}</td><td class="num" style="${c.absent?"color:var(--alert);font-weight:700":""}">${c.absent}</td><td class="num">${c.leave}</td><td class="tot">${pct==null?"—":pct+"%"}</td></tr>`}
-  html+=`</tbody></table></div>`;$("ledger").innerHTML=html}
+  html+=`</tbody></table></div>`;(el||$("ledger")).innerHTML=html}
 
 function tasksIn(u,keys){const days=daysOf(u);const out=[];for(const k of keys)for(const t of (days[k]&&days[k].tasks||[]))out.push(Object.assign({k},t));return out}
 function outputOf(u,keys){const res={};for(const t of tasksIn(u,keys)){if(!t.kind)continue;const r=res[t.kind]=res[t.kind]||{qty:0,n:0,unit:t.unit||""};r.n++;r.qty+=Number(t.qty)||0;if(t.unit)r.unit=t.unit}return res}
@@ -1369,15 +1552,16 @@ function buildReport(ids,keys){const now=Date.now();const tk=todayKey();const si
   const L=[`*Growth Squad · ${scope}*`,`*${title}*`,""];
   const tot={present:0,late:0,absent:0,leave:0};let hours=0;
   for(const u of ids){const c=attCounts(u,keys,now);for(const k in tot)tot[k]+=c[k]||0;for(const k of keys)hours+=k===tk?todayWork(u,now):dayWork(daysOf(u)[k],now)}
-  L.push(`Attendance: ${tot.present} on time · ${tot.late} late · ${tot.absent} absent · ${tot.leave} on leave`);
+  if(S.isAdmin)L.push(`Attendance: ${tot.present} on time · ${tot.late} late · ${tot.absent} absent · ${tot.leave} on leave`);
   L.push(`Hours: ${fmtHM(hours)} total${ids.length?` · ${fmtHM(hours/Math.max(1,ids.length))} per person`:""}`);L.push("");
   const sorted=ids.slice().sort((a,b)=>nameOf(a).localeCompare(nameOf(b)));
   for(const u of sorted){let ms=0;for(const k of keys)ms+=k===tk?todayWork(u,now):dayWork(daysOf(u)[k],now);
     let head=`*${nameOf(u)}* — ${fmtHM(ms)}`;
     if(single){const a=attOf(u,keys[0],now);const d=daysOf(u)[keys[0]];const fi=firstIn(d),lo=lastOut(d);
-      if(a.c==="leave"||a.c==="absent"||a.c==="leavereq")head=`*${nameOf(u)}* — ${attLabel(a)}`;
-      else if(fi)head+=` (${fmtClock(fi)}–${lo?fmtClock(lo):"still working"})${a.c==="late"?` · late ${fmtDur(a.lateBy*60000)}`:""}`}
-    else{const c=attCounts(u,keys,now);head+=` · ${plural(c.present+c.late,"day")} in${c.late?`, ${c.late} late`:""}${c.absent?`, ${c.absent} absent`:""}${c.leave?`, ${c.leave} off`:""}`}
+      if(a.c==="leave"||a.c==="leavereq"||(S.isAdmin&&a.c==="absent"))head=`*${nameOf(u)}* — ${attLabel(a)}`;
+      else if(fi&&S.isAdmin)head+=` (${fmtClock(fi)}–${lo?fmtClock(lo):"still working"})${a.c==="late"?` · late ${fmtDur(a.lateBy*60000)}`:""}`;
+      const pl=planToday(u);if(keys[0]===tk&&pl.length)head+=` · plan ${pl.filter(x=>x.status==="done").length}/${pl.length} done`}
+    else{const c=attCounts(u,keys,now);head+=S.isAdmin?` · ${plural(c.present+c.late,"day")} in${c.late?`, ${c.late} late`:""}${c.absent?`, ${c.absent} absent`:""}${c.leave?`, ${c.leave} off`:""}`:(c.leave?` · ${c.leave} off`:"")}
     L.push(head);
     const o=outputOf(u,keys);const exp=expectedDays(u,keys);
     for(const k of kindsFor(u)){if(!k.unit)continue;const v=(o[k.name]||{}).qty||0;if(!v&&!k.target)continue;const goal=(Number(k.target)||0)*exp;L.push(`  • ${k.name}: ${v} ${k.unit}${goal?` (target ${goal})`:""}`)}
@@ -1408,14 +1592,15 @@ function renderDetail(){const el=$("detail");const u=S.sel.uid;if(!u||!personOf(
     <div class="kpis">
       <div class="kpi"><div class="v">${fmtHM(tot)}</div><div class="l">Hours · ${esc(RANGE_LABEL[S.range].toLowerCase())}</div></div>
       <div class="kpi"><div class="v">${dw}</div><div class="l">Days worked</div></div>
-      <div class="kpi"><div class="v">${avgStart!=null?fmtClock(new Date(2000,0,1,Math.floor(avgStart/60),avgStart%60).getTime()):"—"}</div><div class="l">Avg start time</div></div>
+      ${S.isAdmin?`<div class="kpi"><div class="v">${avgStart!=null?fmtClock(new Date(2000,0,1,Math.floor(avgStart/60),avgStart%60).getTime()):"—"}</div><div class="l">Avg start time</div></div>
       <div class="kpi"><div class="v">${fmtHM(brk)}</div><div class="l">Breaks</div></div>
       <div class="kpi"><div class="v" style="color:var(--work)">${c.present}</div><div class="l">On time</div></div>
       <div class="kpi"><div class="v" style="color:var(--brk)">${c.late}</div><div class="l">Late</div></div>
-      <div class="kpi"><div class="v" style="color:var(--alert)">${c.absent}</div><div class="l">Absent</div></div>
+      <div class="kpi"><div class="v" style="color:var(--alert)">${c.absent}</div><div class="l">Absent</div></div>`:(()=>{const i=insightsOf(u,keys,now);const[av,al]=accuracyText(i);return `<div class="kpi"><div class="v">${fmtHM(i.tracked)}</div><div class="l">On tasks</div></div><div class="kpi"><div class="v">${i.done.length}</div><div class="l">Tasks finished</div></div><div class="kpi"><div class="v">${av}</div><div class="l">${esc(al)}</div></div><div class="kpi"><div class="v">${i.pDays?`${i.pDone} / ${i.pDays}`:"—"}</div><div class="l">Planned tasks finished</div></div>`})()}
       <div class="kpi"><div class="v" style="color:var(--leave)">${lb.left}<span class="muted small" style="font-weight:500"> / ${lb.allow}</span></div><div class="l">Annual leave left</div></div>
     </div>
     ${outKinds.length?`<div><h3 style="margin-bottom:8px">Output</h3><div class="chips">${outKinds.map(k=>{const v=(o[k.name]||{}).qty||0;const goal=(Number(k.target)||0)*exp;return `<span class="tag qty">${esc(k.name)}: <b>${v}</b> ${esc(k.unit)}${goal?` / ${goal}`:""}</span>`}).join("")}</div></div>`:""}
+    <div><h3 style="margin-bottom:8px">Today</h3>${planLineHTML(u)}</div>
     ${detailAssignHTML(u,manage)}
     <div class="detail-grid">
       <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
@@ -1426,18 +1611,18 @@ function renderDetail(){const el=$("detail");const u=S.sel.uid;if(!u||!personOf(
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><h3>${DAYS[keyToDate(dayK).getDay()]}, <span class="num">${fmtShort(dayK)}</span></h3>
           <div class="chips">${keys.length>1?keys.filter(k=>k<=todayKey()||days[k]).map(k=>`<button class="chip" data-day="${k}" aria-pressed="${k===dayK}">${keyToDate(k).getDate()}/${keyToDate(k).getMonth()+1}</button>`).join(""):""}</div></div>
         ${(()=>{const a=attOf(u,dayK,now);const onLeave=a.c==="leave";
-          return `<div class="attline">${attBadge(a)}<strong>${esc(attLabel(a)||"Upcoming")}</strong>${a.fi&&a.c!=="leave"?`<span class="muted">· first in ${fmtClock(a.fi)}</span>`:""}</div>
+          return `${S.isAdmin||["leave","leavereq","holiday"].includes(a.c)?`<div class="attline">${attBadge(a)}<strong>${esc(attLabel(a)||"Upcoming")}</strong>${a.fi&&a.c!=="leave"&&S.isAdmin?`<span class="muted">· started ${fmtClock(a.fi)}</span>`:""}</div>`:`<div class="attline"><strong>${fmtHM(dayK===todayKey()?todayWork(u,now):dayWork(d,now))} worked</strong></div>`}
           ${manage&&(u!==S.uid||S.isAdmin)?`<div class="row" style="align-items:center">
             ${onLeave?`<button class="btn" data-leave="clear" style="flex:0 0 auto">Remove day off</button>`
               :`<select id="d-leave-type" aria-label="Leave type" style="flex:0 1 180px">${LEAVE.map(x=>`<option value="${x.k}">${esc(x.l)}</option>`).join("")}</select>
                 <input type="text" id="d-leave-note" maxlength="120" aria-label="Leave note" placeholder="Note (optional)">
                 <button class="btn" data-leave="set" style="flex:0 0 auto">Mark as day off</button>`}
           </div>`:""}`})()}
-        ${stripHTML(d,now)}
-        <div class="sess">${(d&&d.sessions||[]).map((s,i)=>{const fx=needsReview(s);const id=sid(s,i);
+        ${S.isAdmin?stripHTML(d,now):""}
+        <div class="sess">${(S.isAdmin?(d&&d.sessions||[]):[]).map((s,i)=>{const fx=needsReview(s);const id=sid(s,i);
           return `<div class="${s._rej?"struck":""}">In <span class="num">${fmtClock(sIn(s))}</span> → ${sOut(s)!=null?`Out <span class="num">${fmtClock(sOut(s))}</span>`:`<span class="pill working st-working">still working</span>`} · net ${fmtDur(sessionWork(s,now))}${(s.breaks||[]).length?` · break ${fmtDur(sessionBreak(s,now))}`:""}
             ${fx?`<div class="fixline">${stPillFix(s._st)} <span class="small">${esc(describeFix(s))}</span>${fixReason(s)?` <span class="muted small">“${esc(fixReason(s))}”</span>`:""}
-              ${review?(s._st==="pending"?`<button class="btn sm" data-rv="rejected" data-u="${esc(u)}" data-k="${dayK}" data-s="${esc(id)}">Decline</button><button class="btn sm primary" data-rv="approved" data-u="${esc(u)}" data-k="${dayK}" data-s="${esc(id)}">Approve</button>`:`<button class="linkbtn" data-rv="" data-u="${esc(u)}" data-k="${dayK}" data-s="${esc(id)}">Undo</button>`):""}</div>`:""}</div>`}).join("")||'<span class="muted">No clock-in on this day.</span>'}</div>
+              ${review&&s._st==="pending"?`<button class="btn sm" data-rv="seen" data-u="${esc(u)}" data-k="${dayK}" data-s="${esc(id)}">Got it</button>`:""}</div>`:""}</div>`}).join("")||(S.isAdmin?'<span class="muted">Day not started on this day.</span>':"")}</div>
         <ul class="tasks">${(d&&d.tasks||[]).slice().sort((a,b)=>a.at-b.at).map(t=>`<li style="grid-template-columns:auto minmax(0,1fr)"><span class="t-time">${fmtClock(t.at)}</span><div><div class="t-text">${esc(t.text)}</div><div style="margin-top:4px">${taskTags(t)}</div></div></li>`).join("")||'<li style="display:block;border:0;padding:0"><div class="empty">No tasks logged on this day.</div></li>'}</ul>
       </div>
     </div>`}
@@ -1505,8 +1690,8 @@ function fillBrandSelect(sel,uid){if(!sel)return;const cur=sel.value;const list=
 function fillKindSelect(sel,uid){if(!sel)return;const cur=sel.value;const ks=uid?kindsFor(uid):kindsForTeam(S.myTeam);
   const html=ks.map(k=>`<option value="${esc(k.name)}">${esc(k.name)}${k.unit?` (${esc(k.unit)})`:""}</option>`).join("")+`<option value="${OTHER}">Other (write it)</option>`;
   if(sel.innerHTML!==html){sel.innerHTML=html;if([...sel.options].some(o=>o.value===cur))sel.value=cur}}
-function refreshBrandSelects(){fillBrandSelect($("t-brand"),S.uid);fillBrandSelect($("a-brand"),(S.asgWho||[])[0]||"")}
-function refreshKindSelects(){fillKindSelect($("t-kind"),S.uid);onTaskKind();fillKindSelect($("a-kind"),(S.asgWho||[])[0]||null);$("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER}
+function refreshBrandSelects(){fillBrandSelect($("t-brand"),S.uid);fillBrandSelect($("s-brand"),S.uid);fillBrandSelect($("a-brand"),(S.asgWho||[])[0]||"")}
+function refreshKindSelects(){fillKindSelect($("t-kind"),S.uid);fillKindSelect($("s-kind"),S.uid);onTaskKind();fillKindSelect($("a-kind"),(S.asgWho||[])[0]||null);$("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER}
 function onTaskKind(){const v=$("t-kind").value;$("t-kind-other-wrap").hidden=v!==OTHER;const k=v!==OTHER&&kindInfo(S.uid,v);
   $("t-qty-wrap").hidden=!(k&&k.unit);if(k&&k.unit)$("t-qty-label").textContent=`How many ${k.unit}?`}
 
@@ -1547,12 +1732,13 @@ function threadHTML(a){const cs=(S.comments[a.id]||[]).slice().sort((x,y)=>x.at-
   return `<div class="thread">${cs.length?cs.map(c=>`<div class="cmt"><b>${esc(nameOf(c.uid))}</b> <span class="muted small">${relDay(c.at)}</span><div>${linkify(c.text)}</div></div>`).join(""):'<div class="muted small">No comments yet.</div>'}
     <form class="row cform" data-cform="${esc(a.id)}" autocomplete="off"><input type="text" data-keep="c-${esc(a.id)}" maxlength="1000" placeholder="Write a comment or paste a link" aria-label="Comment"><button class="btn sm" type="submit" style="flex:0 0 auto">Send</button></form></div>`}
 function asgRow(a,manage,board,pick){const id=esc(a.id);
-  const tags=`${a.priority==="high"?'<span class="tag due-over">High priority</span>':""}${a.recurringId?'<span class="tag">Repeats</span>':""}${a.brand?`<span class="tag brand">${esc(a.brand)}</span>`:""}${a.kind?`<span class="tag">${esc(a.kind)}</span>`:""}${dueTag(a)}${manage?`<span class="tag">→ ${esc(nameOf(a.assignee))}</span>`:""}${manage&&a.notifiedHow==="sent"?'<span class="tag" title="The assignee got an email about this task">✉ Emailed</span>':""}${a.status==="done"&&a.doneAt?`<span class="tag">Done ${esc(relDay(a.doneAt))}</span>`:""}${timeTag(a)}`;
+  const tags=`${a.priority==="high"?'<span class="tag due-over">High priority</span>':""}${a.recurringId?'<span class="tag">Repeats</span>':""}${a.brand?`<span class="tag brand">${esc(a.brand)}</span>`:""}${a.kind?`<span class="tag">${esc(a.kind)}</span>`:""}${dueTag(a)}${a.estimate?`<span class="tag" title="Expected time">⏲ ${esc(estLabel(a.estimate))}</span>`:""}${manage&&a.selfMade?'<span class="tag" title="Added by the person themselves">Own task</span>':""}${!manage&&a.planFor===todayKey()&&a.status!=="done"?'<span class="tag due-today">In today\'s plan</span>':""}${manage?`<span class="tag">→ ${esc(nameOf(a.assignee))}</span>`:""}${manage&&a.notifiedHow==="sent"?'<span class="tag" title="The assignee got an email about this task">✉ Emailed</span>':""}${a.status==="done"&&a.doneAt?`<span class="tag">Done ${esc(relDay(a.doneAt))}</span>`:""}${timeTag(a)}`;
   let act=board&&!isPaused(a)?"":asgPill(a);
   if(manage)act+=`<button class="btn sm" data-asg-edit="${id}">Edit</button><button class="x" data-asg-del="${id}" aria-label="Delete task">×</button>`;
   else if(a.status==="todo")act+=`<button class="btn sm" data-asg-st="doing" data-id="${id}">${a.workMs?"Resume":"Start"}</button><button class="btn sm primary" data-asg-st="done" data-id="${id}">Done</button>`;
   else if(a.status==="doing")act+=`${a.runSince?`<button class="btn sm" data-asg-st="pause" data-id="${id}">Pause</button>`:`<button class="btn sm" data-asg-st="doing" data-id="${id}">Resume</button>`}<button class="btn sm primary" data-asg-st="done" data-id="${id}">Done</button>`;
   else act+=`<button class="linkbtn" data-asg-st="todo" data-id="${id}">Reopen</button>`;
+  if(!manage&&!board&&a.status!=="done"&&a.planFor!==todayKey())act+=`<button class="linkbtn" data-plan="${id}">Plan for today</button>`;
   const open=!!S.threads[a.id];const n=(S.comments[a.id]||[]).length;
   const drag=board&&(manage||a.assignee===S.uid)?` draggable="true" data-drag="${id}"`:"";
   const picked=pick&&S.asgSel.has(a.id);
@@ -1580,8 +1766,9 @@ function setAsgStatus(id,st){const a=S.asg[id];if(!a)return;const mine=a.assigne
   let qty=0,unit="";
   if(st==="done"&&mine){const k=kindInfo(a.assignee,a.kind);if(k&&k.unit){const v=window.prompt(`How many ${k.unit}? (leave empty to skip)`,"");if(v===null)return;qty=Math.max(0,Math.round(Number(v)||0));unit=k.unit}}
   enqueue(async()=>{const now=Date.now();const p={updatedAt:now};let work=Number(a.workMs)||0;
+    if(st==="doing"&&mine)for(const o of asgList().filter(x=>x.assignee===S.uid&&x.runSince&&x.id!==id)){const q=Object.assign(addWork(o,now),{updatedAt:now});await asgRef(o.id).update(q);patchAsg(o.id,q)}
     if(st!=="pause"){p.status=st;p.doneAt=st==="done"?now:null}
-    if(a.runSince&&st!=="doing"){work+=Math.max(0,now-a.runSince);p.workMs=work;p.runSince=null}
+    if(a.runSince&&st!=="doing"){Object.assign(p,addWork(a,now));work=p.workMs}
     if(st==="doing"&&mine&&!a.runSince){p.runSince=now;if(!a.startedAt)p.startedAt=now}
     await asgRef(id).update(p);patchAsg(id,p);
     if(st==="done"&&mine){const k=todayKey();const day=await getDay(k);day.tasks=day.tasks||[];
@@ -1591,7 +1778,7 @@ function setAsgStatus(id,st){const a=S.asg[id];if(!a)return;const mine=a.assigne
       :st==="doing"?(mine?(a.workMs?"Resumed. The clock is running again":"Started. The clock is running on this task"):`Moved to In progress for ${nameOf(a.assignee)}`)
       :a.status==="doing"?"Moved back to To do":"Reopened");rerender()})}
 /* stop the clock on running tasks when someone clocks out */
-async function pauseMyRunning(at){for(const a of asgList().filter(x=>x.assignee===S.uid&&x.runSince)){const p={workMs:(Number(a.workMs)||0)+Math.max(0,at-a.runSince),runSince:null,updatedAt:Date.now()};
+async function pauseMyRunning(at){for(const a of asgList().filter(x=>x.assignee===S.uid&&x.runSince)){const p=Object.assign(addWork(a,Math.max(at,a.runSince)),{updatedAt:Date.now()});
   try{await asgRef(a.id).update(p);patchAsg(a.id,p)}catch(e){console.warn(e)}}}
 /* who to assign to: one or more people */
 function whoPeople(ids){return ids.slice().sort((a,b)=>nameOf(a).localeCompare(nameOf(b)))}
@@ -1634,7 +1821,7 @@ function bulkUpdate(make,msg){const list=selTasks();if(!list.length)return;
   enqueue(async()=>{const now=Date.now();let n=0;
     for(const a of list){const p=make(a,now);if(!p)continue;Object.assign(p,{updatedAt:now});await asgRef(a.id).update(p);patchAsg(a.id,p);n++}
     S.asgSel.clear();toast(msg(n));rerender()})}
-const stopClock=(a,now)=>a.runSince?{workMs:(Number(a.workMs)||0)+Math.max(0,now-a.runSince),runSince:null}:{};
+const stopClock=(a,now)=>a.runSince?addWork(a,now):{};
 function bulkAction(k){const list=selTasks();if(!list.length)return;const n=list.length;const me=(S.me&&S.me.email)||"";
   if(k==="clear"){S.asgSel.clear();rerender();return}
   if(k==="done")return bulkUpdate((a,now)=>a.status==="done"?null:Object.assign({status:"done",doneAt:now},stopClock(a,now)),c=>c?`Marked ${plural(c,"task")} done`:"Those tasks were already done");
@@ -1662,12 +1849,12 @@ function saveTpl(){const title=$("a-title").value.trim();if(!title){toast("Fill 
   const due=$("a-due").value;const dueIn=due?Math.round((keyToDate(due)-keyToDate(todayKey()))/864e5):null;
   const now=Date.now();const id=same?same.id:now.toString(36)+rid();
   const d={name,title,brand:$("a-brand").value,kind:formKind(),priority:$("a-high").checked?"high":"normal",notes:$("a-notes").value.trim(),links:parseLinks($("a-links").value),
-    repeat:$("a-repeat").value||"",dueIn:dueIn!=null&&dueIn>=0?dueIn:null,who:S.asgWho.slice(),team,createdBy:same?same.createdBy||"":(S.me&&S.me.email)||"",createdAt:same?same.createdAt||now:now,updatedAt:now};
+    repeat:$("a-repeat").value||"",estimate:Number($("a-est").value)||null,dueIn:dueIn!=null&&dueIn>=0?dueIn:null,who:S.asgWho.slice(),team,createdBy:same?same.createdBy||"":(S.me&&S.me.email)||"",createdAt:same?same.createdAt||now:now,updatedAt:now};
   enqueue(async()=>{await S.db.doc(`templates/${id}`).set(d);S.tpls=Object.assign({},S.tpls,{[id]:Object.assign({id},d)});renderTpl();$("a-tpl").value=id;$("a-tpl-del").hidden=false;
     toast(`Saved "${name}". Pick it from “Start from a template” next time.`)})}
 function applyTpl(id){const t=S.tpls[id];$("a-tpl-del").hidden=!t;if(!t)return;
   $("a-title").value=t.title||"";$("a-notes").value=t.notes||"";$("a-links").value=(t.links||[]).join("\n");$("a-high").checked=t.priority==="high";
-  $("a-repeat").value=t.repeat||"";$("a-due").value=t.dueIn!=null&&!t.repeat?dayKey(addDays(new Date(),Number(t.dueIn)||0)):"";
+  $("a-repeat").value=t.repeat||"";fillEst($("a-est"),t.estimate);$("a-due").value=t.dueIn!=null&&!t.repeat?dayKey(addDays(new Date(),Number(t.dueIn)||0)):"";
   if(Array.isArray(t.who)&&t.who.length){const ok=new Set(teamIds());const w=t.who.filter(u=>ok.has(u));if(w.length)S.asgWho=w}
   fillBrandSelect($("a-brand"),who0());setSel($("a-brand"),t.brand);
   fillKindSelect($("a-kind"),who0()||null);const has=t.kind&&[...$("a-kind").options].some(o=>o.value===t.kind&&t.kind!==OTHER);
@@ -1677,7 +1864,7 @@ function applyTpl(id){const t=S.tpls[id];$("a-tpl-del").hidden=!t;if(!t)return;
 function deleteTpl(){const t=S.tpls[$("a-tpl").value];if(!t)return;if(!window.confirm(`Delete the template "${t.name}"? Tasks made from it stay.`))return;
   enqueue(async()=>{await S.db.doc(`templates/${t.id}`).delete();const m=Object.assign({},S.tpls);delete m[t.id];S.tpls=m;$("a-tpl").value="";renderTpl();toast("Template deleted")})}
 function renderAsgAdmin(ids){
-  const people=whoPeople(ids);renderWho(people);renderTpl();
+  const people=whoPeople(ids);renderWho(people);renderTpl();fillEst($("a-est"),$("a-est").value);
   fillBrandSelect($("a-brand"),who0());fillKindSelect($("a-kind"),who0()||null);$("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER;
   const board=S.viewTeam==="board";setViewTabs("team-view",S.viewTeam);$("asg-filter").hidden=board;
   document.querySelectorAll("#asg-filter button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.f===S.asgF)));
@@ -1717,7 +1904,7 @@ async function genRecurring(){const k=todayKey();if(S.loaded.genFor===k||!S.load
   for(const r of Object.values(S.recurring)){if(r.active===false)continue;if(!(r.assignee===S.uid||canManageUid(r.assignee)))continue;if(!repeatMatches(r,k))continue;
     const lv=leaveOn(r.assignee,k);if(lv&&lv.status==="approved")continue;const id=`${r.id}__${k}`;if(S.asg[id])continue;
     try{const now=Date.now();
-      await asgRef(id).set({title:r.title,assignee:r.assignee,team:r.team||"",brand:r.brand||"",kind:r.kind||"",notes:r.notes||"",links:Array.isArray(r.links)?r.links:[],priority:r.priority||"normal",due:k,status:"todo",createdAt:now,updatedAt:now,createdBy:r.createdBy||"",doneAt:null,recurringId:r.id})}
+      await asgRef(id).set({title:r.title,assignee:r.assignee,team:r.team||"",brand:r.brand||"",kind:r.kind||"",notes:r.notes||"",links:Array.isArray(r.links)?r.links:[],priority:r.priority||"normal",estimate:r.estimate||null,due:k,status:"todo",createdAt:now,updatedAt:now,createdBy:r.createdBy||"",doneAt:null,recurringId:r.id})}
     catch(e){console.warn("repeat",e)}}}
 /* edit dialog for a task or a repeating task */
 function setSel(sel,v){v=v||"";if(v&&![...sel.options].some(o=>o.value===v))sel.insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(v)}</option>`);sel.value=v}
@@ -1734,7 +1921,7 @@ function openEdit(kind,id){const src=kind==="asg"?S.asg[id]:S.recurring[id];if(!
   fillEdKind(src.assignee,src.kind);
   $("ed-due-wrap").hidden=kind!=="asg";$("ed-repeat-wrap").hidden=kind==="asg";
   if(kind==="asg")$("ed-due").value=src.due||"";else{$("ed-repeat").innerHTML=[...$("a-repeat").options].filter(o=>o.value).map(o=>o.outerHTML).join("");$("ed-repeat").value=src.repeat||"daily"}
-  $("ed-high").checked=src.priority==="high";$("ed-notes").value=src.notes||"";$("ed-links").value=(src.links||[]).join("\n");
+  $("ed-high").checked=src.priority==="high";fillEst($("ed-est"),src.estimate);$("ed-notes").value=src.notes||"";$("ed-links").value=(src.links||[]).join("\n");
   $("ed-hint").textContent=kind==="asg"?(src.recurringId?"This is one day's copy of a repeating task. To change every day, edit it under Repeating.":"If you change who it's assigned to, they get an email about it."):"Changes apply from the next time it repeats. Today's copy stays as it is.";
   const d=$("asg-dlg");if(d.showModal)d.showModal();else d.setAttribute("open","");setTimeout(()=>$("ed-title").focus(),0)}
 function closeEdit(){const d=$("asg-dlg");S.edit=null;if(d.open){if(d.close)d.close();else d.removeAttribute("open")}}
@@ -1745,7 +1932,8 @@ function saveEdit(){const e=S.edit;if(!e)return;const src=e.kind==="asg"?S.asg[e
     notes:$("ed-notes").value.trim(),links:parseLinks($("ed-links").value),updatedAt:now,editedAt:now,editedBy:(S.me&&S.me.email)||""};
   if(e.kind==="asg")p.due=$("ed-due").value||"";else p.repeat=$("ed-repeat").value||src.repeat;
   const moved=who!==src.assignee;if(moved){p.assignedAt=now;p.notifiedAt=null;p.notifiedHow="";if(e.kind==="asg"){p.runSince=null}}
-  if(moved&&e.kind==="asg"&&src.runSince)p.workMs=(Number(src.workMs)||0)+Math.max(0,now-src.runSince);
+  if(moved&&e.kind==="asg"&&src.runSince)Object.assign(p,addWork(src,now));
+  const est=Number($("ed-est").value)||0;if(est!==(Number(src.estimate)||0)){p.estimate=est||null;if(e.kind==="asg"){p.estAt=now;p.estBy=S.uid;p.estFrom=Number(src.estimate)||0}}
   const path=e.kind==="asg"?`assignments/${e.id}`:`recurring/${e.id}`;closeEdit();
   enqueue(async()=>{await S.db.doc(path).update(p);
     if(e.kind==="asg")patchAsg(e.id,p);else S.recurring=Object.assign({},S.recurring,{[e.id]:Object.assign({},src,p)});
@@ -1768,7 +1956,7 @@ function bindAsg(){
     if(!title){toast("Write the task first");return}if(!whoList.length){toast("Choose who to assign it to");return}
     let kind=$("a-kind").value;if(kind===OTHER)kind=$("a-kind-other").value.trim()||"Other";
     const now=Date.now();const group=whoList.length>1?now.toString(36)+rid():"";
-    const base={title,brand:$("a-brand").value,kind,priority:$("a-high").checked?"high":"normal",notes:$("a-notes").value.trim(),links:parseLinks($("a-links").value),createdBy:(S.me&&S.me.email)||"",assignedAt:now};
+    const base={title,brand:$("a-brand").value,kind,estimate:Number($("a-est").value)||null,priority:$("a-high").checked?"high":"normal",notes:$("a-notes").value.trim(),links:parseLinks($("a-links").value),createdBy:(S.me&&S.me.email)||"",assignedAt:now};
     if(group)base.group=group;
     const rep=$("a-repeat").value,due=$("a-due").value||"";
     enqueue(async()=>{for(const who of whoList){const id=now.toString(36)+rid();const per=Object.assign({},base,{assignee:who,team:teamOf(who)});
@@ -1777,7 +1965,7 @@ function bindAsg(){
       if(rep){S.loaded.genFor=null;await genRecurring()}
       const names=whoList.map(nameOf);const others=whoList.filter(u=>u!==S.uid).length;
       toast(rep?`${REPEAT_LABEL(rep)} for ${names.join(", ")}`:(others?`Assigned to ${names.length>3?`${names.length} people`:names.join(", ")}. ${others>1?"They'll each":"They'll"} get an email in about a minute.`:"Added to your tasks"));
-      $("a-title").value="";$("a-notes").value="";$("a-links").value="";$("a-due").value="";$("a-high").checked=false;$("a-repeat").value="";$("a-kind-other").value="";$("a-tpl").value="";rerender()})});
+      $("a-title").value="";$("a-notes").value="";$("a-links").value="";$("a-due").value="";$("a-high").checked=false;$("a-repeat").value="";$("a-kind-other").value="";$("a-tpl").value="";$("a-est").value="0";rerender()})});
   $("asg-filter").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(!b)return;S.asgF=b.dataset.f;rerender()});
   $("asg-people").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;S.asgP=b.dataset.p;rerender()});
   let qt=0;$("f-q").addEventListener("input",()=>{clearTimeout(qt);qt=setTimeout(()=>{S.asgQ=$("f-q").value.trim();rerender()},150)});
@@ -1807,6 +1995,17 @@ function bindAsg(){
   const onSubmit=e=>{const f=e.target.closest("[data-cform]");if(!f)return;e.preventDefault();const inp=f.querySelector("input");const v=inp.value.trim();if(!v)return;inp.value="";sendComment(f.dataset.cform,v)};
   ["asg-list","my-asg","asg-board","my-asg-board","detail"].forEach(id=>{$(id).addEventListener("click",onList);$(id).addEventListener("submit",onSubmit)});
   bindBoard($("asg-board"));bindBoard($("my-asg-board"));
+  ["plan-list","plan-now","overrun-bar"].forEach(id=>$(id).addEventListener("click",e=>{const st=e.target.closest("[data-asg-st]");if(st)setAsgStatus(st.dataset.id,st.dataset.asgSt)}));
+  document.addEventListener("click",e=>{const t=e.target;let b;
+    if(b=t.closest("[data-plan]")){setPlan(b.dataset.plan,true);return}
+    if(b=t.closest("[data-unplan]")){setPlan(b.dataset.unplan,false);return}
+    if(b=t.closest("[data-selfdel]")){delSelfTask(b.dataset.selfdel);return}
+    if(b=t.closest("[data-ovr]")){onOverrun(b.dataset.ovr,b.dataset.id);return}
+    if(b=t.closest("[data-mday]")){S.mdDay=b.dataset.mday;rerender();return}
+    if(b=t.closest("#in-range [data-r]")){S.inRange=b.dataset.r;rerender();return}
+    if(b=t.closest("#att-range [data-range]")){S.attRange=b.dataset.range;rerender();return}});
+  document.addEventListener("change",e=>{const sel=e.target.closest("select[data-est]");if(sel)setEstimate(sel.dataset.est,sel.value)});
+  $("self-form").addEventListener("submit",e=>{e.preventDefault();addSelfTask()});
   $("detail").addEventListener("click",e=>{const r=e.target.closest("[data-rbrand]");if(r&&S.sel.uid)toggleRosterBrand(S.sel.uid,r.dataset.rbrand)});
   $("ed-form").addEventListener("submit",e=>{e.preventDefault();saveEdit()});
   $("ed-cancel").addEventListener("click",closeEdit);$("ed-x").addEventListener("click",closeEdit);
@@ -1816,6 +2015,157 @@ function bindAsg(){
     const k=$("ed-kind").value===OTHER?$("ed-kind-other").value:$("ed-kind").value;fillEdKind(u,k)});
   $("ed-kind").addEventListener("change",()=>{$("ed-kind-other-wrap").hidden=$("ed-kind").value!==OTHER});
 }
+
+/* ---------- time management: estimates, today's plan, where the day went, insights ---------- */
+const EST=[[0,"No estimate"],[15,"15 min"],[30,"30 min"],[45,"45 min"],[60,"1 hour"],[90,"1½ hours"],[120,"2 hours"],[180,"3 hours"],[240,"4 hours"],[300,"5 hours"],[360,"6 hours"],[480,"8 hours"]];
+const estLabel=m=>{m=Number(m)||0;const f=EST.find(x=>x[0]===m);return f?f[1]:fmtDur(m*60000)};
+function fillEst(sel,cur,short){if(!sel)return;cur=Number(cur)||0;const list=EST.slice();if(cur&&!list.some(x=>x[0]===cur))list.push([cur,fmtDur(cur*60000)]);
+  const html=list.sort((a,b)=>a[0]-b[0]).map(([v,l])=>`<option value="${v}">${v||!short?l:"—"}</option>`).join("");
+  if(sel.dataset.k!==html){sel.innerHTML=html;sel.dataset.k=html}sel.value=String(cur)}
+const estOpts=cur=>{const list=EST.slice();cur=Number(cur)||0;if(cur&&!list.some(x=>x[0]===cur))list.push([cur,fmtDur(cur*60000)]);
+  return list.sort((a,b)=>a[0]-b[0]).map(([v,l])=>`<option value="${v}"${v===cur?" selected":""}>${v?l:"Set time…"}</option>`).join("")};
+/* time on a task, split by day */
+function addWork(a,now){const days=Object.assign({},a.workDays||{});let tot=Number(a.workMs)||0;let t=a.runSince;
+  if(t){if(!a.workDays&&tot&&a.startedAt){const k0=dayKey(new Date(a.startedAt));days[k0]=(days[k0]||0)+tot}
+    while(t<now){const d=new Date(t);const next=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1).getTime();const e=Math.min(now,next);const k=dayKey(d);days[k]=(days[k]||0)+(e-t);tot+=e-t;t=e}}
+  return{workMs:tot,workDays:days,runSince:null}}
+function workOn(a,k,now){let ms=Number((a.workDays||{})[k])||0;
+  if(!a.workDays&&a.workMs&&a.status==="done"&&a.doneAt&&dayKey(new Date(a.doneAt))===k)ms+=Number(a.workMs)||0;
+  if(a.runSince){const s=keyToDate(k).getTime(),e=addDays(keyToDate(k),1).getTime();ms+=Math.max(0,Math.min(now||Date.now(),e)-Math.max(a.runSince,s))}return ms}
+const plannedOn=(a,k)=>a.planFor===k||(Array.isArray(a.planDays)&&a.planDays.includes(k));
+const myEmail=()=>((S.me&&S.me.email)||"").toLowerCase();
+const fromSomeoneElse=a=>!a.selfMade&&a.createdBy&&String(a.createdBy).toLowerCase()!==myEmail();
+function setEstimate(id,mins){const a=S.asg[id];if(!a)return;mins=Math.max(0,Math.round(Number(mins)||0));const cur=Number(a.estimate)||0;if(cur===mins)return;const now=Date.now();
+  const mine=a.assignee===S.uid;const pendingNote=a.estBy===a.assignee&&a.estAt&&!(Number(a.estNotifiedAt)>=a.estAt);
+  const p={estimate:mins||null,estAt:now,estBy:S.uid,estFrom:mine&&pendingNote&&a.estFrom!=null?a.estFrom:cur,updatedAt:now};
+  enqueue(async()=>{await asgRef(id).update(p);patchAsg(id,p);
+    const tell=mine&&fromSomeoneElse(a)&&(p.estFrom||0)>0;
+    toast(mins?`Expected time: ${estLabel(mins)}${tell?`. You and ${personName(a.createdBy)} get an email about the change.`:""}`:"Estimate removed");rerender()})}
+function personName(email){const e=String(email||"").toLowerCase();const u=Object.keys(S.people).find(x=>String((S.people[x]||{}).email||"").toLowerCase()===e);return u?nameOf(u):(email||"your lead")}
+function setPlan(id,on){const a=S.asg[id];if(!a)return;const k=todayKey();const days=(Array.isArray(a.planDays)?a.planDays:[]).filter(x=>x!==k);if(on)days.push(k);
+  const p={planFor:on?k:"",planDays:days.slice(-40),updatedAt:Date.now()};
+  enqueue(async()=>{await asgRef(id).update(p);patchAsg(id,p);
+    const n=planToday().filter(x=>x.status!=="done").length;
+    toast(on?(n>3?`Added. That's ${n} open tasks today. Fewer, finished tasks beat many started ones.`:"Added to today's plan"):"Taken off today's plan");rerender()})}
+function addSelfTask(){const title=$("s-title").value.trim();if(!title){toast("Write the task first");$("s-title").focus();return}
+  let kind=$("s-kind").value;if(kind===OTHER)kind="Other";const est=Number($("s-est").value)||0;const today=$("s-today").checked;const now=Date.now();const k=todayKey();
+  const d={title,assignee:S.uid,team:S.myTeam||"",brand:$("s-brand").value,kind,priority:"normal",notes:"",links:[],due:"",status:"todo",createdAt:now,updatedAt:now,
+    createdBy:(S.me&&S.me.email)||"",assignedAt:now,doneAt:null,selfMade:true,estimate:est||null,planFor:today?k:"",planDays:today?[k]:[],notifiedAt:now,notifiedHow:"self"};
+  const id=now.toString(36)+rid();
+  enqueue(async()=>{await asgRef(id).set(d);S.asg=Object.assign({},S.asg,{[id]:Object.assign({id},d)});$("s-title").value="";$("s-est").value="0";
+    toast(today?"Added to today's plan":"Added to your tasks");rerender()})}
+function delSelfTask(id){const a=S.asg[id];if(!a||!a.selfMade)return;if(!window.confirm(`Delete "${a.title}"?`))return;
+  enqueue(async()=>{await asgRef(id).delete();const m=Object.assign({},S.asg);delete m[id];S.asg=m;toast("Task deleted");rerender()})}
+
+/* today's plan */
+function planSort(a,b){const o={doing:0,todo:1,done:2};return ((o[a.status]??1)-(o[b.status]??1))||((b.priority==="high")-(a.priority==="high"))||((a.planAt||a.createdAt||0)-(b.planAt||b.createdAt||0))}
+function planToday(uid){uid=uid||S.uid;const k=todayKey();return asgList().filter(a=>a.assignee===uid&&a.planFor===k&&(a.status!=="done"||dayKey(new Date(a.doneAt||0))===k)).sort(planSort)}
+function estBar(a,now){const est=(Number(a.estimate)||0)*60000;const ms=taskTime(a,now);if(!est)return ms?`<span class="muted small">${fmtDur(ms)} so far</span>`:"";
+  const over=ms>est;return `<div class="estbar ${over?"over":""}" title="${esc(fmtDur(ms))} of ${esc(estLabel(a.estimate))}"><i style="width:${Math.min(100,ms/est*100)}%"></i></div><span class="small ${over?"over-t":"muted"}">${fmtDur(ms)} of ${esc(estLabel(a.estimate))}${over?` · ${fmtDur(ms-est)} over`:""}</span>`}
+function planRow(a,inPlan){const id=esc(a.id);const now=Date.now();
+  const tags=`${a.priority==="high"?'<span class="tag due-over">High priority</span>':""}${a.brand?`<span class="tag brand">${esc(a.brand)}</span>`:""}${a.kind?`<span class="tag">${esc(a.kind)}</span>`:""}${dueTag(a)}${fromSomeoneElse(a)?`<span class="tag" title="Assigned by ${esc(personName(a.createdBy))}">From ${esc(personName(a.createdBy).split(" ")[0])}</span>`:""}${!inPlan&&a.planFor&&a.planFor<todayKey()&&a.status!=="done"?`<span class="tag due-today">Planned ${esc(fmtShort(a.planFor))}, not finished</span>`:""}`;
+  let act="";
+  if(inPlan){if(a.status==="done")act=`<span class="pill" style="--st:var(--work)">Done</span>`;
+    else if(a.status==="doing"&&a.runSince)act=`<button class="btn sm" data-asg-st="pause" data-id="${id}">Pause</button><button class="btn sm primary" data-asg-st="done" data-id="${id}">Done</button>`;
+    else act=`<button class="btn sm ${a.status==="doing"?"":"primary"}" data-asg-st="doing" data-id="${id}">${a.workMs?"Resume":"Start"}</button><button class="btn sm" data-asg-st="done" data-id="${id}">Done</button>`;
+    if(a.status!=="done")act+=`<button class="linkbtn" data-unplan="${id}" title="Take it off today's plan">Not today</button>`}
+  else act=`<button class="btn sm" data-plan="${id}">+ Today</button>`;
+  if(a.selfMade&&a.status!=="done")act+=`<button class="x" data-selfdel="${id}" aria-label="Delete task">×</button>`;
+  const est=a.status==="done"?(a.estimate?`<span class="tag">Expected ${esc(estLabel(a.estimate))}</span>`:""):`<select class="est-mini" data-est="${id}" aria-label="Expected time for ${esc(a.title)}">${estOpts(a.estimate)}</select>`;
+  return `<li class="asg plan-row ${a.status==="done"?"is-done":""} ${a.runSince?"running":""}"><div style="min-width:0"><div class="t-text">${esc(a.title)}</div><div style="margin-top:4px">${tags}</div>
+    ${inPlan?`<div class="estline">${est}${estBar(a,now)}</div>`:`<div class="estline">${est}</div>`}</div><div class="asg-act">${act}</div></li>`}
+const runningMine=()=>asgList().find(a=>a.assignee===S.uid&&a.runSince)||null;
+const snoozeKey=id=>`tl-snooze-${id}`;
+function overrunOf(a,now){if(!a||!a.runSince||!a.estimate)return null;const est=a.estimate*60000;const ms=taskTime(a,now);if(ms<=est)return null;
+  const sn=Number(lsGet(snoozeKey(a.id))||0);if(sn&&ms<sn)return null;return{ms,est}}
+function overrunHTML(a,o){return `<div class="overrun" role="status"><div><b>You've spent ${fmtDur(o.ms)} on “${esc(a.title)}”.</b> You expected ${esc(estLabel(a.estimate))}. What's next?</div>
+  <div class="btns"><button class="btn sm primary" data-ovr="more" data-id="${esc(a.id)}">Keep going 30 more minutes</button><button class="btn sm" data-ovr="split" data-id="${esc(a.id)}">Split off the rest</button><button class="btn sm" data-ovr="switch" data-id="${esc(a.id)}">Pause and switch task</button></div></div>`}
+function onOverrun(kind,id){const a=S.asg[id];if(!a)return;
+  if(kind==="more"){lsSet(snoozeKey(id),String(taskTime(a)+30*60000));toast("Got it. I'll check in again in 30 minutes.");rerender();return}
+  if(kind==="switch"){setAsgStatus(id,"pause");go("plan");return}
+  if(kind==="split"){setAsgStatus(id,"pause");go("plan");$("s-title").value=`Next part: ${a.title}`.slice(0,200);fillBrandSelect($("s-brand"),S.uid);setSel($("s-brand"),a.brand);
+    fillKindSelect($("s-kind"),S.uid);if([...$("s-kind").options].some(o=>o.value===a.kind))$("s-kind").value=a.kind;$("s-est").value="0";$("s-today").checked=true;
+    setTimeout(()=>{$("s-title").focus();$("self-form").scrollIntoView({behavior:"smooth",block:"center"})},50);toast("Paused. Add the rest as its own task and give it a time.")}}
+function renderOverrunBar(){const el=$("overrun-bar");if(!el)return;const a=runningMine();const o=overrunOf(a,Date.now());
+  const show=!!o&&S.page!=="plan";el.hidden=!show;S.ovrOn=!!o;if(show)el.innerHTML=overrunHTML(a,o)}
+function renderPlan(){if(S.page!=="plan")return;const now=Date.now();const k=todayKey();const plan=planToday();
+  const open=plan.filter(a=>a.status!=="done"),done=plan.filter(a=>a.status==="done");
+  const estTot=plan.reduce((s,a)=>s+(Number(a.estimate)||0),0)*60000;const onTasks=asgList().filter(a=>a.assignee===S.uid).reduce((s,a)=>s+workOn(a,k,now),0);
+  const noEst=open.filter(a=>!a.estimate).length;
+  $("plan-sum").innerHTML=`<div class="tiles small">${[{v:`${done.length}<small> / ${plan.length}</small>`,l:"Planned tasks done",c:plan.length&&done.length===plan.length?"ok-t":""},
+    {v:estTot?fmtHM(estTot):"—",l:"Expected time"},{v:fmtHM(onTasks),l:"On tasks today"},{v:`<span data-live="${esc(S.uid)}" data-fmt="hm">${fmtHM(todayWork(S.uid,now))}</span>`,l:"Your day so far"}].map(tileHTML).join("")}</div>
+    ${!plan.length?`<div class="hint">Start by picking 2 or 3 tasks for today from the list on the right, or add one yourself. Give each one a time.</div>`
+      :noEst?`<div class="hint">${plural(noEst,"task")} in your plan ${noEst===1?"has":"have"} no expected time yet. Pick one so you can see when a task is running long.</div>`
+      :estTot>TARGET_H*36e5?`<div class="hint">Your plan adds up to ${fmtHM(estTot)}, more than a ${TARGET_H}-hour day. Move something to tomorrow?</div>`:""}`;
+  const run=runningMine();const o=overrunOf(run,now);
+  $("plan-now").innerHTML=run?`<div class="panel now-card ${o?"is-over":""}"><div class="muted small">Working on now</div><div class="now-title">${esc(run.title)}</div>
+      <div class="now-time"><span class="num" data-tasklive="${esc(run.id)}">${fmtHMS(taskTime(run,now))}</span>${run.estimate?`<span class="muted"> of ${esc(estLabel(run.estimate))}</span>`:""}</div>
+      ${run.estimate?`<div class="estbar big ${o?"over":""}"><i data-taskbar="${esc(run.id)}" style="width:${Math.min(100,taskTime(run,now)/(run.estimate*600))}%"></i></div>`:""}
+      ${o?overrunHTML(run,o):`<div class="btns"><button class="btn sm" data-asg-st="pause" data-id="${esc(run.id)}">Pause</button><button class="btn sm primary" data-asg-st="done" data-id="${esc(run.id)}">Done</button></div>`}</div>`:"";
+  $("plan-count").textContent=plan.length?`${open.length} to go${done.length?` · ${done.length} done`:""}`:"";
+  keepInputs($("plan-list"),()=>{$("plan-list").innerHTML=plan.length?plan.map(a=>planRow(a,true)).join(""):`<li style="display:block;border:0;padding:0"><div class="empty">Nothing planned yet for today.</div></li>`});
+  const rest=asgList().filter(a=>a.assignee===S.uid&&a.status!=="done"&&a.planFor!==k).sort((a,b)=>{const t=todayKey();const r=x=>x.planFor&&x.planFor<t?0:x.due&&x.due<=t?1:x.priority==="high"?2:3;return r(a)-r(b)||String(a.due||"9999").localeCompare(String(b.due||"9999"))||((b.createdAt||0)-(a.createdAt||0))});
+  $("pick-count").textContent=rest.length?plural(rest.length,"task"):"";
+  $("pick-list").innerHTML=rest.length?rest.slice(0,40).map(a=>planRow(a,false)).join(""):`<li style="display:block;border:0;padding:0"><div class="empty">No other open tasks. Nice.</div></li>`;
+  fillEst($("s-est"),Number($("s-est").value)||0);if(!$("s-brand").options.length)fillBrandSelect($("s-brand"),S.uid);if(!$("s-kind").options.length)fillKindSelect($("s-kind"),S.uid)}
+
+/* where the day went (one person, one day) */
+function dayBreakdown(uid,k,now){const items=[];const day=daysOf(uid)[k];
+  for(const a of asgList()){if(a.assignee!==uid)continue;const ms=workOn(a,k,now);if(ms>0)items.push({title:a.title,brand:a.brand||"",kind:a.kind||"",ms,asg:a.id})}
+  for(const t of (day&&day.tasks||[])){const a=t.asg&&S.asg[t.asg];if(a&&(a.workDays||a.assignee===uid&&workOn(a,k,now)>0))continue;if(!(Number(t.mins)>0))continue;
+    items.push({title:t.text,brand:t.brand||"",kind:t.kind||"",ms:t.mins*60000})}
+  const worked=k===todayKey()?todayWork(uid,now):dayWork(day,now);const tracked=items.reduce((s,x)=>s+x.ms,0);
+  return{items:items.sort((a,b)=>b.ms-a.ms),worked,tracked,untracked:Math.max(0,worked-tracked)}}
+function barsHTML(rows,total,empty){if(!rows.length)return `<div class="empty">${empty}</div>`;const max=Math.max(1,...rows.map(r=>r.ms));
+  return rows.map(r=>`<div class="brow ${r.cls||""}"><span class="nm" title="${esc(r.name)}">${esc(r.name)}</span><span class="trk"><i style="width:${r.ms/max*100}%"></i></span><span class="num muted">${fmtHM(r.ms)}${total?` · ${Math.round(r.ms/total*100)}%`:""}</span></div>`).join("")}
+function groupMs(items,key){const m={};for(const x of items){const n=x[key]||(key==="brand"?"No client":"No type of work");m[n]=(m[n]||0)+x.ms}return Object.entries(m).map(([name,ms])=>({name,ms})).sort((a,b)=>b.ms-a.ms)}
+function renderMyDay(){if(S.page!=="myday")return;const now=Date.now();const tk=todayKey();
+  const keys=Array.from({length:14},(_,i)=>dayKey(addDays(new Date(),-i))).filter(k=>k===tk||isWorkday(k)||dayWork(S.my.days[k],now)>0).slice(0,7).reverse();
+  if(!S.mdDay||!keys.includes(S.mdDay))S.mdDay=tk;const k=S.mdDay;
+  $("md-days").innerHTML=keys.map(x=>`<button type="button" class="chip" data-mday="${x}" aria-pressed="${x===k}">${x===tk?"Today":`${DAYS[keyToDate(x).getDay()].slice(0,3)} ${keyToDate(x).getDate()}/${keyToDate(x).getMonth()+1}`}</button>`).join("");
+  const b=dayBreakdown(S.uid,k,now);const planned=asgList().filter(a=>a.assignee===S.uid&&plannedOn(a,k));
+  const doneP=planned.filter(a=>a.status==="done"&&dayKey(new Date(a.doneAt||0))<=k).length;
+  const estP=planned.reduce((s,a)=>s+(Number(a.estimate)||0)*60000,0),actP=planned.reduce((s,a)=>s+workOn(a,k,now),0);
+  $("md-tiles").innerHTML=[{v:fmtHM(b.worked),l:k===tk?"Your day so far":"Length of your day"},{v:fmtHM(b.tracked),l:`On tasks${b.worked?` · ${Math.min(100,Math.round(b.tracked/b.worked*100))}%`:""}`,c:"ok-t"},
+    {v:fmtHM(b.untracked),l:"Not linked to a task",c:b.untracked>36e5?"brk-t":""},{v:planned.length?`${doneP}<small> / ${planned.length}</small>`:"—",l:"Planned tasks done"},
+    {v:estP?`${fmtHM(actP)}<small> / ${fmtHM(estP)}</small>`:"—",l:"Planned tasks: actual / expected",c:estP&&actP>estP*1.15?"brk-t":""}].map(tileHTML).join("");
+  const rows=b.items.slice(0,10).map(x=>({name:x.title,ms:x.ms}));if(b.untracked>=5*60000)rows.push({name:"Not linked to a task",ms:b.untracked,cls:"untracked"});
+  $("md-tasks").innerHTML=barsHTML(rows,b.worked,k===tk?"Nothing tracked yet today. Press Start on a task in My plan.":"No time tracked on this day.");
+  $("md-brands").innerHTML=barsHTML(groupMs(b.items,"brand"),b.tracked,"No client time on this day.");
+  $("md-kinds").innerHTML=barsHTML(groupMs(b.items,"kind"),b.tracked,"No time by type of work on this day.");
+  const worked=new Set(b.items.map(x=>x.asg).filter(Boolean));const list=[...planned,...asgList().filter(a=>a.assignee===S.uid&&worked.has(a.id)&&!plannedOn(a,k))];
+  $("md-plan").innerHTML=list.length?list.map(a=>{const ms=workOn(a,k,now);const est=(Number(a.estimate)||0)*60000;const isP=plannedOn(a,k);const fin=a.status==="done"&&dayKey(new Date(a.doneAt||0))===k;
+    return `<li class="asg"><div style="min-width:0"><div class="t-text">${esc(a.title)}</div><div style="margin-top:4px">${isP?"":'<span class="tag due-today">Not in the plan</span>'}${fin?'<span class="tag" style="color:var(--work)">Finished</span>':a.status==="done"?'<span class="tag">Finished later</span>':isP&&k<tk?'<span class="tag due-over">Not finished</span>':""}${a.brand?`<span class="tag brand">${esc(a.brand)}</span>`:""}</div></div>
+      <div class="asg-act"><span class="num small ${est&&ms>est?"over-t":""}">${fmtHM(ms)}${est?` / ${fmtHM(est)}`:""}</span></div></li>`}).join("")
+    :`<li style="display:block;border:0;padding:0"><div class="empty">${k===tk?"No plan for today yet. Open My plan and pick 2 or 3 tasks.":"Nothing was planned for this day."}</div></li>`}
+
+/* insights over a range (one person) */
+function insightsOf(uid,keys,now){const tk=todayKey();keys=keys.filter(k=>k<=tk);const all=[];let worked=0,tracked=0;const heavy=[];
+  for(const k of keys){const b=dayBreakdown(uid,k,now);worked+=b.worked;tracked+=b.tracked;all.push(...b.items);
+    const top=b.items[0];if(top&&b.tracked>=3*36e5&&top.ms/b.tracked>=0.6)heavy.push({k,title:top.title,ms:top.ms,share:top.ms/b.tracked})}
+  const set=new Set(keys);const lo=keys[0],hi=keys[keys.length-1];
+  const done=asgList().filter(a=>a.assignee===uid&&a.status==="done"&&a.doneAt&&set.has(dayKey(new Date(a.doneAt))));
+  const withEst=done.filter(a=>a.estimate&&a.workMs);const estSum=withEst.reduce((s,a)=>s+a.estimate*60000,0),actSum=withEst.reduce((s,a)=>s+(Number(a.workMs)||0),0);
+  const over=asgList().filter(a=>a.assignee===uid&&a.estimate&&(a.status!=="done"||set.has(dayKey(new Date(a.doneAt||0))))&&(a.runSince||Object.keys(a.workDays||{}).some(k=>k>=lo&&k<=hi)||(a.status==="done"&&set.has(dayKey(new Date(a.doneAt||0))))))
+    .map(a=>({a,ms:taskTime(a,now),est:a.estimate*60000})).filter(x=>x.ms>x.est*1.25&&x.ms-x.est>=10*60000).sort((x,y)=>(y.ms-y.est)-(x.ms-x.est));
+  let pDays=0,pDone=0;for(const a of asgList()){if(a.assignee!==uid)continue;for(const k of keys)if(plannedOn(a,k)){pDays++;if(a.status==="done"&&dayKey(new Date(a.doneAt||0))<=k)pDone++}}
+  return{worked,tracked,items:all,done,estSum,actSum,nEst:withEst.length,over,heavy:heavy.sort((a,b)=>b.share-a.share),pDays,pDone}}
+function accuracyText(i){if(!i.nEst)return["—","Estimates vs. actual"];const r=i.actSum/i.estSum;const pct=Math.round(Math.abs(r-1)*100);
+  return[r>1.1?`${pct}%<small> over</small>`:r<0.9?`${pct}%<small> under</small>`:"On target",`Estimates vs. actual (${plural(i.nEst,"task")})`]}
+function renderInsights(){if(S.page!=="insights")return;const now=Date.now();const r=S.inRange||"week";
+  document.querySelectorAll("#in-range [data-r]").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.r===r)));
+  const i=insightsOf(S.uid,rangeKeys(r),now);const[av,al]=accuracyText(i);
+  $("in-tiles").innerHTML=[{v:fmtHM(i.worked),l:"Your hours"},{v:fmtHM(i.tracked),l:`On tasks${i.worked?` · ${Math.min(100,Math.round(i.tracked/i.worked*100))}%`:""}`,c:"ok-t"},
+    {v:i.done.length,l:"Tasks finished"},{v:av,l:al,c:i.nEst&&i.actSum>i.estSum*1.1?"brk-t":""},{v:i.pDays?`${i.pDone}<small> / ${i.pDays}</small>`:"—",l:"Planned tasks finished that day"}].map(tileHTML).join("");
+  $("in-kinds").innerHTML=barsHTML(groupMs(i.items,"kind"),i.tracked,"Nothing tracked in this period yet.");
+  $("in-brands").innerHTML=barsHTML(groupMs(i.items,"brand"),i.tracked,"Nothing tracked in this period yet.");
+  $("in-over").innerHTML=i.over.length?i.over.slice(0,8).map(x=>`<li class="asg"><div style="min-width:0"><div class="t-text">${esc(x.a.title)}</div><div class="muted small">Expected ${esc(estLabel(x.a.estimate))} · took ${fmtDur(x.ms)}${x.a.status!=="done"?" so far":""}</div></div><div class="asg-act"><span class="tag due-over">+${Math.round((x.ms/x.est-1)*100)}%</span></div></li>`).join("")
+    :`<li style="display:block;border:0;padding:0"><div class="empty">${i.nEst?"No task ran much longer than planned. Good estimating.":"Give your tasks an expected time in My plan to see this."}</div></li>`;
+  $("in-heavy").innerHTML=i.heavy.length?i.heavy.slice(0,6).map(h=>`<li class="asg"><div style="min-width:0"><div class="t-text">${DAYS[keyToDate(h.k).getDay()]} ${fmtShort(h.k)}</div><div class="muted small">${fmtDur(h.ms)} on “${esc(h.title)}”, ${Math.round(h.share*100)}% of the time you tracked</div></div></li>`).join("")
+    :`<li style="display:block;border:0;padding:0"><div class="empty">No day went mostly to a single task.</div></li>`}
+/* a person's plan, for their lead */
+function planLineHTML(u){const plan=planToday(u);if(!plan.length)return `<div class="muted small">No plan for today yet</div>`;const d=plan.filter(a=>a.status==="done").length;
+  return `<div class="planline"><span class="small"><b>Today's plan</b> · ${d} of ${plan.length} done</span><ul>${plan.slice(0,4).map(a=>`<li class="${a.status}">${a.status==="done"?"✓":a.runSince?"▶":"○"} ${esc(a.title)}${a.estimate?` <span class="muted">· ${esc(estLabel(a.estimate))}</span>`:""}</li>`).join("")}${plan.length>4?`<li class="muted">+${plan.length-4} more</li>`:""}</ul></div>`}
 
 /* ---------- subscriptions ---------- */
 const since=()=>dayKey(addDays(new Date(),-HISTORY_DAYS));
@@ -1863,13 +2213,17 @@ function subShared(){
 let rr=0;function rerender(){cancelAnimationFrame(rr);rr=requestAnimationFrame(()=>{if(!S.uid||!S.page)return;renderMe();if(S.canManage)renderTeam();renderChrome()})}
 setInterval(()=>{if(!S.uid)return;const now=Date.now();
   document.querySelectorAll("[data-live]").forEach(el=>{const ms=todayWork(el.dataset.live,now);el.textContent=el.dataset.fmt==="hms"?fmtHMS(ms):fmtHM(ms)});
-  document.querySelectorAll("[data-livebar]").forEach(el=>{el.style.width=Math.min(100,todayWork(el.dataset.livebar,now)/(TARGET_H*36e3))+"%"})},1000);
+  document.querySelectorAll("[data-livebar]").forEach(el=>{el.style.width=Math.min(100,todayWork(el.dataset.livebar,now)/(TARGET_H*36e3))+"%"});
+  document.querySelectorAll("[data-tasklive]").forEach(el=>{const a=S.asg[el.dataset.tasklive];if(a)el.textContent=fmtHMS(taskTime(a,now))});
+  document.querySelectorAll("[data-taskbar]").forEach(el=>{const a=S.asg[el.dataset.taskbar];if(a&&a.estimate)el.style.width=Math.min(100,taskTime(a,now)/(a.estimate*600))+"%"});
+  if(!!overrunOf(runningMine(),now)!==!!S.ovrOn)rerender()},1000);
 setInterval(()=>{if(S.uid){genRecurring();rerender()}},60000);
 /* ---------- pages & navigation ---------- */
-const ME_PAGES=["today","mytasks","timeoff","week"];
-const TEAM_PAGES=["overview","tasks","approvals","reports","people","person","settings"];
+const ME_PAGES=["today","mytasks","timeoff","week","plan","myday","insights"];
+const TEAM_PAGES=["overview","tasks","approvals","reports","people","person","settings","attendance"];
 function go(p){if(!S.uid)return;
   if(!ME_PAGES.includes(p)&&!(S.canManage&&TEAM_PAGES.includes(p)))p=S.canManage?"overview":"today";
+  if(p==="attendance"&&!S.isAdmin)p="overview";
   if(p==="person"&&!S.sel.uid)p="people";
   if(p!=="person")S.lastPage=p;
   const changed=S.page!==p;S.page=p;
@@ -1880,24 +2234,29 @@ function goBack(){go(S.lastPage&&S.lastPage!=="person"?S.lastPage:"people")}
 function openPerson(uid,day){S.sel={uid,day:day||null};go("person")}
 function route(){const p=location.hash.slice(1);go(p||(S.canManage?"overview":"today"))}
 const setBadge=(k,n)=>{const b=$("b-"+k);if(b)b.textContent=n?String(n):""};
-function approvalsCount(ids){const set=new Set(ids);let n=0;ids.forEach(u=>{if(canReview(u))n+=fixesOf(u,30).filter(f=>f.s._st==="pending").length});
+function approvalsCount(ids){const set=new Set(ids);let n=0;ids.forEach(u=>{if(canReview(u))n+=fixesOf(u,14).filter(f=>f.s._st==="pending").length});
   n+=Object.values(S.leaves).filter(l=>set.has(l.uid)&&l.status==="pending"&&(S.isAdmin||l.uid!==S.uid)).length;return n}
 function scopeLabel(){return S.isAdmin?(S.teamF?(S.teamF==="__none"?"people with no team":teamName(S.teamF)):"the whole company"):teamName(S.myTeam)}
 function renderChrome(){const p=S.page;if(!p)return;$("page-head").hidden=false;
   document.querySelectorAll("#nav a").forEach(a=>a.setAttribute("aria-current",(a.dataset.page===p||(p==="person"&&a.dataset.page==="people"))?"page":"false"));
   const sc=scopeLabel();
-  const meta={today:["Today",`${["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]}, ${fmtShort(todayKey())}. Clock in and log what you finish.`],
+  const meta={today:["Today",`${["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]}, ${fmtShort(todayKey())}. Start your day, then plan it in My plan.`],
     mytasks:["My tasks","Tasks assigned to you. Start, pause and finish them here. Switch to Board to see them by status."],
-    timeoff:["My requests","Ask for leave, or add time you forgot to log. Your lead approves both."],
-    week:["My week","Your hours this week and your attendance this month."],
+    timeoff:["My requests","Ask for leave, or add time you forgot to log. Your lead approves leave and gets a note about time changes."],
+    week:["My week","Your hours this week and this month."],
+    plan:["My plan","Pick the few tasks that matter most today, give each a time, and work through them one at a time."],
+    myday:["Where my day went","How your time was split between tasks, clients and types of work."],
+    insights:["My insights","Patterns in how you spend your time, so you can plan better."],
+    attendance:["Attendance",`Start-of-day times, late days, absences and leave · ${sc}. Only admins see this page.`],
     overview:["Overview",`Today across ${sc}.`],tasks:["Tasks",`Assign work and follow it up · ${sc}.`],
-    approvals:["Approvals","Time corrections and leave requests waiting for your decision."],
-    reports:["Reports",`Hours, attendance, output and work by client · ${sc}.`],people:["People",`Everyone in ${sc}. Click a person to open their page.`],
+    approvals:["Approvals","Leave requests to decide, and time people changed by hand (for your information)."],
+    reports:["Reports",`Hours, output and work by client · ${sc}.`],people:["People",`Everyone in ${sc}. Click a person to open their page.`],
     settings:["Settings",S.isAdmin?"Teams, types of work, clients, working hours and access.":"Types of work and clients for your team."]};
   let[t,sub]=meta[p]||["",""];
   if(p==="person"){const u=S.sel.uid;const pp=personOf(u)||{};t=nameOf(u);sub=[teamName(pp.team||""),pp.role&&pp.role!=="member"?ROLES[pp.role]:"",pp.email||""].filter(Boolean).join(" · ")}
   $("page-title").textContent=t;$("page-sub").textContent=sub;$("back-btn").hidden=p!=="person";
-  $("page-tools").hidden=!(S.canManage&&["overview","tasks","approvals","reports","people"].includes(p));
+  $("page-tools").hidden=!(S.canManage&&["overview","tasks","approvals","reports","people","attendance"].includes(p));
+  setBadge("plan",planToday().filter(a=>a.status!=="done").length);
   setBadge("mytasks",asgList().filter(a=>a.assignee===S.uid&&a.status!=="done").length);
   if(S.canManage){const ids=teamIds();const set=new Set(ids);setBadge("approvals",approvalsCount(ids));
     setBadge("tasks",asgList().filter(a=>set.has(a.assignee)&&a.status!=="done"&&a.due&&a.due<todayKey()).length)}}
@@ -1909,9 +2268,11 @@ function renderOverview(ids){const now=Date.now();let working=0,brk=0,late=0,not
   const set=new Set(ids);const open=asgList().filter(a=>set.has(a.assignee)&&a.status!=="done");const over=open.filter(a=>a.due&&a.due<todayKey()).length;const appr=approvalsCount(ids);
   $("kpi-tiles").innerHTML=[
     {v:`${working}<small> / ${ids.length}</small>`,l:"Working now",c:"ok-t",go:"people"},{v:brk,l:"On a break",c:brk?"brk-t":""},
-    {v:late,l:"Late today",c:late?"brk-t":""},{v:notin,l:"Not in yet",c:notin?"warn-t":""},{v:leave,l:"On leave today",c:leave?"lv-t":""},
+    ...(S.isAdmin?[{v:late,l:"Late today",c:late?"brk-t":"",go:"attendance"},{v:notin,l:"Not in yet",c:notin?"warn-t":"",go:"attendance"}]:[]),
+    (()=>{let p=0,d=0;ids.forEach(u=>{const pl=planToday(u);p+=pl.length;d+=pl.filter(a=>a.status==="done").length});return{v:p?`${d}<small> / ${p}</small>`:"—",l:"Planned tasks done today",c:p&&d===p?"ok-t":""}})(),
+    {v:leave,l:"On leave today",c:leave?"lv-t":""},
     {v:fmtHM(hours),l:"Hours logged today",go:"reports"},{v:open.length,l:"Open tasks",go:"tasks"},{v:over,l:"Overdue tasks",c:over?"warn-t":"",go:"tasks"},
-    {v:appr,l:"Waiting for your approval",c:appr?"acc-t":"",go:"approvals"}].map(tileHTML).join("")}
+    {v:appr,l:"Requests & time changes",c:appr?"acc-t":"",go:"approvals"}].map(tileHTML).join("")}
 function renderPeopleList(ids){const now=Date.now();const wk=rangeKeys("week");
   const list=ids.slice().sort((a,b)=>teamName(teamOf(a)).localeCompare(teamName(teamOf(b)))||nameOf(a).localeCompare(nameOf(b)));
   $("people-list").innerHTML=list.length?list.map(u=>{const st=statusOf(u)||{state:"off"};let w=0;for(const k of wk)w+=k===todayKey()?todayWork(u,now):dayWork(daysOf(u)[k],now);
@@ -1922,8 +2283,10 @@ function renderPeopleList(ids){const now=Date.now();const wk=rangeKeys("week");
     :`<tr><td colspan="7"><div class="empty">No one here yet. People show up after their first sign-in.</div></td></tr>`}
 function renderMonth(){const now=Date.now();const keys=rangeKeys("month");const c=attCounts(S.uid,keys,now);let hrs=0;
   for(const k of keys)hrs+=k===todayKey()?todayWork(S.uid,now):dayWork(S.my.days[k],now);const b=leaveBalance(S.uid);
-  $("month-tiles").innerHTML=[{v:c.present,l:"On time",c:"ok-t"},{v:c.late,l:"Late",c:c.late?"brk-t":""},{v:c.absent,l:"Absent",c:c.absent?"warn-t":""},
-    {v:c.leave,l:"Days off",c:"lv-t"},{v:fmtHM(hrs),l:"Hours this month"},{v:`${b.left}<small> / ${b.allow}</small>`,l:"Annual leave left",c:"lv-t",go:"timeoff"}].map(tileHTML).join("");
+  const dw=keys.filter(k=>(k===todayKey()?todayWork(S.uid,now):dayWork(S.my.days[k],now))>0).length;
+  const fin=asgList().filter(a=>a.assignee===S.uid&&a.status==="done"&&a.doneAt&&keys.includes(dayKey(new Date(a.doneAt)))).length;
+  $("month-tiles").innerHTML=[{v:fmtHM(hrs),l:"Hours this month"},{v:dw,l:"Days worked"},{v:fin,l:"Tasks finished",go:"insights"},
+    {v:c.leave,l:"Days off",c:"lv-t"},{v:`${b.left}<small> / ${b.allow}</small>`,l:"Annual leave left",c:"lv-t",go:"timeoff"}].map(tileHTML).join("");
   $("att-month").hidden=true}
 function applySetTabs(){const allow={teams:S.isAdmin,kinds:true,brands:true,att:S.isAdmin,access:S.isAdmin};
   if(!allow[S.setSec])S.setSec=S.isAdmin?"teams":"kinds";
@@ -1948,7 +2311,7 @@ async function exportCSV(){const keys=rangeKeys(S.range);const now=Date.now();
   for(const u of teamIds()){const days=daysOf(u);for(const k of keys){const d=days[k];const a=attOf(u,k,now);
     if(!d&&["future","na","weekend"].includes(a.c))continue;const fi=firstIn(d),lo=lastOut(d);const ts=d&&d.tasks||[];
     const outp={};ts.forEach(t=>{if(t.qty&&t.unit)outp[t.unit]=(outp[t.unit]||0)+Number(t.qty)});
-    rows.push([nameOf(u),teamName(teamOf(u)),k,DAYS[keyToDate(k).getDay()],attLabel(a),fi?fmtClock(fi):"",lo?fmtClock(lo):(openSession(d)?"still working":""),(dayWork(d,now)/36e5).toFixed(2),Math.round(dayBreak(d,now)/60000),ts.length,
+    const adm=S.isAdmin;rows.push([nameOf(u),teamName(teamOf(u)),k,DAYS[keyToDate(k).getDay()],adm||a.c==="leave"?attLabel(a):"",adm&&fi?fmtClock(fi):"",adm?(lo?fmtClock(lo):(openSession(d)?"still working":"")):"",(dayWork(d,now)/36e5).toFixed(2),Math.round(dayBreak(d,now)/60000),ts.length,
       Object.entries(outp).map(([u2,n])=>`${n} ${u2}`).join("; "),ts.map(t=>`${t.brand?"["+t.brand+"] ":""}${t.text}${t.qty?` (${t.qty} ${t.unit||""})`:""}${t.mins?" ("+t.mins+"m)":""}`).join(" | ")].map(q).join(","))}}
   try{await S.dl.save({filename:`team-log-${keys[0]}_${keys[keys.length-1]}.csv`,data:new Blob(["﻿"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"})})}catch(e){toast("Export didn't go through.")}}
 
@@ -1988,7 +2351,8 @@ function buildStatic(){
   $("mode-tabs").addEventListener("click",e=>{const b=e.target.closest("[data-mode]");if(!b)return;S.mode=b.dataset.mode;rerender()});
   $("board").addEventListener("click",e=>{const b=e.target.closest("[data-uid]");if(!b)return;openPerson(b.dataset.uid)});
   const pick=e=>{const c=e.target.closest("td.cell,.namebtn");if(!c)return;openPerson(c.dataset.uid,c.dataset.day||null)};
-  $("ledger").addEventListener("click",pick);$("ledger").addEventListener("keydown",e=>{if(e.key==="Enter")pick(e)});
+  $("ledger").addEventListener("click",pick);
+  $("att-table").addEventListener("click",e=>{const c=e.target.closest("td.cell,.namebtn");if(!c)return;S.range=S.attRange||"week";openPerson(c.dataset.uid,c.dataset.day||null)});$("ledger").addEventListener("keydown",e=>{if(e.key==="Enter")pick(e)});
   const onReview=e=>{const b=e.target.closest("[data-rv]");if(!b)return;setReview(b.dataset.u,b.dataset.k,b.dataset.s,b.dataset.rv||null)};
   $("review-list").addEventListener("click",onReview);$("detail").addEventListener("click",onReview);
   $("leave-req-list").addEventListener("click",e=>{const b=e.target.closest("[data-lv]");if(b)decideLeave(b.dataset.id,b.dataset.lv)});
@@ -2084,7 +2448,7 @@ function boot(){buildStatic();
     $("signout").addEventListener("click",()=>signOut(auth));
     $("export").hidden=false;
     subMine();subShared();
-    $("nav").hidden=false;$("nav-team").hidden=!S.canManage;$("nav-team-label").textContent=S.isAdmin?"Company":"My team";
+    $("nav").hidden=false;$("nav-team").hidden=!S.canManage;$("nav-att").hidden=!S.isAdmin;$("nav-team-label").textContent=S.isAdmin?"Company":"My team";
     route();
   });
 }

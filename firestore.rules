@@ -1,0 +1,200 @@
+rules_version = '2';
+
+// Growth Squad Team Log — who can read and write what.
+//  Member: anyone signed in with an @mygrowthsquad.com Google account (or an
+//          email an admin allowed under /members). Sees and edits only their own log.
+//  Lead:   people/{uid}.role == 'lead'. Sees and manages their own team:
+//          logs, tasks, time-off, time corrections. Can't approve their own.
+//  Admin:  the emails in ADMIN_EMAILS, anyone under /admins, or role 'admin'.
+//          Sees and manages everyone and all settings.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function email() { return request.auth.token.email.lower(); }
+    function signedIn() {
+      return request.auth != null && request.auth.token.email != null
+        && request.auth.token.email_verified == true;
+    }
+    function pdoc(uid) { return /databases/$(database)/documents/people/$(uid); }
+    function hasMe() { return exists(pdoc(request.auth.uid)); }
+    function me() { return get(pdoc(request.auth.uid)).data; }
+    function isAdmin() {
+      return signedIn() && (
+        email() in ['mostapha@mygrowthsquad.com']                       // ADMIN_EMAILS
+        || exists(/databases/$(database)/documents/admins/$(email()))
+        || (hasMe() && me().get('role', 'member') == 'admin'));
+    }
+    function isMember() {
+      return signedIn() && (
+        email().matches('.*@mygrowthsquad[.]com$')                      // company domain
+        || exists(/databases/$(database)/documents/members/$(email()))
+        || isAdmin());
+    }
+    function isLead() {
+      return isMember() && hasMe() && me().get('role', 'member') == 'lead' && me().get('team', '') != '';
+    }
+    function teamOf(uid) { return get(pdoc(uid)).data.get('team', ''); }
+    function isSelf(uid) { return request.auth.uid == uid; }
+    function sameTeam(uid) { return isLead() && teamOf(uid) == me().team; }
+    function canSee(uid) { return isAdmin() || (isMember() && isSelf(uid)) || sameTeam(uid); }
+    // a lead manages their team, but never approves their own entries
+    function leads(uid) { return !isSelf(uid) && sameTeam(uid); }
+
+    // Directory: names, emails, team and role.
+    match /people/{uid} {
+      allow read: if isMember();
+      allow create: if isAdmin()
+        || (isMember() && isSelf(uid)
+            && request.resource.data.role == 'member' && request.resource.data.team == '');
+      allow update: if isAdmin()
+        || (isMember() && isSelf(uid)
+            && request.resource.data.diff(resource.data).affectedKeys()
+                 .hasOnly(['name', 'email', 'photo', 'updatedAt']));
+      allow delete: if isAdmin();
+    }
+
+    // Teams and their types of work. Leads can edit their own team's types of work.
+    match /teams/{tid} {
+      allow read: if isMember();
+      allow write: if isAdmin();
+      allow update: if isLead() && me().team == tid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['kinds', 'updatedAt']);
+    }
+
+    // Each person's status and daily logs; reviews of their time corrections.
+    match /logs/{uid} {
+      allow read: if canSee(uid);
+      allow write: if isAdmin() || (isMember() && isSelf(uid));
+      match /days/{day} {
+        allow read: if canSee(uid);
+        allow write: if isAdmin() || (isMember() && isSelf(uid));
+      }
+      match /reviews/{rid} {
+        allow read: if canSee(uid);
+        allow write: if isAdmin() || leads(uid);
+      }
+    }
+
+    // Company settings (hours, holidays); brand list is editable by leads too.
+    match /settings/{doc} {
+      allow read: if isMember();
+      allow write: if isAdmin() || (doc == 'brands' && isLead());
+    }
+
+    // Assigned tasks.
+    match /assignments/{id} {
+      allow read: if isAdmin()
+        || (isMember() && resource.data.assignee == request.auth.uid)
+        || (isLead() && resource.data.team == me().team);
+      allow create: if isAdmin()
+        || (isLead() && request.resource.data.team == me().team
+            && teamOf(request.resource.data.assignee) == me().team)
+        // anyone can add a task for themselves (their own plan)
+        || (isMember() && request.resource.data.assignee == request.auth.uid
+            && request.resource.data.selfMade == true && request.resource.data.status == 'todo'
+            && request.resource.data.team == (hasMe() ? me().get('team', '') : ''))
+        || (isMember() && request.resource.data.assignee == request.auth.uid
+            && request.resource.data.status == 'todo'
+            && request.resource.data.recurringId is string
+            && get(/databases/$(database)/documents/recurring/$(request.resource.data.recurringId)).data.assignee == request.auth.uid);
+      allow update: if isAdmin()
+        || (isLead() && resource.data.team == me().team && request.resource.data.team == me().team
+            && teamOf(request.resource.data.assignee) == me().team)
+        // the assignee can move their own task along, time it, plan it, estimate it and comment on it
+        || (isMember() && resource.data.assignee == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+                 .hasOnly(['status', 'doneAt', 'updatedAt', 'lastComment', 'startedAt', 'workMs', 'runSince',
+                           'workDays', 'planFor', 'planDays', 'estimate', 'estAt', 'estBy', 'estFrom']))
+        // and edit tasks they added for themselves
+        || (isMember() && resource.data.assignee == request.auth.uid && resource.data.get('selfMade', false) == true
+            && request.resource.data.assignee == request.auth.uid && request.resource.data.team == resource.data.team);
+      allow delete: if isAdmin() || (isLead() && resource.data.team == me().team)
+        || (isMember() && resource.data.assignee == request.auth.uid && resource.data.get('selfMade', false) == true);
+
+      function asg() { return get(/databases/$(database)/documents/assignments/$(id)).data; }
+      function canAsg() {
+        return isAdmin()
+          || (isMember() && asg().assignee == request.auth.uid)
+          || (isLead() && asg().team == me().team);
+      }
+      match /comments/{cid} {
+        allow read: if canAsg();
+        allow create: if canAsg() && request.resource.data.uid == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 1000;
+        allow delete: if isAdmin() || (isMember() && resource.data.uid == request.auth.uid);
+      }
+    }
+
+    // Repeating task templates.
+    match /recurring/{rid} {
+      allow read: if isAdmin()
+        || (isMember() && resource.data.assignee == request.auth.uid)
+        || (isLead() && resource.data.team == me().team);
+      allow create, update: if isAdmin()
+        || (isLead() && request.resource.data.team == me().team
+            && teamOf(request.resource.data.assignee) == me().team);
+      allow delete: if isAdmin() || (isLead() && resource.data.team == me().team);
+    }
+
+    // Saved task templates. Leads keep their own team's; admins see and edit all.
+    match /templates/{tid} {
+      allow read: if isAdmin() || (isLead() && resource.data.team == me().team);
+      allow create: if isAdmin() || (isLead() && request.resource.data.team == me().team);
+      allow update: if isAdmin()
+        || (isLead() && resource.data.team == me().team && request.resource.data.team == me().team);
+      allow delete: if isAdmin() || (isLead() && resource.data.team == me().team);
+    }
+
+    // Notes about time people changed by hand (start/end of day, added time). Emailed to their lead.
+    match /changes/{cid} {
+      allow read: if isAdmin() || (isMember() && resource.data.uid == request.auth.uid)
+        || (isLead() && resource.data.team == me().team);
+      allow create: if isMember() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.team == (hasMe() ? me().get('team', '') : '');
+      allow update, delete: if isAdmin();
+    }
+
+    // Time off: members request, leads/admins decide.
+    match /leaves/{id} {
+      allow read: if isAdmin()
+        || (isMember() && resource.data.uid == request.auth.uid)
+        || (isLead() && resource.data.team == me().team);
+      allow create: if isAdmin()
+        || (isLead() && request.resource.data.uid != request.auth.uid
+            && request.resource.data.team == me().team
+            && teamOf(request.resource.data.uid) == me().team)
+        || (isMember() && request.resource.data.uid == request.auth.uid
+            && request.resource.data.status == 'pending');
+      allow update: if isAdmin()
+        || (isLead() && resource.data.uid != request.auth.uid
+            && resource.data.team == me().team && request.resource.data.team == me().team);
+      allow delete: if isAdmin()
+        || (isLead() && resource.data.uid != request.auth.uid && resource.data.team == me().team)
+        || (isMember() && resource.data.uid == request.auth.uid && resource.data.status == 'pending');
+    }
+
+    // Which brands each person covers.
+    match /roster/{uid} {
+      allow read: if canSee(uid);
+      allow write: if isAdmin() || leads(uid);
+    }
+
+    // Extra emails allowed in (e.g. Gmail). Managed in the app by admins.
+    match /members/{memberEmail} {
+      allow read: if isAdmin() || (signedIn() && email() == memberEmail);
+      allow write: if isAdmin();
+    }
+
+    // Extra admins. Add or remove these only from the Firebase console.
+    match /admins/{adminEmail} {
+      allow read: if isAdmin() || (signedIn() && email() == adminEmail);
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

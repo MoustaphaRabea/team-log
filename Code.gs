@@ -9,6 +9,13 @@
  *  - Due soon:     once a day after 9:00, to each person with tasks due today or
  *                  before the next workday (one email listing them all).
  *  - Overdue:      once a day after 9:00, to the person and to whoever assigned it.
+ *  - Expected time: when someone changes the expected time their lead set on a task,
+ *                  one email to them and to whoever assigned it.
+ *  - Time changes: when someone fixes their start/end of day or adds time by hand,
+ *                  to their team lead (or the admins if they have none).
+ *  - Weekly:       on the first workday of each week after 9:00, each person's summary
+ *                  of the week before (time by task type, estimates, plans), to them
+ *                  with their lead in cc.
  * Repeating tasks are emailed once, when they're first set up; their daily copies
  * don't send reminders, overdue or done emails.
  *
@@ -20,7 +27,8 @@ const APP_URL = 'https://www.mygrowthsquad.com/gs-team';
 const SENDER_NAME = 'Growth Squad Team Log';
 const OVERLAP_MIN = 15;        // each run re-checks this many minutes back
 const COMMENT_WAIT_MIN = 2;    // wait this long after the last comment before emailing
-const DAILY_HOUR = 9;          // due-soon and overdue emails go out after this hour
+const DAILY_HOUR = 9;          // due-soon, overdue and weekly emails go out after this hour
+const OWNER_EMAILS = ['mostapha@mygrowthsquad.com'];
 
 const BASE = 'https://firestore.googleapis.com/v1/projects/' + PROJECT_ID + '/databases/(default)/documents';
 const PROPS = PropertiesService.getScriptProperties();
@@ -41,6 +49,12 @@ function stop() {
   Logger.log('Stopped.');
 }
 
+/** Sends last week's summaries now (for testing), even if they already went out. */
+function sendWeeklyNow() {
+  PROPS.deleteProperty('weekly');
+  weekly_(true);
+}
+
 /** Sends today's due-soon and overdue emails now, even before 9:00 or if already sent today. */
 function sendDailyNow() {
   PROPS.deleteProperty('daily');
@@ -58,7 +72,10 @@ function checkNewTasks() {
     const last = Number(PROPS.getProperty('last') || 0);
     const since = last ? last - OVERLAP_MIN * 60e3 : now - 48 * 3600e3;
 
-    const asg = recentAny_('assignments', ['createdAt', 'assignedAt', 'doneAt', 'lastComment.at'], since);
+    const asg = recentAny_('assignments', ['createdAt', 'assignedAt', 'doneAt', 'lastComment.at', 'estAt'], since);
+    const changes = recentAny_('changes', ['at'], since).filter(function (t) {
+      return !t.data.notifiedAt && (t.data.at || 0) >= from && t.data.at <= now - COMMENT_WAIT_MIN * 60e3;
+    });
     const rec = recentAny_('recurring', ['createdAt', 'assignedAt'], since);
 
     const fresh = asg.filter(function (t) {
@@ -79,15 +96,24 @@ function checkNewTasks() {
       return lc && lc.at >= from && lc.at > (t.data.commentNotifiedAt || 0) && lc.at <= now - COMMENT_WAIT_MIN * 60e3;
     });
 
-    if (fresh.length || repeats.length || done.length || talk.length) {
+    const est = asg.filter(function (t) {
+      const a = t.data;
+      return a.estBy && a.estBy === a.assignee && !a.selfMade && !a.recurringId && a.createdBy && (a.estFrom || 0) > 0 &&
+        (a.estAt || 0) >= from && a.estAt > (a.estNotifiedAt || 0) && a.estAt <= now - COMMENT_WAIT_MIN * 60e3;
+    });
+
+    if (fresh.length || repeats.length || done.length || talk.length || est.length || changes.length) {
       const people = loadPeople_();
       fresh.forEach(function (t) { safe_(function () { notifyNew_('assignments', t, people, false); }); });
       repeats.forEach(function (t) { safe_(function () { notifyNew_('recurring', t, people, true); }); });
       done.forEach(function (t) { safe_(function () { notifyDone_(t, people); }); });
       talk.forEach(function (t) { safe_(function () { notifyComments_(t, people, from); }); });
+      est.forEach(function (t) { safe_(function () { notifyEstimate_(t, people); }); });
+      if (changes.length) safe_(function () { notifyChanges_(changes, people); });
     }
     PROPS.setProperty('last', String(now));
     daily_(false);
+    safe_(function () { weekly_(false); });
   } finally {
     lock.releaseLock();
   }
@@ -273,19 +299,214 @@ function daily_(force) {
   PROPS.setProperty('daily', today);
 }
 
+/* ---------- expected time changed by the person → them + whoever assigned it ---------- */
+function notifyEstimate_(t, people) {
+  const a = t.data;
+  const p = people.byUid[a.assignee] || {};
+  const me = String(p.email || '').toLowerCase();
+  const boss = String(a.createdBy || '').toLowerCase();
+  const mark = { estNotifiedAt: a.estAt };
+  if (!me || !boss || me === boss || a.estimate === a.estFrom) { patch_('assignments', t.id, mark); return; }
+  const who = p.name || p.email;
+  const from = estLabel_(a.estFrom), to = estLabel_(a.estimate);
+  const rows = [['Expected time', from + ' → ' + to]];
+  if (a.brand) rows.push(['Client / brand', a.brand]);
+  if (a.due) rows.push(['Due', formatDate_(a.due)]);
+  if (a.workMs) rows.push(['Time spent so far', dur_(a.workMs)]);
+  const body =
+    '<p style="margin:0 0 6px">Hi ' + esc_(firstName_(p)) + ' and ' + esc_(firstName_(people.byEmail[boss])) + ',</p>' +
+    '<p style="margin:0 0 16px">' + esc_(who) + ' changed the expected time on this task' + (a.estimate ? '' : ' (removed it)') + ':</p>' +
+    taskBlock_(a, rows, true) +
+    small_('If the new time doesn’t work, talk it through in the task’s comments.') +
+    button_('Open the task', APP_URL + '#tasks');
+  const text = who + ' changed the expected time on "' + a.title + '": ' + from + ' → ' + to + '\n\n' + APP_URL + '#tasks';
+  send_(me + ',' + boss, 'Expected time changed: ' + a.title + ' (' + from + ' → ' + to + ')', text, body);
+  patch_('assignments', t.id, mark);
+}
+
+/* ---------- time changes → the person's lead ---------- */
+function leadsOf_(people, uid) {
+  const p = people.byUid[uid] || {};
+  const me = String(p.email || '').toLowerCase();
+  let out = [];
+  if (p.team) Object.keys(people.byUid).forEach(function (u) {
+    const x = people.byUid[u];
+    if (u !== uid && x.role === 'lead' && x.team === p.team && x.email) out.push(String(x.email).toLowerCase());
+  });
+  if (!out.length) out = admins_(people);
+  return unique_(out.filter(function (e) { return e && e !== me; }));
+}
+function admins_(people) {
+  const list = OWNER_EMAILS.slice();
+  Object.keys(people.byUid).forEach(function (u) { const x = people.byUid[u]; if (x.role === 'admin' && x.email) list.push(String(x.email).toLowerCase()); });
+  return unique_(list.map(function (e) { return String(e).toLowerCase(); }));
+}
+function notifyChanges_(changes, people) {
+  const by = {};
+  changes.forEach(function (t) { leadsOf_(people, t.data.uid).forEach(function (e) { (by[e] = by[e] || []).push(t); }); });
+  Object.keys(by).forEach(function (to) {
+    safe_(function () {
+      const list = by[to].sort(function (x, y) { return x.data.at - y.data.at; });
+      const n = list.length;
+      const items = list.map(function (t) {
+        const c = t.data;
+        return '<div style="background:#F8F2DC;border-radius:10px;padding:10px 12px;font-size:14px;margin:0 0 8px">' +
+          '<div style="font-weight:700;font-size:13px;margin:0 0 4px">' + esc_(nameOfUid_(people, c.uid)) + ' · ' + esc_(formatShort_(c.day)) + '</div>' +
+          esc_(c.text) + (c.reason ? '<div style="color:#5B6B69;margin-top:4px">“' + esc_(c.reason) + '”</div>' : '') + '</div>';
+      }).join('');
+      const body = '<p style="margin:0 0 6px">Hi ' + esc_(firstName_(people.byEmail[to])) + ',</p>' +
+        '<p style="margin:0 0 12px">' + (n === 1 ? 'Someone on your team changed their time:' : n + ' time changes from your team:') + '</p>' + items +
+        small_('Nothing to approve. This is so you know. You can mark it as seen under Approvals.') + button_('Open Approvals', APP_URL + '#approvals');
+      const text = list.map(function (t) { return nameOfUid_(people, t.data.uid) + ' · ' + t.data.day + ': ' + t.data.text + (t.data.reason ? ' ("' + t.data.reason + '")' : ''); }).join('\n') + '\n\n' + APP_URL + '#approvals';
+      send_(to, n === 1 ? 'Time change: ' + nameOfUid_(people, list[0].data.uid) + ' · ' + formatShort_(list[0].data.day) : n + ' time changes from your team', text, body);
+    });
+  });
+  const now = Date.now();
+  changes.forEach(function (t) { safe_(function () { patch_('changes', t.id, { notifiedAt: now }); }); });
+}
+
+/* ---------- weekly summary (week starts Saturday) → each person, their lead in cc ---------- */
+function workCal_() {
+  const set = getDoc_('/settings/team') || {};
+  const weekend = Array.isArray(set.weekend) ? set.weekend : [5, 6];
+  const holidays = (set.holidays || []).map(function (h) { return h && h.date; });
+  return { isWorkday: function (k) { return weekend.indexOf(weekday_(k)) < 0 && holidays.indexOf(k) < 0; } };
+}
+function weekly_(force) {
+  const tz = Session.getScriptTimeZone();
+  const today = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd');
+  const weekStart = addDaysKey_(today, -((weekday_(today) + 1) % 7));
+  const done = PROPS.getProperty('weekly');
+  if (!force) {
+    if (!done) { PROPS.setProperty('weekly', weekStart); return; }   // first run: start with next week
+    if (done >= weekStart) return;
+    if (Number(Utilities.formatDate(new Date(), tz, 'H')) < DAILY_HOUR) return;
+    const cal = workCal_();
+    let first = weekStart; for (let i = 0; i < 7 && !cal.isWorkday(first); i++) first = addDaysKey_(first, 1);
+    if (today < first) return;
+  }
+  sendWeekly_(addDaysKey_(weekStart, -7), addDaysKey_(weekStart, -1));
+  PROPS.setProperty('weekly', weekStart);
+}
+function keyStartMs_(k) { const p = k.split('-').map(Number); const tz = Session.getScriptTimeZone();
+  const guess = Date.UTC(p[0], p[1] - 1, p[2]); const off = Number(Utilities.formatDate(new Date(guess), tz, 'H')); return guess - (off > 12 ? off - 24 : off) * 3600e3; }
+function sendWeekly_(lo, hi) {
+  const people = loadPeople_();
+  const keys = []; for (let k = lo; k <= hi; k = addDaysKey_(k, 1)) keys.push(k);
+  const tasks = recentAny_('assignments', ['updatedAt', 'doneAt'], keyStartMs_(lo) - 7 * 864e5).map(function (t) { return Object.assign({ _id: t.id }, t.data); });
+  Object.keys(people.byUid).forEach(function (uid) {
+    safe_(function () {
+      const p = people.byUid[uid];
+      if (!p.email) return;
+      const days = runQueryAt_('/logs/' + encodeURIComponent(uid), { from: [{ collectionId: 'days' }], where: { compositeFilter: { op: 'AND', filters: [
+        { fieldFilter: { field: { fieldPath: 'date' }, op: 'GREATER_THAN_OR_EQUAL', value: { stringValue: lo } } },
+        { fieldFilter: { field: { fieldPath: 'date' }, op: 'LESS_THAN_OR_EQUAL', value: { stringValue: hi } } }] } } });
+      const s = weekStats_(uid, keys, days, tasks.filter(function (a) { return a.assignee === uid; }));
+      if (!s.worked && !s.tracked && !s.done.length) return;
+      const cc = leadsOf_(people, uid);
+      const html = weeklyHtml_(p, s, lo, hi);
+      const text = firstName_(p) + '’s week (' + formatShort_(lo) + ' – ' + formatShort_(hi) + '): ' + hm_(s.worked) + ' worked, ' + hm_(s.tracked) + ' on tasks, ' +
+        s.done.length + ' tasks finished.\n\n' + APP_URL + '#insights';
+      const opts = { name: SENDER_NAME, htmlBody: emailWrap_(html) };
+      if (cc.length) opts.cc = cc.join(',');
+      MailApp.sendEmail(p.email, 'Your week, ' + formatShort_(lo) + ' – ' + formatShort_(hi) + ': ' + hm_(s.tracked) + ' on tasks, ' + s.done.length + ' finished', text, opts);
+    });
+  });
+}
+function weekStats_(uid, keys, days, tasks) {
+  const byDay = {}; days.forEach(function (d) { byDay[d.data.date || d.id] = d.data; });
+  const has = {}; keys.forEach(function (k) { has[k] = true; });
+  let worked = 0, tracked = 0; const items = []; const heavy = [];
+  keys.forEach(function (k) {
+    const d = byDay[k] || {};
+    (d.sessions || []).forEach(function (x) {
+      if (x.out == null) return;
+      let ms = x.out - x.in; (x.breaks || []).forEach(function (b) { if (b.e != null) ms -= (b.e - b.s); }); worked += Math.max(0, ms);
+    });
+    const list = [];
+    tasks.forEach(function (a) {
+      let ms = Number((a.workDays || {})[k]) || 0;
+      if (!a.workDays && a.workMs && a.status === 'done' && a.doneAt && dayKey_(a.doneAt) === k) ms += Number(a.workMs) || 0;
+      if (ms > 0) list.push({ title: a.title, brand: a.brand || '', kind: a.kind || '', ms: ms });
+    });
+    (d.tasks || []).forEach(function (x) { if (x.asg && tasks.some(function (a) { return a._id === x.asg && (a.workDays || a.workMs); })) return;
+      if (Number(x.mins) > 0) list.push({ title: x.text, brand: x.brand || '', kind: x.kind || '', ms: x.mins * 60000 }); });
+    const t = list.reduce(function (s, x) { return s + x.ms; }, 0); tracked += t;
+    list.sort(function (a, b) { return b.ms - a.ms; });
+    if (list[0] && t >= 3 * 3600e3 && list[0].ms / t >= 0.6) heavy.push({ k: k, title: list[0].title, ms: list[0].ms, share: list[0].ms / t });
+    Array.prototype.push.apply(items, list);
+  });
+  const done = tasks.filter(function (a) { return a.status === 'done' && a.doneAt && has[dayKey_(a.doneAt)]; });
+  const withEst = done.filter(function (a) { return a.estimate && a.workMs; });
+  const estSum = withEst.reduce(function (s, a) { return s + a.estimate * 60000; }, 0), actSum = withEst.reduce(function (s, a) { return s + a.workMs; }, 0);
+  const over = tasks.filter(function (a) {
+    if (!a.estimate || !a.workMs) return false;
+    const touched = Object.keys(a.workDays || {}).some(function (k) { return has[k]; }) || (a.status === 'done' && a.doneAt && has[dayKey_(a.doneAt)]);
+    return touched && a.workMs > a.estimate * 60000 * 1.25 && a.workMs - a.estimate * 60000 >= 10 * 60000;
+  }).sort(function (x, y) { return (y.workMs - y.estimate * 60000) - (x.workMs - x.estimate * 60000); });
+  let pDays = 0, pDone = 0;
+  tasks.forEach(function (a) { keys.forEach(function (k) {
+    if (a.planFor === k || (a.planDays || []).indexOf(k) >= 0) { pDays++; if (a.status === 'done' && a.doneAt && dayKey_(a.doneAt) <= k) pDone++; }
+  }); });
+  const group = function (key, none) { const m = {}; items.forEach(function (x) { const n = x[key] || none; m[n] = (m[n] || 0) + x.ms; });
+    return Object.keys(m).map(function (n) { return { name: n, ms: m[n] }; }).sort(function (a, b) { return b.ms - a.ms; }); };
+  return { worked: worked, tracked: tracked, done: done, nEst: withEst.length, estSum: estSum, actSum: actSum, over: over, heavy: heavy,
+    pDays: pDays, pDone: pDone, byKind: group('kind', 'No type of work'), byBrand: group('brand', 'No client') };
+}
+function weeklyHtml_(p, s, lo, hi) {
+  const tile = function (v, l) { return '<td style="padding:10px 12px;background:#F8F2DC;border-radius:10px;vertical-align:top;width:25%"><div style="font-size:20px;font-weight:800">' + v + '</div><div style="font-size:12px;color:#5B6B69">' + esc_(l) + '</div></td>'; };
+  const ratio = s.nEst ? s.actSum / s.estSum : 0;
+  const acc = !s.nEst ? '—' : ratio > 1.1 ? Math.round((ratio - 1) * 100) + '% over' : ratio < 0.9 ? Math.round((1 - ratio) * 100) + '% under' : 'On target';
+  const bars = function (rows, total) {
+    if (!rows.length) return '<p style="color:#5B6B69;font-size:14px;margin:0 0 14px">Nothing tracked.</p>';
+    const max = rows[0].ms;
+    return '<table style="border-collapse:collapse;width:100%;font-size:14px;margin:0 0 16px">' + rows.slice(0, 6).map(function (r) {
+      return '<tr><td style="padding:4px 10px 4px 0;white-space:nowrap;width:35%">' + esc_(r.name) + '</td><td style="padding:4px 0;width:45%"><div style="background:#EFE7CB;border-radius:5px;height:10px"><div style="background:#FF4F00;border-radius:5px;height:10px;width:' + Math.max(2, Math.round(r.ms / max * 100)) + '%"></div></div></td>' +
+        '<td style="padding:4px 0 4px 10px;text-align:right;white-space:nowrap;color:#5B6B69">' + hm_(r.ms) + (total ? ' · ' + Math.round(r.ms / total * 100) + '%' : '') + '</td></tr>';
+    }).join('') + '</table>';
+  };
+  let tip = '';
+  if (s.worked && s.tracked / s.worked < 0.5) tip = 'Less than half of your day was on a task. Press Start on a task when you begin it, so you can see where the rest of the time goes.';
+  else if (s.nEst >= 2 && ratio > 1.25) tip = 'Tasks took about ' + Math.round((ratio - 1) * 100) + '% longer than you expected. Try adding that much buffer when you plan, or split big tasks into smaller ones.';
+  else if (!s.pDays) tip = 'Try planning 2 or 3 tasks each morning in My plan, with a time for each. It makes it easier to see when something is eating your day.';
+  else if (s.heavy.length) tip = 'On ' + s.heavy.length + (s.heavy.length === 1 ? ' day' : ' days') + ' one task took most of your time. If it was stuck, split it or ask for help early.';
+  else if (s.pDays && s.pDone / s.pDays >= 0.8) tip = 'You finished most of what you planned. Nice week.';
+  return '<p style="margin:0 0 6px">Hi ' + esc_(firstName_(p)) + ',</p>' +
+    '<p style="margin:0 0 14px">Here’s how your time went from ' + esc_(formatShort_(lo)) + ' to ' + esc_(formatShort_(hi)) + '.</p>' +
+    '<table style="border-collapse:separate;border-spacing:6px;width:100%;margin:0 0 12px"><tr>' +
+      tile(hm_(s.worked), 'Hours worked') + tile(hm_(s.tracked) + (s.worked ? ' <span style="font-size:13px;color:#5B6B69">' + Math.min(100, Math.round(s.tracked / s.worked * 100)) + '%</span>' : ''), 'On tasks') +
+      tile(String(s.done.length), 'Tasks finished') + tile(s.pDays ? s.pDone + ' / ' + s.pDays : '—', 'Planned tasks finished') + '</tr></table>' +
+    '<div style="font-weight:700;margin:6px 0 6px">Where the time went</div>' + bars(s.byKind, s.tracked) +
+    '<div style="font-weight:700;margin:6px 0 6px">By client</div>' + bars(s.byBrand, s.tracked) +
+    '<div style="font-weight:700;margin:6px 0 6px">Estimates</div><p style="font-size:14px;margin:0 0 8px">' +
+      (s.nEst ? 'Across ' + s.nEst + ' finished tasks with an expected time: <b>' + esc_(acc) + '</b> (' + hm_(s.actSum) + ' spent vs ' + hm_(s.estSum) + ' expected).' : 'No finished tasks had an expected time this week.') + '</p>' +
+    (s.over.length ? '<table style="border-collapse:collapse;width:100%;font-size:14px;margin:0 0 14px">' + s.over.slice(0, 5).map(function (a) {
+      return '<tr><td style="padding:6px 10px 6px 0;border-top:1px solid #E2D8B6">' + esc_(a.title) + '</td><td style="padding:6px 0;border-top:1px solid #E2D8B6;text-align:right;white-space:nowrap;color:#C2410C;font-weight:600">' + hm_(a.workMs) + ' vs ' + esc_(estLabel_(a.estimate)) + '</td></tr>';
+    }).join('') + '</table>' : '') +
+    (s.heavy.length ? '<div style="font-weight:700;margin:6px 0 6px">Days that went mostly to one task</div><ul style="font-size:14px;margin:0 0 14px;padding-left:18px">' + s.heavy.slice(0, 4).map(function (h) {
+      return '<li>' + esc_(formatShort_(h.k)) + ': ' + hm_(h.ms) + ' on “' + esc_(h.title) + '” (' + Math.round(h.share * 100) + '%)</li>';
+    }).join('') + '</ul>' : '') +
+    (tip ? '<div style="background:#FFF1E8;border:1px solid #FFC9AA;border-radius:10px;padding:10px 12px;font-size:14px;margin:0 0 16px"><b>Tip:</b> ' + esc_(tip) + '</div>' : '') +
+    button_('Open My insights', APP_URL + '#insights') +
+    small_('Your lead gets a copy of this summary. It shows time on tasks, not when you started or ended your day.');
+}
+function hm_(ms) { return ms >= 60000 ? dur_(ms) : '0m'; }
+function estLabel_(m) { m = Number(m) || 0; if (!m) return 'no estimate'; if (m < 60) return m + ' min'; const h = m / 60; return (h === Math.floor(h) ? h : h.toFixed(1)) + (h === 1 ? ' hour' : ' hours'); }
+
 /* ---------- email building ---------- */
 function send_(to, subject, text, innerHtml, replyTo) {
-  const html =
-    '<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#1B2F33">' +
+  const opts = { name: SENDER_NAME, htmlBody: emailWrap_(innerHtml) };
+  if (replyTo) opts.replyTo = replyTo;
+  MailApp.sendEmail(to, subject, text, opts);
+}
+function emailWrap_(innerHtml) {
+  return '<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#1B2F33">' +
       '<div style="background:#1B2F33;border-radius:14px 14px 0 0;padding:18px 22px">' +
         '<div style="color:#FF4F00;font-weight:800;font-size:18px">GrowthSquad</div>' +
         '<div style="color:#F8F2DC;font-size:13px;margin-top:2px">Team Work Log</div>' +
       '</div>' +
       '<div style="background:#FFFCF2;border:1px solid #E2D8B6;border-top:0;border-radius:0 0 14px 14px;padding:22px">' + innerHtml + '</div>' +
     '</div>';
-  const opts = { name: SENDER_NAME, htmlBody: html };
-  if (replyTo) opts.replyTo = replyTo;
-  MailApp.sendEmail(to, subject, text, opts);
 }
 function taskBlock_(a, rows, done) {
   return '<div style="font-size:18px;font-weight:700;margin:0 0 12px">' + (done ? '✓ ' : '') + esc_(a.title) + '</div>' +
@@ -358,6 +579,12 @@ function fs_(path, options) {
 }
 function runQuery_(structuredQuery) {
   const out = fs_(':runQuery', { method: 'post', payload: JSON.stringify({ structuredQuery: structuredQuery }) });
+  return (out || []).filter(function (r) { return r.document; }).map(function (r) {
+    return { id: r.document.name.split('/').pop(), data: fields_(r.document) };
+  });
+}
+function runQueryAt_(parent, structuredQuery) {
+  const out = fs_(parent + ':runQuery', { method: 'post', payload: JSON.stringify({ structuredQuery: structuredQuery }) });
   return (out || []).filter(function (r) { return r.document; }).map(function (r) {
     return { id: r.document.name.split('/').pop(), data: fields_(r.document) };
   });
