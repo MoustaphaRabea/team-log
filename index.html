@@ -233,6 +233,61 @@ textarea{font:inherit;color:var(--fg);background:var(--surface);border:1px solid
 table.people td,table.people th{text-align:left}
 table.people select,table.people input{padding:6px 8px}
 .tag.qty{background:color-mix(in srgb,var(--work) 14%,transparent);color:var(--work)}
+/* assigned tasks: links, time, who-picker, board, edit dialog */
+.links{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+a.tag.link{display:inline-flex;align-items:center;gap:4px;text-decoration:none;color:var(--fg);background:var(--bg);border:1px solid var(--line);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+a.tag.link:hover{border-color:var(--accent);color:var(--accent)}
+.lk{width:12px;height:12px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.tag.time{font-variant-numeric:tabular-nums}
+.tag.time.running{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent);font-weight:600}
+.notes a,.cmt a{color:var(--accent);overflow-wrap:anywhere}
+.notes{white-space:pre-line}
+.who-head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.who-head>span:first-child{font-size:13px;color:var(--muted)}
+.who-head .linkbtn{margin-left:auto}
+div.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+#a-who .chip{padding:6px 12px}
+.newtask textarea{background:var(--bg);font-size:14px}
+.tpl-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px dashed var(--line)}
+.tpl-row .f{flex:1 1 260px;max-width:420px}
+.tpl-row .linkbtn{padding-bottom:10px}
+.fbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.fbar input[type=search]{flex:2 1 220px;width:auto;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:8px 14px;min-width:0;color:var(--fg)}
+.fbar select{flex:1 1 140px;width:auto;border-radius:999px}
+.fbar select.on,.fbar input.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.bulk{display:flex;gap:10px 14px;align-items:center;flex-wrap:wrap;padding:8px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.bulk.has{position:sticky;top:8px;z-index:3;border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface));box-shadow:0 6px 18px rgb(0 0 0 / .08)}
+.bk-all{font-weight:600}
+@media (max-width:900px){.bulk.has{position:static}}
+.bk-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bk-act select{width:auto;padding:6px 10px;border-radius:999px;font-size:13px}
+.bk-due{display:inline-flex;gap:6px;align-items:center}
+.bk-due input{width:auto;padding:5px 8px;font-size:13px}
+.t-row{display:flex;gap:10px;align-items:flex-start}
+.t-row .sel{margin-top:3px;width:16px;height:16px;flex:0 0 auto;accent-color:var(--accent)}
+.tasks li.asg.picked{background:color-mix(in srgb,var(--accent) 7%,transparent);border-radius:8px;padding-left:8px;padding-right:8px}
+.kanban{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+.kcol{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0;min-height:120px;transition:border-color .15s,background .15s}
+.kcol.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--bg))}
+.kcol-head{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:13px;padding:2px 4px}
+.kcol-head b{font-size:12px;color:var(--muted);background:var(--sunk);border-radius:999px;padding:0 8px}
+.kcol[data-col="doing"] .kcol-head span{color:var(--accent)}
+.kcol[data-col="done"] .kcol-head span{color:var(--work)}
+.kcards{gap:8px}
+.kanban .tasks li.asg{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.kanban .tasks li.asg:first-child{border-top:1px solid var(--line)}
+.kanban li.asg[draggable="true"]{cursor:grab}
+.kanban li.asg.dragging{opacity:.45}
+.kanban .asg-act{justify-content:flex-start}
+.kanban li.kempty{display:block;border:1px dashed var(--line);border-radius:10px;padding:14px;text-align:center;font-size:13px;color:var(--muted)}
+.dlg{border:0;border-radius:16px;padding:0;width:min(580px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;background:var(--surface);color:var(--fg);box-shadow:0 20px 60px rgb(0 0 0 / .3)}
+.dlg::backdrop{background:rgb(20 38 42 / .55)}
+.dlg form{display:flex;flex-direction:column;gap:12px;padding:20px}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dlg-act{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding-top:4px}
+.dlg textarea{background:var(--bg);font-size:14px}
+@media (max-width:600px){.tasks li.asg{grid-template-columns:minmax(0,1fr)}.tasks li.asg .asg-act{justify-content:flex-start}}
+@media (max-width:900px){.kanban{grid-template-columns:repeat(3,minmax(250px,1fr));overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}.kcol{scroll-snap-align:start}}
 .strip .seg.fixed{background:repeating-linear-gradient(90deg,var(--work) 0 6px,color-mix(in srgb,var(--work) 60%,transparent) 6px 9px)}
 #team-filter{width:auto;padding:6px 10px;border-radius:999px;font-weight:600}
 .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -425,11 +480,16 @@ table.plist tbody tr:hover td{background:var(--sunk)}
     <section class="page" data-page="mytasks" hidden>
         <div class="panel">
           <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
-            <h2>Assigned to me</h2>
-            <span class="muted small" id="my-asg-count"></span>
+            <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><h2>Assigned to me</h2><span class="muted small" id="my-asg-count"></span></div>
+            <div class="tabs" id="my-view" aria-label="View">
+              <button type="button" data-v="list" aria-selected="true">List</button>
+              <button type="button" data-v="board" aria-selected="false">Board</button>
+            </div>
           </div>
           <div id="my-brands"></div>
           <ul class="tasks" id="my-asg"></ul>
+          <div class="kanban" id="my-asg-board" hidden></div>
+          <p class="muted small" style="margin:0">Press Start when you begin a task, Pause when you step away, and Done when you finish. The time you spend is counted for you and stops when you clock out.</p>
         </div>
     </section>
 
@@ -515,21 +575,35 @@ table.plist tbody tr:hover td{background:var(--sunk)}
     <div class="panel" id="asg-panel">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h2>Assigned tasks</h2><button class="btn primary sm" type="button" id="new-task-btn">+ New task</button></div>
-        <div class="tabs" id="asg-filter">
-          <button type="button" data-f="open" aria-selected="true">Open</button>
-          <button type="button" data-f="done" aria-selected="false">Done</button>
-          <button type="button" data-f="all" aria-selected="false">All</button>
-          <button type="button" data-f="repeat" aria-selected="false">Repeating</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <div class="tabs" id="asg-filter">
+            <button type="button" data-f="open" aria-selected="true">Open</button>
+            <button type="button" data-f="done" aria-selected="false">Done</button>
+            <button type="button" data-f="all" aria-selected="false">All</button>
+            <button type="button" data-f="repeat" aria-selected="false">Repeating</button>
+          </div>
+          <div class="tabs" id="team-view" aria-label="View">
+            <button type="button" data-v="list" aria-selected="true">List</button>
+            <button type="button" data-v="board" aria-selected="false">Board</button>
+          </div>
         </div>
       </div>
       <form id="asg-form" class="newtask" autocomplete="off" hidden>
+        <div class="tpl-row" id="a-tpl-row" hidden>
+          <label class="f" for="a-tpl">Start from a template
+            <select id="a-tpl"></select>
+          </label>
+          <button type="button" class="linkbtn" id="a-tpl-del" hidden>Delete this template</button>
+        </div>
         <label class="f" for="a-title">Task
           <input type="text" id="a-title" maxlength="200" placeholder="e.g. Shortlist 20 KSA beauty creators for the November drop">
         </label>
+        <div class="f" role="group" aria-labelledby="a-who-label">
+          <div class="who-head"><span id="a-who-label">Assign to</span><span class="muted small" id="a-who-n"></span><button type="button" class="linkbtn" id="a-who-all">Select all</button></div>
+          <div class="chips" id="a-who"></div>
+          <span class="muted small">Pick one person or several. Each person gets their own copy to start and finish.</span>
+        </div>
         <div class="row">
-          <label class="f" for="a-who">Assign to
-            <select id="a-who"></select>
-          </label>
           <label class="f" for="a-brand">Client / brand
             <select id="a-brand"></select>
           </label>
@@ -557,18 +631,57 @@ table.plist tbody tr:hover td{background:var(--sunk)}
               <option value="w5">Every Friday</option>
             </select>
           </label>
-          <label class="f" for="a-notes" style="flex:2 1 220px">Notes (optional)
-            <input type="text" id="a-notes" maxlength="300" placeholder="Links, targets, anything they need">
+        </div>
+        <div class="row" style="align-items:stretch">
+          <label class="f" for="a-notes" style="flex:2 1 260px">Notes (optional)
+            <textarea id="a-notes" rows="2" maxlength="1000" placeholder="Targets, details, anything they need"></textarea>
+          </label>
+          <label class="f" for="a-links" style="flex:2 1 260px">Links (optional)
+            <textarea id="a-links" rows="2" placeholder="Paste Drive, Sheets or brief links, one per line"></textarea>
           </label>
         </div>
         <div class="row" style="align-items:center;justify-content:flex-end">
           <label class="chk" for="a-high" style="flex:0 0 auto"><input type="checkbox" id="a-high"> High priority</label>
+          <button class="btn" type="button" id="a-tpl-save" style="flex:0 0 auto" title="Save what's in this form so you can reuse it next time">Save as template</button>
           <button class="btn primary" type="submit" style="flex:0 0 auto">Assign task</button>
         </div>
       </form>
       <div class="chips" id="asg-people"></div>
+      <div class="fbar" id="asg-fbar">
+        <input type="search" id="f-q" placeholder="Search tasks, notes, people or brands" aria-label="Search tasks" autocomplete="off">
+        <select id="f-brand" aria-label="Filter by brand"></select>
+        <select id="f-due" aria-label="Filter by due date">
+          <option value="">Any due date</option>
+          <option value="over">Overdue</option>
+          <option value="today">Due today</option>
+          <option value="week">Due in the next 7 days</option>
+          <option value="none">No due date</option>
+        </select>
+        <select id="f-prio" aria-label="Filter by priority">
+          <option value="">Any priority</option>
+          <option value="high">High priority</option>
+          <option value="normal">Normal priority</option>
+        </select>
+        <button type="button" class="linkbtn" id="f-clear" hidden>Clear filters</button>
+      </div>
+      <div class="bulk" id="asg-bulk" hidden>
+        <label class="chk bk-all"><input type="checkbox" id="bk-all"> <span id="bk-n">Select all</span></label>
+        <div class="bk-act" id="bk-act" hidden>
+          <button class="btn sm primary" type="button" data-bk="done">Mark done</button>
+          <span class="bk-due"><input type="date" id="bk-due" aria-label="New due date"><button class="btn sm" type="button" data-bk="due">Set due date</button></span>
+          <select id="bk-who" aria-label="Move selected tasks to"></select>
+          <select id="bk-prio" aria-label="Set priority">
+            <option value="">Set priority…</option>
+            <option value="high">High priority</option>
+            <option value="normal">Normal priority</option>
+          </select>
+          <button class="btn sm" type="button" data-bk="del">Delete</button>
+          <button class="linkbtn" type="button" data-bk="clear">Clear selection</button>
+        </div>
+      </div>
       <ul class="tasks" id="asg-list"></ul>
-      <p class="muted small" style="margin:0">People show up here after their first sign-in. When someone marks a task done, it's added to their work log for that day. Repeating tasks appear on their list each matching workday.</p>
+      <div class="kanban" id="asg-board" hidden></div>
+      <p class="muted small" style="margin:0">People show up here after their first sign-in. When someone marks a task done, it's added to their work log for that day with the time it took. In Board view, drag a card to another column to change its status. Repeating tasks appear on their list each matching workday.</p>
     </div>
 
     </section>
@@ -756,13 +869,54 @@ table.plist tbody tr:hover td{background:var(--sunk)}
     </section>
   </main>
 </div>
+<dialog class="dlg" id="asg-dlg" aria-labelledby="ed-h">
+  <form id="ed-form" autocomplete="off">
+    <div class="dlg-head"><h2 id="ed-h">Edit task</h2><button type="button" class="x" id="ed-x" aria-label="Close">×</button></div>
+    <label class="f" for="ed-title">Task
+      <input type="text" id="ed-title" maxlength="200">
+    </label>
+    <div class="row">
+      <label class="f" for="ed-who">Assigned to
+        <select id="ed-who"></select>
+      </label>
+      <label class="f" for="ed-brand">Client / brand
+        <select id="ed-brand"></select>
+      </label>
+    </div>
+    <div class="row">
+      <label class="f" for="ed-kind">Type of work
+        <select id="ed-kind"></select>
+      </label>
+      <label class="f" for="ed-kind-other" id="ed-kind-other-wrap" hidden>Type of work (write it)
+        <input type="text" id="ed-kind-other" maxlength="60">
+      </label>
+    </div>
+    <div class="row">
+      <label class="f" for="ed-due" id="ed-due-wrap">Due date
+        <input type="date" id="ed-due">
+      </label>
+      <label class="f" for="ed-repeat" id="ed-repeat-wrap" hidden>Repeat
+        <select id="ed-repeat"></select>
+      </label>
+      <label class="chk" for="ed-high" style="flex:0 0 auto;padding-bottom:9px"><input type="checkbox" id="ed-high"> High priority</label>
+    </div>
+    <label class="f" for="ed-notes">Notes
+      <textarea id="ed-notes" rows="3" maxlength="1000"></textarea>
+    </label>
+    <label class="f" for="ed-links">Links
+      <textarea id="ed-links" rows="2" placeholder="One link per line"></textarea>
+    </label>
+    <p class="muted small" id="ed-hint" style="margin:0"></p>
+    <div class="dlg-act"><button type="button" class="btn" id="ed-cancel">Cancel</button><button type="submit" class="btn primary">Save changes</button></div>
+  </form>
+</dialog>
 <div class="toast" id="toast" hidden></div>
 
 <script src="config.js"></script>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,deleteDoc,collection,query,where,getDocs,onSnapshot} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,updateDoc,deleteDoc,collection,query,where,getDocs,onSnapshot} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 (function(){
 "use strict";
 const CFG=window.TEAMLOG_CONFIG||{};
@@ -774,6 +928,7 @@ const wrapDoc=s=>({id:s.id,exists:s.exists(),data:()=>s.data(),metadata:{fromCac
 const adb={
   doc:p=>({path:p,
     set:d=>setDoc(doc(fs,p),d),
+    update:d=>updateDoc(doc(fs,p),d),
     get:async()=>wrapDoc(await getDoc(doc(fs,p))),
     delete:()=>deleteDoc(doc(fs,p)),
     onSnapshot:(n,e)=>onSnapshot(doc(fs,p),s=>n(wrapDoc(s)),e)}),
@@ -820,7 +975,7 @@ const S={db:null,dl:null,uid:null,me:null,isAdmin:false,isLead:false,canManage:f
   my:{status:null,days:{},raw:{}},team:{statuses:{},days:{},raw:{},subs:{}},
   people:{},teams:{},reviews:{},leaves:{},recurring:{},asg:{},roster:{},comments:{},threads:{},
   view:"me",range:"week",mode:"hours",sel:{uid:null,day:null},mins:null,q:Promise.resolve(),busy:false,
-  settings:clone(DEF_SET),brandsDoc:null,page:null,lastPage:null,setSec:"",asgF:"open",asgP:"",teamF:"",kindTeam:"",loaded:{}};
+  settings:clone(DEF_SET),brandsDoc:null,page:null,lastPage:null,setSec:"",asgF:"open",asgP:"",teamF:"",kindTeam:"",loaded:{},asgWho:[],edit:null,asgQ:"",asgB:"",asgD:"",asgPr:"",asgSel:new Set(),tpls:{},viewMy:lsGet("tl-view-my")||"list",viewTeam:lsGet("tl-view-team")||"list"};
 
 /* ---------- people & teams ---------- */
 const personOf=uid=>S.people[uid]||null;
@@ -970,7 +1125,7 @@ const act={
     let t=at||now;if(s&&t<s.in)t=s.in;if(t>now)t=now;
     if(s){for(const b of s.breaks||[]){if(b.e==null)b.e=Math.max(b.s,t);if(b.e>t)b.e=t}s.breaks=(s.breaks||[]).filter(b=>b.s<t);s.out=t;
       if(now-t>FIX_SLACK)s.edit=Object.assign(s.edit||{},{origOut:now,reason:(s.edit&&s.edit.reason)||"Forgot to clock out",at:now});await writeDay(st.dayKey,day)}
-    await writeStatus({state:"off",since:t});toast(`Clocked out · ${fmtDur(dayWork(S.my.days[st.dayKey],now))} worked that day`)}),
+    await writeStatus({state:"off",since:t});await pauseMyRunning(t);toast(`Clocked out · ${fmtDur(dayWork(S.my.days[st.dayKey],now))} worked that day`)}),
   addManual:(k,from,to,reason)=>enqueue(async()=>{const now=Date.now();let a=hmToDate(k,from),b=hmToDate(k,to);if(b<=a)b+=864e5;
     if(b>now)throw fail("That time hasn't happened yet.");if(b-a>16*36e5)throw fail("That's more than 16 hours. Split it into two entries.");
     if(k<dayKey(addDays(new Date(),-31)))throw fail("You can only add time from the last 30 days.");
@@ -1350,8 +1505,8 @@ function fillBrandSelect(sel,uid){if(!sel)return;const cur=sel.value;const list=
 function fillKindSelect(sel,uid){if(!sel)return;const cur=sel.value;const ks=uid?kindsFor(uid):kindsForTeam(S.myTeam);
   const html=ks.map(k=>`<option value="${esc(k.name)}">${esc(k.name)}${k.unit?` (${esc(k.unit)})`:""}</option>`).join("")+`<option value="${OTHER}">Other (write it)</option>`;
   if(sel.innerHTML!==html){sel.innerHTML=html;if([...sel.options].some(o=>o.value===cur))sel.value=cur}}
-function refreshBrandSelects(){fillBrandSelect($("t-brand"),S.uid);const w=$("a-who");if(w)fillBrandSelect($("a-brand"),w.value)}
-function refreshKindSelects(){fillKindSelect($("t-kind"),S.uid);onTaskKind();const w=$("a-who");if(w){fillKindSelect($("a-kind"),w.value||null);$("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER}}
+function refreshBrandSelects(){fillBrandSelect($("t-brand"),S.uid);fillBrandSelect($("a-brand"),(S.asgWho||[])[0]||"")}
+function refreshKindSelects(){fillKindSelect($("t-kind"),S.uid);onTaskKind();fillKindSelect($("a-kind"),(S.asgWho||[])[0]||null);$("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER}
 function onTaskKind(){const v=$("t-kind").value;$("t-kind-other-wrap").hidden=v!==OTHER;const k=v!==OTHER&&kindInfo(S.uid,v);
   $("t-qty-wrap").hidden=!(k&&k.unit);if(k&&k.unit)$("t-qty-label").textContent=`How many ${k.unit}?`}
 
@@ -1366,50 +1521,178 @@ function dueTag(a){if(!a.due)return "";const t=todayKey();
   if(a.status!=="done"&&a.due<t)return `<span class="tag due-over">Overdue · ${fmtShort(a.due)}</span>`;
   if(a.status!=="done"&&a.due===t)return `<span class="tag due-today">Due today</span>`;
   return `<span class="tag">Due ${fmtShort(a.due)}</span>`}
-function asgPill(s){return `<span class="pill" style="--st:${s==="done"?"var(--work)":s==="doing"?"var(--accent)":"var(--off)"}">${ASG_ST[s]||s}</span>`}
+const isPaused=a=>a.status==="doing"&&!a.runSince;
+function asgPill(a){const s=a.status;const l=isPaused(a)?"Paused":(ASG_ST[s]||s);
+  return `<span class="pill" style="--st:${s==="done"?"var(--work)":s==="doing"&&!isPaused(a)?"var(--accent)":"var(--off)"}">${l}</span>`}
+/* time on task: counted from Start, minus pauses; stops at Done or clock-out */
+const taskTime=(a,now)=>(Number(a.workMs)||0)+(a.runSince?Math.max(0,(now||Date.now())-a.runSince):0);
+function timeTag(a){const ms=taskTime(a);if(!ms&&!a.runSince)return "";
+  return `<span class="tag time${a.runSince?" running":""}" title="Time spent on this task, not counting pauses">⏱ ${fmtDur(ms)}${a.runSince?" · running":""}</span>`}
+/* links */
+const LINK_ICO='<svg class="lk" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>';
+function normUrl(s){s=String(s||"").trim().replace(/[),.;'"]+$/,"");if(!s)return "";
+  if(!/^https?:\/\//i.test(s)){if(/^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(s))s="https://"+s;else return ""}
+  try{const u=new URL(s);return (u.protocol==="https:"||u.protocol==="http:")&&u.href.length<=800?u.href:""}catch(e){return ""}}
+const parseLinks=t=>[...new Set(String(t||"").split(/\s+/).map(normUrl).filter(Boolean))].slice(0,10);
+function linkLabel(u){try{const x=new URL(u);const h=x.hostname.replace(/^www\./,""),p=x.pathname;
+  if(h==="docs.google.com")return p.startsWith("/spreadsheets")?"Google Sheet":p.startsWith("/document")?"Google Doc":p.startsWith("/presentation")?"Google Slides":p.startsWith("/forms")?"Google Form":"Google Docs";
+  if(h==="drive.google.com")return "Google Drive";if(h.endsWith("canva.com"))return "Canva";if(h.endsWith("notion.so")||h.endsWith("notion.site"))return "Notion";
+  if(h.endsWith("figma.com"))return "Figma";if(h.endsWith("instagram.com"))return "Instagram";if(h.endsWith("tiktok.com"))return "TikTok";if(h.endsWith("snapchat.com"))return "Snapchat";
+  return h}catch(e){return "Link"}}
+const linksHTML=ls=>Array.isArray(ls)&&ls.length?`<div class="links">${ls.map(u=>`<a class="tag link" href="${esc(u)}" target="_blank" rel="noopener noreferrer" title="${esc(u)}">${LINK_ICO}${esc(linkLabel(u))}</a>`).join("")}</div>`:"";
+const linkify=t=>esc(t).replace(/https?:\/\/[^\s<]+/g,m=>{const href=m.replace(/(&quot;|&#39;|[),.;!?])+$/,"");return `<a href="${href}" target="_blank" rel="noopener noreferrer">${href}</a>${m.slice(href.length)}`});
 const seenKey=id=>`tl-seen-${id}`;
 function hasNewComment(a){const lc=a.lastComment;if(!lc||lc.uid===S.uid)return false;return Number(lsGet(seenKey(a.id))||0)<lc.at}
 function threadHTML(a){const cs=(S.comments[a.id]||[]).slice().sort((x,y)=>x.at-y.at);
-  return `<div class="thread">${cs.length?cs.map(c=>`<div class="cmt"><b>${esc(nameOf(c.uid))}</b> <span class="muted small">${relDay(c.at)}</span><div>${esc(c.text)}</div></div>`).join(""):'<div class="muted small">No comments yet.</div>'}
+  return `<div class="thread">${cs.length?cs.map(c=>`<div class="cmt"><b>${esc(nameOf(c.uid))}</b> <span class="muted small">${relDay(c.at)}</span><div>${linkify(c.text)}</div></div>`).join(""):'<div class="muted small">No comments yet.</div>'}
     <form class="row cform" data-cform="${esc(a.id)}" autocomplete="off"><input type="text" data-keep="c-${esc(a.id)}" maxlength="1000" placeholder="Write a comment or paste a link" aria-label="Comment"><button class="btn sm" type="submit" style="flex:0 0 auto">Send</button></form></div>`}
-function asgRow(a,manage){
-  const tags=`${a.priority==="high"?'<span class="tag due-over">High priority</span>':""}${a.recurringId?'<span class="tag">Repeats</span>':""}${a.brand?`<span class="tag brand">${esc(a.brand)}</span>`:""}${a.kind?`<span class="tag">${esc(a.kind)}</span>`:""}${dueTag(a)}${manage?`<span class="tag">→ ${esc(nameOf(a.assignee))}</span>`:""}${manage&&a.notifiedHow==="sent"?'<span class="tag" title="The assignee got an email about this task">✉ Emailed</span>':""}${a.qty?`<span class="tag qty">${esc(a.qty)} ${esc(a.unit||"")}</span>`:""}`;
-  let act=asgPill(a.status);
-  if(manage)act+=`<button class="x" data-asg-del="${esc(a.id)}" aria-label="Delete task">×</button>`;
-  else if(a.status==="todo")act+=`<button class="btn sm" data-asg-st="doing" data-id="${esc(a.id)}">Start</button><button class="btn sm primary" data-asg-st="done" data-id="${esc(a.id)}">Done</button>`;
-  else if(a.status==="doing")act+=`<button class="btn sm primary" data-asg-st="done" data-id="${esc(a.id)}">Done</button>`;
-  else act+=`<button class="linkbtn" data-asg-st="todo" data-id="${esc(a.id)}">Reopen</button>`;
+function asgRow(a,manage,board,pick){const id=esc(a.id);
+  const tags=`${a.priority==="high"?'<span class="tag due-over">High priority</span>':""}${a.recurringId?'<span class="tag">Repeats</span>':""}${a.brand?`<span class="tag brand">${esc(a.brand)}</span>`:""}${a.kind?`<span class="tag">${esc(a.kind)}</span>`:""}${dueTag(a)}${manage?`<span class="tag">→ ${esc(nameOf(a.assignee))}</span>`:""}${manage&&a.notifiedHow==="sent"?'<span class="tag" title="The assignee got an email about this task">✉ Emailed</span>':""}${a.status==="done"&&a.doneAt?`<span class="tag">Done ${esc(relDay(a.doneAt))}</span>`:""}${timeTag(a)}`;
+  let act=board&&!isPaused(a)?"":asgPill(a);
+  if(manage)act+=`<button class="btn sm" data-asg-edit="${id}">Edit</button><button class="x" data-asg-del="${id}" aria-label="Delete task">×</button>`;
+  else if(a.status==="todo")act+=`<button class="btn sm" data-asg-st="doing" data-id="${id}">${a.workMs?"Resume":"Start"}</button><button class="btn sm primary" data-asg-st="done" data-id="${id}">Done</button>`;
+  else if(a.status==="doing")act+=`${a.runSince?`<button class="btn sm" data-asg-st="pause" data-id="${id}">Pause</button>`:`<button class="btn sm" data-asg-st="doing" data-id="${id}">Resume</button>`}<button class="btn sm primary" data-asg-st="done" data-id="${id}">Done</button>`;
+  else act+=`<button class="linkbtn" data-asg-st="todo" data-id="${id}">Reopen</button>`;
   const open=!!S.threads[a.id];const n=(S.comments[a.id]||[]).length;
-  return `<li class="asg ${a.status==="done"?"is-done":""}"><div style="min-width:0"><div class="t-text">${esc(a.title)}</div><div style="margin-top:4px">${tags}</div>${a.notes?`<div class="muted small" style="margin-top:4px">${esc(a.notes)}</div>`:""}
-    <button class="linkbtn cbtn" data-thread="${esc(a.id)}">${open?"Hide comments":`Comments${open&&n?` (${n})`:""}`}${hasNewComment(a)?'<span class="dot" title="New comment"></span>':""}</button>${open?threadHTML(a):""}</div><div class="asg-act">${act}</div></li>`}
+  const drag=board&&(manage||a.assignee===S.uid)?` draggable="true" data-drag="${id}"`:"";
+  const picked=pick&&S.asgSel.has(a.id);
+  const head=pick?`<div class="t-row"><input type="checkbox" class="sel" data-sel="${id}" aria-label="Select: ${esc(a.title)}"${picked?" checked":""}><div class="t-text">${esc(a.title)}</div></div>`:`<div class="t-text">${esc(a.title)}</div>`;
+  return `<li class="asg ${a.status==="done"?"is-done":""}${picked?" picked":""}"${drag}><div style="min-width:0">${head}<div style="margin-top:4px">${tags}</div>${a.notes?`<div class="muted small notes" style="margin-top:4px">${linkify(a.notes)}</div>`:""}${linksHTML(a.links)}
+    <button class="linkbtn cbtn" data-thread="${id}">${open?"Hide comments":`Comments${n?` (${n})`:""}`}${hasNewComment(a)?'<span class="dot" title="New comment"></span>':""}</button>${open?threadHTML(a):""}</div><div class="asg-act">${act}</div></li>`}
+const BOARD_COLS=[["todo","To do"],["doing","In progress"],["done","Done · last 7 days"]];
+function boardHTML(list,manage){const recent=Date.now()-7*864e5;
+  return BOARD_COLS.map(([st,l])=>{const items=list.filter(a=>(a.status==="doing"||a.status==="done"?a.status:"todo")===st&&(st!=="done"||(a.doneAt||a.updatedAt||0)>=recent)).sort(sortAsg);
+    return `<div class="kcol" data-col="${st}"><div class="kcol-head"><span>${l}</span><b>${items.length}</b></div><ul class="tasks kcards">${items.length?items.slice(0,60).map(a=>asgRow(a,manage,true)).join(""):`<li class="kempty">${st==="done"?"Nothing finished this week":st==="doing"?"Drag a task here when work starts":"Nothing waiting"}</li>`}</ul></div>`}).join("")}
+const setViewTabs=(id,v)=>document.querySelectorAll(`#${id} [data-v]`).forEach(b=>b.setAttribute("aria-selected",String(b.dataset.v===v)));
 function renderMyAsg(){const mine=asgList().filter(a=>a.assignee===S.uid).sort(sortAsg);
   const open=mine.filter(a=>a.status!=="done");const done=mine.filter(a=>a.status==="done"&&(Date.now()-(a.doneAt||0))<3*864e5);
   $("my-asg-count").textContent=open.length?plural(open.length,"open task"):"";
   const br=rosterBrands(S.uid);
   $("my-brands").innerHTML=br.length?`<span class="muted small">Your brands:</span> ${br.map(b=>`<span class="tag brand">${esc(b)}</span>`).join("")}`:"";
+  const board=S.viewMy==="board";setViewTabs("my-view",S.viewMy);$("my-asg").hidden=board;$("my-asg-board").hidden=!board;
+  if(board){keepInputs($("my-asg-board"),()=>{$("my-asg-board").innerHTML=boardHTML(mine,false)});return}
   keepInputs($("my-asg"),()=>{$("my-asg").innerHTML=(open.length||done.length)?[...open,...done].map(a=>asgRow(a,false)).join("")
     :`<li style="display:block;border:0;padding:0"><div class="empty">No tasks assigned to you right now.</div></li>`})}
-function setAsgStatus(id,st){const a=S.asg[id];if(!a)return;let qty=0,unit="";
-  if(st==="done"){const k=kindInfo(a.assignee,a.kind);if(k&&k.unit){const v=window.prompt(`How many ${k.unit}? (leave empty to skip)`,"");if(v===null)return;qty=Math.max(0,Math.round(Number(v)||0));unit=k.unit}}
-  enqueue(async()=>{const now=Date.now();const n=clone(a);delete n.id;n.status=st;n.updatedAt=now;n.doneAt=st==="done"?now:null;await asgRef(id).set(n);
-    if(st==="done"&&a.assignee===S.uid){const k=todayKey();const day=await getDay(k);day.tasks=day.tasks||[];
-      if(!day.tasks.some(t=>t.asg===id)){const t={id:rid(),at:now,text:a.title,brand:a.brand||"",kind:a.kind||"",mins:0,asg:id};if(qty){t.qty=qty;t.unit=unit}day.tasks.push(t);await writeDay(k,day)}}
-    toast(st==="done"?"Done. Added to today's work":st==="doing"?"Started":"Reopened")})}
+function patchAsg(id,p){if(S.asg[id])S.asg=Object.assign({},S.asg,{[id]:Object.assign({},S.asg[id],p)})}
+/* st: "doing" (start / resume), "pause", "done", "todo" (reopen / move back) */
+function setAsgStatus(id,st){const a=S.asg[id];if(!a)return;const mine=a.assignee===S.uid;
+  if(st===a.status&&st!=="doing")return;if(st==="doing"&&a.status==="doing"&&a.runSince)return;if(st==="pause"&&!a.runSince)return;
+  let qty=0,unit="";
+  if(st==="done"&&mine){const k=kindInfo(a.assignee,a.kind);if(k&&k.unit){const v=window.prompt(`How many ${k.unit}? (leave empty to skip)`,"");if(v===null)return;qty=Math.max(0,Math.round(Number(v)||0));unit=k.unit}}
+  enqueue(async()=>{const now=Date.now();const p={updatedAt:now};let work=Number(a.workMs)||0;
+    if(st!=="pause"){p.status=st;p.doneAt=st==="done"?now:null}
+    if(a.runSince&&st!=="doing"){work+=Math.max(0,now-a.runSince);p.workMs=work;p.runSince=null}
+    if(st==="doing"&&mine&&!a.runSince){p.runSince=now;if(!a.startedAt)p.startedAt=now}
+    await asgRef(id).update(p);patchAsg(id,p);
+    if(st==="done"&&mine){const k=todayKey();const day=await getDay(k);day.tasks=day.tasks||[];
+      if(!day.tasks.some(t=>t.asg===id)){const t={id:rid(),at:now,text:a.title,brand:a.brand||"",kind:a.kind||"",mins:Math.round(work/60000),asg:id};if(qty){t.qty=qty;t.unit=unit}day.tasks.push(t);await writeDay(k,day)}}
+    toast(st==="done"?(mine?`Done${work>=60000?` in ${fmtDur(work)}`:""}. Added to today's work`:`Marked done for ${nameOf(a.assignee)}`)
+      :st==="pause"?`Paused · ${fmtDur(work)} so far`
+      :st==="doing"?(mine?(a.workMs?"Resumed. The clock is running again":"Started. The clock is running on this task"):`Moved to In progress for ${nameOf(a.assignee)}`)
+      :a.status==="doing"?"Moved back to To do":"Reopened");rerender()})}
+/* stop the clock on running tasks when someone clocks out */
+async function pauseMyRunning(at){for(const a of asgList().filter(x=>x.assignee===S.uid&&x.runSince)){const p={workMs:(Number(a.workMs)||0)+Math.max(0,at-a.runSince),runSince:null,updatedAt:Date.now()};
+  try{await asgRef(a.id).update(p);patchAsg(a.id,p)}catch(e){console.warn(e)}}}
+/* who to assign to: one or more people */
+function whoPeople(ids){return ids.slice().sort((a,b)=>nameOf(a).localeCompare(nameOf(b)))}
+function renderWho(people){S.asgWho=S.asgWho.filter(u=>people.includes(u));
+  const html=people.map(u=>`<button type="button" class="chip" data-who="${esc(u)}" aria-pressed="${S.asgWho.includes(u)}">${esc(nameOf(u))}${u===S.uid?" (you)":""}${S.isAdmin&&!S.teamF&&teamOf(u)?` · ${esc(teamName(teamOf(u)))}`:""}</button>`).join("")||'<span class="muted small">No one in this team yet.</span>';
+  if($("a-who").innerHTML!==html)$("a-who").innerHTML=html;
+  $("a-who-n").textContent=S.asgWho.length>1?`${S.asgWho.length} people`:"";
+  $("a-who-all").textContent=people.length&&S.asgWho.length===people.length?"Clear":"Select all";$("a-who-all").hidden=people.length<2}
+const who0=()=>S.asgWho[0]||"";
+/* filters on the Tasks page */
+const asgFiltered=()=>!!(S.asgQ||S.asgB||S.asgD||S.asgPr);
+function asgMatch(a,noDue){
+  if(S.asgB&&(a.brand||"")!==S.asgB)return false;
+  if(S.asgPr&&(a.priority==="high"?"high":"normal")!==S.asgPr)return false;
+  if(S.asgD&&!noDue){const d=a.due||"",t=todayKey();
+    if(S.asgD==="none"){if(d)return false}
+    else if(!d)return false;
+    else if(S.asgD==="over"){if(!(a.status!=="done"&&d<t))return false}
+    else if(S.asgD==="today"){if(d!==t)return false}
+    else if(S.asgD==="week"){if(d<t||d>dayKey(addDays(new Date(),7)))return false}}
+  if(S.asgQ){const hay=[a.title,a.notes,a.brand,a.kind,nameOf(a.assignee),(a.links||[]).join(" ")].join(" ").toLowerCase();
+    if(!S.asgQ.toLowerCase().split(/\s+/).filter(Boolean).every(w=>hay.includes(w)))return false}
+  return true}
+function renderFilters(all){
+  const used=new Set(all.map(a=>a.brand).filter(Boolean));const bs=[...new Set([...brandList(),...used])].filter(b=>used.has(b)||b===S.asgB).sort((x,y)=>x.localeCompare(y));
+  const html=`<option value="">All brands</option>`+bs.map(b=>`<option>${esc(b)}</option>`).join("");
+  const sel=$("f-brand");if(sel.dataset.k!==html){sel.innerHTML=html;sel.dataset.k=html}sel.value=S.asgB;
+  $("f-due").value=S.asgD;$("f-prio").value=S.asgPr;if($("f-q").value!==S.asgQ&&document.activeElement!==$("f-q"))$("f-q").value=S.asgQ;
+  [["f-brand",S.asgB],["f-due",S.asgD],["f-prio",S.asgPr],["f-q",S.asgQ]].forEach(([i,v])=>$(i).classList.toggle("on",!!v));
+  $("f-clear").hidden=!asgFiltered()}
+/* select several tasks and change them together */
+function renderBulk(shown){const ids=new Set(shown.map(a=>a.id));for(const id of [...S.asgSel])if(!ids.has(id))S.asgSel.delete(id);
+  const n=S.asgSel.size;$("asg-bulk").hidden=!shown.length;$("asg-bulk").classList.toggle("has",n>0);$("bk-act").hidden=!n;
+  $("bk-all").checked=n>0&&n===shown.length;$("bk-all").indeterminate=n>0&&n<shown.length;
+  $("bk-n").textContent=n?`${n} selected`:`Select all (${shown.length})`;
+  if(n){const html=`<option value="">Move to…</option>`+edPeople().map(u=>`<option value="${esc(u)}">${esc(nameOf(u))}${u===S.uid?" (you)":""}</option>`).join("");
+    const w=$("bk-who");if(w.dataset.k!==html){w.innerHTML=html;w.dataset.k=html}w.value="";$("bk-prio").value=""}}
+const selTasks=()=>[...S.asgSel].map(id=>S.asg[id]).filter(Boolean);
+function bulkUpdate(make,msg){const list=selTasks();if(!list.length)return;
+  enqueue(async()=>{const now=Date.now();let n=0;
+    for(const a of list){const p=make(a,now);if(!p)continue;Object.assign(p,{updatedAt:now});await asgRef(a.id).update(p);patchAsg(a.id,p);n++}
+    S.asgSel.clear();toast(msg(n));rerender()})}
+const stopClock=(a,now)=>a.runSince?{workMs:(Number(a.workMs)||0)+Math.max(0,now-a.runSince),runSince:null}:{};
+function bulkAction(k){const list=selTasks();if(!list.length)return;const n=list.length;const me=(S.me&&S.me.email)||"";
+  if(k==="clear"){S.asgSel.clear();rerender();return}
+  if(k==="done")return bulkUpdate((a,now)=>a.status==="done"?null:Object.assign({status:"done",doneAt:now},stopClock(a,now)),c=>c?`Marked ${plural(c,"task")} done`:"Those tasks were already done");
+  if(k==="due"){const v=$("bk-due").value;if(!v){toast("Pick the new due date first");$("bk-due").focus();return}
+    return bulkUpdate(()=>({due:v}),c=>`Due ${fmtShort(v)} for ${plural(c,"task")}`)}
+  if(k==="del"){if(!window.confirm(`Delete ${plural(n,"task")}? This can't be undone.`))return;
+    enqueue(async()=>{const m=Object.assign({},S.asg);for(const a of list){await asgRef(a.id).delete();delete m[a.id]}S.asg=m;S.asgSel.clear();toast(`Deleted ${plural(n,"task")}`);rerender()});return}}
+function bulkMove(who){if(!who)return;const list=selTasks().filter(a=>a.assignee!==who);if(!list.length){toast(`Already with ${nameOf(who)}`);$("bk-who").value="";return}
+  if(!window.confirm(`Move ${plural(list.length,"task")} to ${nameOf(who)}?${who!==S.uid?" They'll get an email about each one.":""}`)){$("bk-who").value="";return}
+  const keep=new Set(list.map(a=>a.id));for(const id of [...S.asgSel])if(!keep.has(id))S.asgSel.delete(id);
+  bulkUpdate((a,now)=>Object.assign({assignee:who,team:teamOf(who),assignedAt:now,notifiedAt:null,notifiedHow:"",editedAt:now,editedBy:(S.me&&S.me.email)||""},stopClock(a,now)),c=>`Moved ${plural(c,"task")} to ${nameOf(who)}`)}
+/* task templates */
+function tplList(){return Object.values(S.tpls||{}).filter(t=>!S.isAdmin||!S.teamF||!t.team||t.team===S.teamF).sort((a,b)=>String(a.name).localeCompare(String(b.name)))}
+function renderTpl(){const ts=tplList();const sel=$("a-tpl");const cur=sel.value;$("a-tpl-row").hidden=!ts.length;
+  const html=`<option value="">Choose a template…</option>`+ts.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
+  if(sel.dataset.k!==html){sel.innerHTML=html;sel.dataset.k=html;sel.value=ts.some(t=>t.id===cur)?cur:""}
+  $("a-tpl-del").hidden=!sel.value}
+function formKind(){let k=$("a-kind").value;if(k===OTHER)k=$("a-kind-other").value.trim()||"Other";return k}
+function saveTpl(){const title=$("a-title").value.trim();if(!title){toast("Fill in the task first, then save it as a template");$("a-title").focus();return}
+  const cur=S.tpls[$("a-tpl").value];
+  const name=(window.prompt("Name this template",cur?cur.name:title)||"").trim().slice(0,80);if(!name)return;
+  const team=S.isAdmin?(S.teamF||teamOf(who0())||""):S.myTeam;
+  const same=tplList().find(t=>String(t.name).toLowerCase()===name.toLowerCase()&&(t.team||"")===team);
+  if(same&&!window.confirm(`A template called "${same.name}" already exists. Replace it?`))return;
+  const due=$("a-due").value;const dueIn=due?Math.round((keyToDate(due)-keyToDate(todayKey()))/864e5):null;
+  const now=Date.now();const id=same?same.id:now.toString(36)+rid();
+  const d={name,title,brand:$("a-brand").value,kind:formKind(),priority:$("a-high").checked?"high":"normal",notes:$("a-notes").value.trim(),links:parseLinks($("a-links").value),
+    repeat:$("a-repeat").value||"",dueIn:dueIn!=null&&dueIn>=0?dueIn:null,who:S.asgWho.slice(),team,createdBy:same?same.createdBy||"":(S.me&&S.me.email)||"",createdAt:same?same.createdAt||now:now,updatedAt:now};
+  enqueue(async()=>{await S.db.doc(`templates/${id}`).set(d);S.tpls=Object.assign({},S.tpls,{[id]:Object.assign({id},d)});renderTpl();$("a-tpl").value=id;$("a-tpl-del").hidden=false;
+    toast(`Saved "${name}". Pick it from “Start from a template” next time.`)})}
+function applyTpl(id){const t=S.tpls[id];$("a-tpl-del").hidden=!t;if(!t)return;
+  $("a-title").value=t.title||"";$("a-notes").value=t.notes||"";$("a-links").value=(t.links||[]).join("\n");$("a-high").checked=t.priority==="high";
+  $("a-repeat").value=t.repeat||"";$("a-due").value=t.dueIn!=null&&!t.repeat?dayKey(addDays(new Date(),Number(t.dueIn)||0)):"";
+  if(Array.isArray(t.who)&&t.who.length){const ok=new Set(teamIds());const w=t.who.filter(u=>ok.has(u));if(w.length)S.asgWho=w}
+  fillBrandSelect($("a-brand"),who0());setSel($("a-brand"),t.brand);
+  fillKindSelect($("a-kind"),who0()||null);const has=t.kind&&[...$("a-kind").options].some(o=>o.value===t.kind&&t.kind!==OTHER);
+  if(t.kind&&!has){$("a-kind").value=OTHER;$("a-kind-other").value=t.kind}else if(t.kind){$("a-kind").value=t.kind;$("a-kind-other").value=""}
+  $("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER;
+  toast(`Filled in from "${t.name}". Check it, then press Assign task.`);rerender()}
+function deleteTpl(){const t=S.tpls[$("a-tpl").value];if(!t)return;if(!window.confirm(`Delete the template "${t.name}"? Tasks made from it stay.`))return;
+  enqueue(async()=>{await S.db.doc(`templates/${t.id}`).delete();const m=Object.assign({},S.tpls);delete m[t.id];S.tpls=m;$("a-tpl").value="";renderTpl();toast("Template deleted")})}
 function renderAsgAdmin(ids){
-  const who=$("a-who");const cur=who.value;const people=ids.slice().sort((a,b)=>nameOf(a).localeCompare(nameOf(b)));
-  const html=`<option value="">— Choose —</option>`+people.map(u=>`<option value="${esc(u)}">${esc(nameOf(u))}${u===S.uid?" (you)":""}${S.isAdmin&&!S.teamF?` · ${esc(teamName(teamOf(u)))}`:""}</option>`).join("");
-  if(who.innerHTML!==html){who.innerHTML=html;who.value=people.includes(cur)?cur:""}
-  fillBrandSelect($("a-brand"),who.value);fillKindSelect($("a-kind"),who.value||null);$("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER;
+  const people=whoPeople(ids);renderWho(people);renderTpl();
+  fillBrandSelect($("a-brand"),who0());fillKindSelect($("a-kind"),who0()||null);$("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER;
+  const board=S.viewTeam==="board";setViewTabs("team-view",S.viewTeam);$("asg-filter").hidden=board;
   document.querySelectorAll("#asg-filter button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.f===S.asgF)));
   const set=new Set(ids);const all=asgList().filter(a=>set.has(a.assignee));
   $("asg-people").innerHTML=`<button type="button" class="chip" data-p="" aria-pressed="${!S.asgP}">Everyone</button>`+people.map(u=>{const n=all.filter(a=>a.assignee===u&&a.status!=="done").length;
     return `<button type="button" class="chip" data-p="${esc(u)}" aria-pressed="${S.asgP===u}">${esc(nameOf(u))}${n?` · ${n}`:""}</button>`}).join("");
-  if(S.asgF==="repeat"){const rs=Object.values(S.recurring).filter(r=>set.has(r.assignee)&&(!S.asgP||r.assignee===S.asgP)).sort((a,b)=>nameOf(a.assignee).localeCompare(nameOf(b.assignee)));
-    $("asg-list").innerHTML=rs.length?rs.map(r=>`<li class="asg"><div style="min-width:0"><div class="t-text">${esc(r.title)}</div><div style="margin-top:4px"><span class="tag">${esc(REPEAT_LABEL(r.repeat))}</span>${r.brand?`<span class="tag brand">${esc(r.brand)}</span>`:""}${r.kind?`<span class="tag">${esc(r.kind)}</span>`:""}<span class="tag">→ ${esc(nameOf(r.assignee))}</span></div></div><div class="asg-act"><button class="btn sm" data-rec-del="${esc(r.id)}">Stop repeating</button></div></li>`).join("")
-      :`<li style="display:block;border:0;padding:0"><div class="empty">No repeating tasks. Pick a “Repeat” option when you assign a task.</div></li>`;return}
-  const list=all.filter(a=>(!S.asgP||a.assignee===S.asgP)&&(S.asgF==="all"||(S.asgF==="done"?a.status==="done":a.status!=="done"))).sort(sortAsg);
-  keepInputs($("asg-list"),()=>{$("asg-list").innerHTML=list.length?list.slice(0,80).map(a=>asgRow(a,true)).join("")
-    :`<li style="display:block;border:0;padding:0"><div class="empty">${all.length?"Nothing here for this filter.":"No tasks assigned yet. Use the form above to give someone their first task."}</div></li>`})}
+  $("asg-list").hidden=board;$("asg-board").hidden=!board;renderFilters(all);
+  if(board){$("asg-bulk").hidden=true;S.asgSel.clear();keepInputs($("asg-board"),()=>{$("asg-board").innerHTML=boardHTML(all.filter(a=>(!S.asgP||a.assignee===S.asgP)&&asgMatch(a)),true)});return}
+  if(S.asgF==="repeat"){$("asg-bulk").hidden=true;S.asgSel.clear();const rs=Object.values(S.recurring).filter(r=>set.has(r.assignee)&&(!S.asgP||r.assignee===S.asgP)&&asgMatch(r,true)).sort((a,b)=>nameOf(a.assignee).localeCompare(nameOf(b.assignee)));
+    $("asg-list").innerHTML=rs.length?rs.map(r=>`<li class="asg"><div style="min-width:0"><div class="t-text">${esc(r.title)}</div><div style="margin-top:4px"><span class="tag">${esc(REPEAT_LABEL(r.repeat))}</span>${r.priority==="high"?'<span class="tag due-over">High priority</span>':""}${r.brand?`<span class="tag brand">${esc(r.brand)}</span>`:""}${r.kind?`<span class="tag">${esc(r.kind)}</span>`:""}<span class="tag">→ ${esc(nameOf(r.assignee))}</span></div>${r.notes?`<div class="muted small notes" style="margin-top:4px">${linkify(r.notes)}</div>`:""}${linksHTML(r.links)}</div><div class="asg-act"><button class="btn sm" data-rec-edit="${esc(r.id)}">Edit</button><button class="btn sm" data-rec-del="${esc(r.id)}">Stop repeating</button></div></li>`).join("")
+      :`<li style="display:block;border:0;padding:0"><div class="empty">${asgFiltered()?"No repeating tasks match these filters.":"No repeating tasks. Pick a “Repeat” option when you assign a task."}</div></li>`;return}
+  const list=all.filter(a=>(!S.asgP||a.assignee===S.asgP)&&(S.asgF==="all"||(S.asgF==="done"?a.status==="done":a.status!=="done"))&&asgMatch(a)).sort(sortAsg);
+  const shown=list.slice(0,150);renderBulk(shown);
+  keepInputs($("asg-list"),()=>{$("asg-list").innerHTML=shown.length?shown.map(a=>asgRow(a,true,false,true)).join("")+(list.length>shown.length?`<li style="display:block;border:0"><div class="muted small">Showing the first ${shown.length} of ${list.length}. Use search or filters to narrow it down.</div></li>`:"")
+    :`<li style="display:block;border:0;padding:0"><div class="empty">${!all.length?"No tasks assigned yet. Use “+ New task” to give someone their first task.":asgFiltered()?"No tasks match these filters. <button type=\"button\" class=\"linkbtn\" data-fclear>Clear filters</button>":"Nothing here for this filter."}</div></li>`})}
 function memberAsgLine(u){const open=asgList().filter(a=>a.assignee===u&&a.status!=="done");const over=open.filter(a=>a.due&&a.due<todayKey()).length;const br=rosterBrands(u);
   if(!open.length&&!br.length)return "";
   return `<div class="muted small">${open.length?`${plural(open.length,"open task")}${over?` · <span style="color:var(--alert);font-weight:600">${over} overdue</span>`:""}`:"No open tasks"}${br.length?` · ${br.slice(0,3).map(esc).join(", ")}${br.length>3?` +${br.length-3}`:""}`:""}</div>`}
@@ -1428,38 +1711,110 @@ function toggleThread(id){if(S.threads[id]){S.threads[id]();delete S.threads[id]
   rerender()}
 function sendComment(id,text){const a=S.asg[id];if(!a||!text)return;enqueue(async()=>{const now=Date.now();
   await S.db.doc(`assignments/${id}/comments/${now.toString(36)+rid()}`).set({uid:S.uid,text,at:now});
-  const n=clone(a);delete n.id;n.lastComment={at:now,uid:S.uid};await asgRef(id).set(n);lsSet(seenKey(id),String(now))})}
+  const p={lastComment:{at:now,uid:S.uid}};await asgRef(id).update(p);patchAsg(id,p);lsSet(seenKey(id),String(now))})}
 function repeatMatches(r,k){if(!isWorkday(k)&&r.repeat==="daily")return false;if(r.repeat==="daily")return true;return r.repeat==="w"+keyToDate(k).getDay()}
 async function genRecurring(){const k=todayKey();if(S.loaded.genFor===k||!S.loaded.asg||!S.loaded.rec)return;S.loaded.genFor=k;
   for(const r of Object.values(S.recurring)){if(r.active===false)continue;if(!(r.assignee===S.uid||canManageUid(r.assignee)))continue;if(!repeatMatches(r,k))continue;
     const lv=leaveOn(r.assignee,k);if(lv&&lv.status==="approved")continue;const id=`${r.id}__${k}`;if(S.asg[id])continue;
     try{const now=Date.now();
-      await asgRef(id).set({title:r.title,assignee:r.assignee,team:r.team||"",brand:r.brand||"",kind:r.kind||"",notes:r.notes||"",priority:r.priority||"normal",due:k,status:"todo",createdAt:now,updatedAt:now,createdBy:r.createdBy||"",doneAt:null,recurringId:r.id})}
+      await asgRef(id).set({title:r.title,assignee:r.assignee,team:r.team||"",brand:r.brand||"",kind:r.kind||"",notes:r.notes||"",links:Array.isArray(r.links)?r.links:[],priority:r.priority||"normal",due:k,status:"todo",createdAt:now,updatedAt:now,createdBy:r.createdBy||"",doneAt:null,recurringId:r.id})}
     catch(e){console.warn("repeat",e)}}}
+/* edit dialog for a task or a repeating task */
+function setSel(sel,v){v=v||"";if(v&&![...sel.options].some(o=>o.value===v))sel.insertAdjacentHTML("beforeend",`<option value="${esc(v)}">${esc(v)}</option>`);sel.value=v}
+function edPeople(){return whoPeople(S.isAdmin?Object.keys(S.people):teamIds().filter(canManageUid))}
+function fillEdKind(uid,cur){fillKindSelect($("ed-kind"),uid||null);const has=[...$("ed-kind").options].some(o=>o.value===cur&&cur!==OTHER);
+  if(cur&&!has){$("ed-kind").value=OTHER;$("ed-kind-other").value=cur}else{$("ed-kind").value=cur||$("ed-kind").options[0].value;$("ed-kind-other").value=""}
+  $("ed-kind-other-wrap").hidden=$("ed-kind").value!==OTHER}
+function openEdit(kind,id){const src=kind==="asg"?S.asg[id]:S.recurring[id];if(!src)return;S.edit={kind,id};
+  $("ed-h").textContent=kind==="asg"?"Edit task":"Edit repeating task";
+  $("ed-title").value=src.title||"";
+  const ppl=edPeople();if(!ppl.includes(src.assignee))ppl.unshift(src.assignee);
+  $("ed-who").innerHTML=ppl.map(u=>`<option value="${esc(u)}">${esc(nameOf(u))}${u===S.uid?" (you)":""}${S.isAdmin&&teamOf(u)?` · ${esc(teamName(teamOf(u)))}`:""}</option>`).join("");$("ed-who").value=src.assignee;
+  fillBrandSelect($("ed-brand"),src.assignee);setSel($("ed-brand"),src.brand);
+  fillEdKind(src.assignee,src.kind);
+  $("ed-due-wrap").hidden=kind!=="asg";$("ed-repeat-wrap").hidden=kind==="asg";
+  if(kind==="asg")$("ed-due").value=src.due||"";else{$("ed-repeat").innerHTML=[...$("a-repeat").options].filter(o=>o.value).map(o=>o.outerHTML).join("");$("ed-repeat").value=src.repeat||"daily"}
+  $("ed-high").checked=src.priority==="high";$("ed-notes").value=src.notes||"";$("ed-links").value=(src.links||[]).join("\n");
+  $("ed-hint").textContent=kind==="asg"?(src.recurringId?"This is one day's copy of a repeating task. To change every day, edit it under Repeating.":"If you change who it's assigned to, they get an email about it."):"Changes apply from the next time it repeats. Today's copy stays as it is.";
+  const d=$("asg-dlg");if(d.showModal)d.showModal();else d.setAttribute("open","");setTimeout(()=>$("ed-title").focus(),0)}
+function closeEdit(){const d=$("asg-dlg");S.edit=null;if(d.open){if(d.close)d.close();else d.removeAttribute("open")}}
+function saveEdit(){const e=S.edit;if(!e)return;const src=e.kind==="asg"?S.asg[e.id]:S.recurring[e.id];if(!src){closeEdit();return}
+  const title=$("ed-title").value.trim();if(!title){toast("Write the task first");$("ed-title").focus();return}
+  const who=$("ed-who").value;let kind=$("ed-kind").value;if(kind===OTHER)kind=$("ed-kind-other").value.trim()||"Other";
+  const now=Date.now();const p={title,assignee:who,team:teamOf(who),brand:$("ed-brand").value,kind,priority:$("ed-high").checked?"high":"normal",
+    notes:$("ed-notes").value.trim(),links:parseLinks($("ed-links").value),updatedAt:now,editedAt:now,editedBy:(S.me&&S.me.email)||""};
+  if(e.kind==="asg")p.due=$("ed-due").value||"";else p.repeat=$("ed-repeat").value||src.repeat;
+  const moved=who!==src.assignee;if(moved){p.assignedAt=now;p.notifiedAt=null;p.notifiedHow="";if(e.kind==="asg"){p.runSince=null}}
+  if(moved&&e.kind==="asg"&&src.runSince)p.workMs=(Number(src.workMs)||0)+Math.max(0,now-src.runSince);
+  const path=e.kind==="asg"?`assignments/${e.id}`:`recurring/${e.id}`;closeEdit();
+  enqueue(async()=>{await S.db.doc(path).update(p);
+    if(e.kind==="asg")patchAsg(e.id,p);else S.recurring=Object.assign({},S.recurring,{[e.id]:Object.assign({},src,p)});
+    toast(moved?(who===S.uid?"Moved to you":`Moved to ${nameOf(who)}. They'll get an email in about a minute.`):"Saved");rerender()})}
+/* board drag and drop */
+function bindBoard(el){let dragId=null;
+  el.addEventListener("dragstart",e=>{const li=e.target.closest&&e.target.closest("[data-drag]");if(!li)return;dragId=li.dataset.drag;li.classList.add("dragging");try{e.dataTransfer.setData("text/plain",dragId);e.dataTransfer.effectAllowed="move"}catch(x){}});
+  el.addEventListener("dragend",e=>{const li=e.target.closest&&e.target.closest("[data-drag]");if(li)li.classList.remove("dragging");el.querySelectorAll(".kcol.over").forEach(c=>c.classList.remove("over"));dragId=null});
+  el.addEventListener("dragover",e=>{const c=e.target.closest(".kcol");if(!c||!dragId)return;e.preventDefault();el.querySelectorAll(".kcol.over").forEach(x=>{if(x!==c)x.classList.remove("over")});c.classList.add("over")});
+  el.addEventListener("dragleave",e=>{const c=e.target.closest(".kcol");if(c&&!c.contains(e.relatedTarget))c.classList.remove("over")});
+  el.addEventListener("drop",e=>{const c=e.target.closest(".kcol");if(!c||!dragId)return;e.preventDefault();c.classList.remove("over");const a=S.asg[dragId];const col=c.dataset.col;dragId=null;
+    if(!a)return;const cur=a.status==="doing"||a.status==="done"?a.status:"todo";if(cur===col)return;setAsgStatus(a.id,col)})}
 function bindAsg(){
-  $("a-who").addEventListener("change",()=>{fillBrandSelect($("a-brand"),$("a-who").value);fillKindSelect($("a-kind"),$("a-who").value||null);$("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER});
+  $("a-who").addEventListener("click",e=>{const b=e.target.closest("[data-who]");if(!b)return;const u=b.dataset.who;
+    S.asgWho=S.asgWho.includes(u)?S.asgWho.filter(x=>x!==u):[...S.asgWho,u];b.setAttribute("aria-pressed",String(S.asgWho.includes(u)));
+    fillBrandSelect($("a-brand"),who0());fillKindSelect($("a-kind"),who0()||null);$("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER;rerender()});
+  $("a-who-all").addEventListener("click",()=>{const people=whoPeople(teamIds());S.asgWho=S.asgWho.length===people.length?[]:people.slice();rerender()});
   $("a-kind").addEventListener("change",()=>{$("a-kind-other-wrap").hidden=$("a-kind").value!==OTHER});
-  $("asg-form").addEventListener("submit",e=>{e.preventDefault();const title=$("a-title").value.trim(),who=$("a-who").value;
-    if(!title){toast("Write the task first");return}if(!who){toast("Choose who to assign it to");return}
+  $("asg-form").addEventListener("submit",e=>{e.preventDefault();const title=$("a-title").value.trim(),whoList=S.asgWho.slice();
+    if(!title){toast("Write the task first");return}if(!whoList.length){toast("Choose who to assign it to");return}
     let kind=$("a-kind").value;if(kind===OTHER)kind=$("a-kind-other").value.trim()||"Other";
-    const now=Date.now();const base={title,assignee:who,team:teamOf(who),brand:$("a-brand").value,kind,priority:$("a-high").checked?"high":"normal",notes:$("a-notes").value.trim(),createdBy:(S.me&&S.me.email)||""};
-    const rep=$("a-repeat").value;
-    enqueue(async()=>{if(rep){const id=now.toString(36)+rid();const r=Object.assign({},base,{repeat:rep,active:true,createdAt:now});await S.db.doc(`recurring/${id}`).set(r);
-        S.recurring=Object.assign({},S.recurring,{[id]:Object.assign({id},r)});S.loaded.genFor=null;await genRecurring();toast(`${REPEAT_LABEL(rep)} for ${nameOf(who)}`)}
-      else{const id=now.toString(36)+rid();const d=Object.assign({},base,{due:$("a-due").value||"",status:"todo",createdAt:now,updatedAt:now,doneAt:null});await asgRef(id).set(d);
-        S.asg=Object.assign({},S.asg,{[id]:Object.assign({id},d)});toast(who===S.uid?"Added to your tasks":`Assigned to ${nameOf(who)}. They'll get an email in about a minute.`)}
-      $("a-title").value="";$("a-notes").value="";$("a-due").value="";$("a-high").checked=false;$("a-repeat").value="";$("a-kind-other").value="";rerender()})});
+    const now=Date.now();const group=whoList.length>1?now.toString(36)+rid():"";
+    const base={title,brand:$("a-brand").value,kind,priority:$("a-high").checked?"high":"normal",notes:$("a-notes").value.trim(),links:parseLinks($("a-links").value),createdBy:(S.me&&S.me.email)||"",assignedAt:now};
+    if(group)base.group=group;
+    const rep=$("a-repeat").value,due=$("a-due").value||"";
+    enqueue(async()=>{for(const who of whoList){const id=now.toString(36)+rid();const per=Object.assign({},base,{assignee:who,team:teamOf(who)});
+        if(rep){const r=Object.assign(per,{repeat:rep,active:true,createdAt:now});await S.db.doc(`recurring/${id}`).set(r);S.recurring=Object.assign({},S.recurring,{[id]:Object.assign({id},r)})}
+        else{const d=Object.assign(per,{due,status:"todo",createdAt:now,updatedAt:now,doneAt:null});await asgRef(id).set(d);S.asg=Object.assign({},S.asg,{[id]:Object.assign({id},d)})}}
+      if(rep){S.loaded.genFor=null;await genRecurring()}
+      const names=whoList.map(nameOf);const others=whoList.filter(u=>u!==S.uid).length;
+      toast(rep?`${REPEAT_LABEL(rep)} for ${names.join(", ")}`:(others?`Assigned to ${names.length>3?`${names.length} people`:names.join(", ")}. ${others>1?"They'll each":"They'll"} get an email in about a minute.`:"Added to your tasks"));
+      $("a-title").value="";$("a-notes").value="";$("a-links").value="";$("a-due").value="";$("a-high").checked=false;$("a-repeat").value="";$("a-kind-other").value="";$("a-tpl").value="";rerender()})});
   $("asg-filter").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(!b)return;S.asgF=b.dataset.f;rerender()});
   $("asg-people").addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(!b)return;S.asgP=b.dataset.p;rerender()});
+  let qt=0;$("f-q").addEventListener("input",()=>{clearTimeout(qt);qt=setTimeout(()=>{S.asgQ=$("f-q").value.trim();rerender()},150)});
+  $("f-brand").addEventListener("change",e=>{S.asgB=e.target.value;rerender()});
+  $("f-due").addEventListener("change",e=>{S.asgD=e.target.value;rerender()});
+  $("f-prio").addEventListener("change",e=>{S.asgPr=e.target.value;rerender()});
+  const clearF=()=>{S.asgQ=S.asgB=S.asgD=S.asgPr="";$("f-q").value="";rerender()};
+  $("f-clear").addEventListener("click",clearF);
+  $("asg-list").addEventListener("click",e=>{if(e.target.closest("[data-fclear]"))clearF()});
+  $("asg-list").addEventListener("change",e=>{const c=e.target.closest("[data-sel]");if(!c)return;if(c.checked)S.asgSel.add(c.dataset.sel);else S.asgSel.delete(c.dataset.sel);rerender()});
+  $("bk-all").addEventListener("change",e=>{const ids=[...$("asg-list").querySelectorAll("[data-sel]")].map(c=>c.dataset.sel);if(e.target.checked)ids.forEach(id=>S.asgSel.add(id));else S.asgSel.clear();rerender()});
+  $("asg-bulk").addEventListener("click",e=>{const b=e.target.closest("[data-bk]");if(b)bulkAction(b.dataset.bk)});
+  $("bk-who").addEventListener("change",e=>bulkMove(e.target.value));
+  $("bk-prio").addEventListener("change",e=>{const v=e.target.value;if(!v)return;bulkUpdate(()=>({priority:v}),c=>`${v==="high"?"High":"Normal"} priority for ${plural(c,"task")}`)});
+  $("a-tpl").addEventListener("change",e=>applyTpl(e.target.value));
+  $("a-tpl-save").addEventListener("click",saveTpl);$("a-tpl-del").addEventListener("click",deleteTpl);
+  $("my-view").addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;S.viewMy=b.dataset.v;lsSet("tl-view-my",S.viewMy);rerender()});
+  $("team-view").addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;S.viewTeam=b.dataset.v;lsSet("tl-view-team",S.viewTeam);rerender()});
   const onList=e=>{const del=e.target.closest("[data-asg-del]");if(del){const a=S.asg[del.dataset.asgDel];if(!a)return;if(!window.confirm(`Delete "${a.title}"?`))return;
       enqueue(async()=>{await asgRef(a.id).delete();const m=Object.assign({},S.asg);delete m[a.id];S.asg=m;toast("Task deleted");rerender()});return}
+    const ed=e.target.closest("[data-asg-edit]");if(ed){openEdit("asg",ed.dataset.asgEdit);return}
+    const re=e.target.closest("[data-rec-edit]");if(re){openEdit("rec",re.dataset.recEdit);return}
     const rd=e.target.closest("[data-rec-del]");if(rd){const r=S.recurring[rd.dataset.recDel];if(!r)return;if(!window.confirm(`Stop repeating "${r.title}"? Tasks already created stay.`))return;
       enqueue(async()=>{await S.db.doc(`recurring/${r.id}`).delete();const m=Object.assign({},S.recurring);delete m[r.id];S.recurring=m;toast("Stopped repeating");rerender()});return}
     const th=e.target.closest("[data-thread]");if(th){toggleThread(th.dataset.thread);return}
     const st=e.target.closest("[data-asg-st]");if(st)setAsgStatus(st.dataset.id,st.dataset.asgSt)};
   const onSubmit=e=>{const f=e.target.closest("[data-cform]");if(!f)return;e.preventDefault();const inp=f.querySelector("input");const v=inp.value.trim();if(!v)return;inp.value="";sendComment(f.dataset.cform,v)};
-  ["asg-list","my-asg","detail"].forEach(id=>{$(id).addEventListener("click",onList);$(id).addEventListener("submit",onSubmit)});
+  ["asg-list","my-asg","asg-board","my-asg-board","detail"].forEach(id=>{$(id).addEventListener("click",onList);$(id).addEventListener("submit",onSubmit)});
+  bindBoard($("asg-board"));bindBoard($("my-asg-board"));
   $("detail").addEventListener("click",e=>{const r=e.target.closest("[data-rbrand]");if(r&&S.sel.uid)toggleRosterBrand(S.sel.uid,r.dataset.rbrand)});
+  $("ed-form").addEventListener("submit",e=>{e.preventDefault();saveEdit()});
+  $("ed-cancel").addEventListener("click",closeEdit);$("ed-x").addEventListener("click",closeEdit);
+  $("asg-dlg").addEventListener("cancel",()=>{S.edit=null});
+  $("asg-dlg").addEventListener("click",e=>{if(e.target===$("asg-dlg"))closeEdit()});
+  $("ed-who").addEventListener("change",()=>{const u=$("ed-who").value;const b=$("ed-brand").value;fillBrandSelect($("ed-brand"),u);setSel($("ed-brand"),b);
+    const k=$("ed-kind").value===OTHER?$("ed-kind-other").value:$("ed-kind").value;fillEdKind(u,k)});
+  $("ed-kind").addEventListener("change",()=>{$("ed-kind-other-wrap").hidden=$("ed-kind").value!==OTHER});
 }
 
 /* ---------- subscriptions ---------- */
@@ -1493,6 +1848,7 @@ function subShared(){
   scoped("assignments","assignee").onSnapshot(r=>{S.asg=toMap(r);S.loaded.asg=true;genRecurring();rerender()},e=>console.warn(e));
   scoped("leaves","uid").onSnapshot(r=>{S.leaves=toMap(r);rerender()},e=>console.warn(e));
   scoped("recurring","assignee").onSnapshot(r=>{S.recurring=toMap(r);S.loaded.rec=true;genRecurring();rerender()},e=>console.warn(e));
+  if(S.canManage)(S.isAdmin?S.db.collection("templates"):S.db.collection("templates").where("team","==",S.myTeam)).onSnapshot(r=>{S.tpls=toMap(r);rerender()},e=>console.warn(e));
   if(S.isLead){/* a lead's own tasks/leave from an admin can sit outside the team filter only if their team changed; also listen to own */
     S.db.collection("assignments").where("assignee","==",S.uid).onSnapshot(r=>{const m=toMap(r);S.asg=Object.assign({},S.asg,m);rerender()},e=>console.warn(e))}
   if(S.isAdmin){
@@ -1531,7 +1887,7 @@ function renderChrome(){const p=S.page;if(!p)return;$("page-head").hidden=false;
   document.querySelectorAll("#nav a").forEach(a=>a.setAttribute("aria-current",(a.dataset.page===p||(p==="person"&&a.dataset.page==="people"))?"page":"false"));
   const sc=scopeLabel();
   const meta={today:["Today",`${["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()]}, ${fmtShort(todayKey())}. Clock in and log what you finish.`],
-    mytasks:["My tasks","Tasks assigned to you. Press Start when you begin and Done when you finish."],
+    mytasks:["My tasks","Tasks assigned to you. Start, pause and finish them here. Switch to Board to see them by status."],
     timeoff:["My requests","Ask for leave, or add time you forgot to log. Your lead approves both."],
     week:["My week","Your hours this week and your attendance this month."],
     overview:["Overview",`Today across ${sc}.`],tasks:["Tasks",`Assign work and follow it up · ${sc}.`],
