@@ -3,7 +3,9 @@
  *
  * Runs every minute (set up by running `setup` once) and sends:
  *  - New task:     to the person a task is assigned (or moved) to.
- *  - Comments:     to everyone on a task's thread except the person who wrote it
+ *  - Tagged:       to people tagged on a new task (they can follow it)
+ *  - Comments:     to everyone on a task's thread (assignee, creator, tagged people,
+ *                  earlier commenters, anyone @mentioned) except the person who wrote it
  *                  (waits ~2 minutes so a burst of comments arrives as one email).
  *  - Task done:    to the person who assigned it.
  *  - Due soon:     once a day after 9:00, to each person with tasks due today or
@@ -130,6 +132,7 @@ function notifyNew_(collection, t, people, isRepeat) {
   if (!to) { patch_(collection, t.id, { notifiedAt: now, notifiedHow: 'no-email' }); return; }
   const moved = a.assignedAt && a.editedBy && a.assignedAt > (a.createdAt || 0) + 5000;
   const byEmail = String((moved ? a.editedBy : a.createdBy) || '').toLowerCase();
+  if (!moved) safe_(function () { notifyTagged_(a, people, byEmail); });
   // Don't email people about tasks they gave themselves.
   if (byEmail && byEmail === String(to).toLowerCase()) { patch_(collection, t.id, { notifiedAt: now, notifiedHow: 'self' }); return; }
   const byName = personName_(people, byEmail) || 'Your lead';
@@ -154,6 +157,23 @@ function notifyNew_(collection, t, people, isRepeat) {
 
   send_(to, (a.priority === 'high' ? '[High priority] ' : '') + (isRepeat ? 'Repeating task: ' : 'New task: ') + a.title, text, body, byEmail);
   patch_(collection, t.id, { notifiedAt: now, notifiedHow: 'sent' });
+}
+
+/* ---------- people tagged on a new task ---------- */
+function notifyTagged_(a, people, byEmail) {
+  const assignee = String((people.byUid[a.assignee] || {}).email || '').toLowerCase();
+  const byName = personName_(people, byEmail) || 'Someone';
+  unique_((a.watchers || []).map(function (u) { return String((people.byUid[u] || {}).email || '').toLowerCase(); }))
+    .filter(function (e) { return e && e !== assignee && e !== byEmail; })
+    .forEach(function (to) {
+      const rows = [['Assigned to', nameOfUid_(people, a.assignee)]];
+      if (a.brand) rows.push(['Client / brand', a.brand]);
+      if (a.due) rows.push(['Due', formatDate_(a.due)]);
+      const body = '<p style="margin:0 0 6px">Hi ' + esc_(firstName_(people.byEmail[to])) + ',</p>' +
+        '<p style="margin:0 0 16px">' + esc_(byName) + ' tagged you on a task:</p>' + taskBlock_(a, rows) +
+        button_('Open team tasks', APP_URL + '#mytasks') + small_('You’ll get an email when someone comments on it.');
+      send_(to, 'Tagged: ' + a.title, byName + ' tagged you on: ' + a.title + '\n\n' + APP_URL + '#mytasks', body, byEmail);
+    });
 }
 
 /* ---------- task done → whoever assigned it ---------- */
@@ -193,14 +213,18 @@ function notifyComments_(t, people, from) {
   const emailOf = function (uid) { const p = people.byUid[uid]; return p && p.email ? String(p.email).toLowerCase() : ''; };
   const assignee = emailOf(a.assignee);
   const who = {};
+  const mentioned = {};
+  fresh.forEach(function (c) { (c.mentions || []).forEach(function (u) { const e = emailOf(u); if (e) mentioned[e] = true; }); });
   [assignee, String(a.createdBy || '').toLowerCase()].concat(all.map(function (c) { return emailOf(c.uid); }))
+    .concat((a.watchers || []).map(emailOf)).concat(Object.keys(mentioned))
     .forEach(function (e) { if (e) who[e] = true; });
 
   Object.keys(who).forEach(function (to) {
     const mine = fresh.filter(function (c) { return emailOf(c.uid) !== to; });
     if (!mine.length) return;
     const writers = unique_(mine.map(function (c) { return nameOfUid_(people, c.uid); }));
-    const link = APP_URL + (to === assignee ? '#mytasks' : '#tasks');
+    const p = people.byEmail[to] || {};
+    const link = APP_URL + (to === assignee || !(p.role === 'lead' || p.role === 'admin') ? '#mytasks' : '#tasks');
     const body =
       '<p style="margin:0 0 6px">Hi ' + esc_(firstName_(people.byEmail[to])) + ',</p>' +
       '<p style="margin:0 0 12px">' + esc_(listNames_(writers)) + ' commented on <b>' + esc_(a.title) + '</b>' +
@@ -213,7 +237,8 @@ function notifyComments_(t, people, from) {
       button_('Reply in the Team Log', link) +
       small_('Open the task and press “Comments” to reply.');
     const text = mine.map(function (c) { return nameOfUid_(people, c.uid) + ': ' + c.text; }).join('\n\n') + '\n\nReply in the Team Log: ' + link;
-    send_(to, 'New comment on: ' + a.title, text, body, mine.length === 1 ? emailOf(mine[0].uid) : '');
+    const tagged = mentioned[to] && mine.some(function (c) { return (c.mentions || []).some(function (u) { return emailOf(u) === to; }); });
+    send_(to, (tagged ? listNames_(writers) + ' mentioned you: ' : 'New comment on: ') + a.title, text, body, mine.length === 1 ? emailOf(mine[0].uid) : '');
   });
   patch_('assignments', t.id, mark);
 }

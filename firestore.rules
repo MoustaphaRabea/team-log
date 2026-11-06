@@ -82,18 +82,25 @@ service cloud.firestore {
       allow write: if isAdmin() || (doc == 'brands' && isLead());
     }
 
-    // Assigned tasks.
+    // Assigned tasks. Everyone in a team can see the team's tasks; people also see tasks they
+    // were given, gave someone else, or were tagged on (watchers).
+    function myTeam() { return hasMe() ? me().get('team', '') : ''; }
+    function seesAsg(d) {
+      return isAdmin() || (isMember() && (
+        d.assignee == request.auth.uid
+        || d.get('createdBy', '') == email()
+        || (myTeam() != '' && d.team == myTeam())
+        || request.auth.uid in d.get('watchers', [])));
+    }
     match /assignments/{id} {
-      allow read: if isAdmin()
-        || (isMember() && resource.data.assignee == request.auth.uid)
-        || (isLead() && resource.data.team == me().team);
+      allow read: if seesAsg(resource.data);
       allow create: if isAdmin()
         || (isLead() && request.resource.data.team == me().team
             && teamOf(request.resource.data.assignee) == me().team)
-        // anyone can add a task for themselves (their own plan)
-        || (isMember() && request.resource.data.assignee == request.auth.uid
-            && request.resource.data.selfMade == true && request.resource.data.status == 'todo'
-            && request.resource.data.team == (hasMe() ? me().get('team', '') : ''))
+        // anyone can create a task for themselves or for anyone in the company
+        || (isMember() && request.resource.data.get('createdBy', '') == email()
+            && request.resource.data.status == 'todo'
+            && request.resource.data.team == teamOf(request.resource.data.assignee))
         || (isMember() && request.resource.data.assignee == request.auth.uid
             && request.resource.data.status == 'todo'
             && request.resource.data.recurringId is string
@@ -105,22 +112,21 @@ service cloud.firestore {
         || (isMember() && resource.data.assignee == request.auth.uid
             && request.resource.data.diff(resource.data).affectedKeys()
                  .hasOnly(['status', 'doneAt', 'updatedAt', 'lastComment', 'startedAt', 'workMs', 'runSince',
-                           'workDays', 'planFor', 'planDays', 'estimate', 'estAt', 'estBy', 'estFrom']))
-        // and edit tasks they added for themselves
-        || (isMember() && resource.data.assignee == request.auth.uid && resource.data.get('selfMade', false) == true
-            && request.resource.data.assignee == request.auth.uid && request.resource.data.team == resource.data.team);
+                           'workDays', 'planFor', 'planDays', 'estimate', 'estAt', 'estBy', 'estFrom', 'watchers']))
+        // whoever created a task can edit it (and give it to someone else)
+        || (isMember() && resource.data.get('createdBy', '') == email()
+            && request.resource.data.get('createdBy', '') == email()
+            && request.resource.data.team == teamOf(request.resource.data.assignee))
+        // anyone who can see a task can comment on it and tag people
+        || (seesAsg(resource.data)
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastComment', 'watchers', 'updatedAt']));
       allow delete: if isAdmin() || (isLead() && resource.data.team == me().team)
-        || (isMember() && resource.data.assignee == request.auth.uid && resource.data.get('selfMade', false) == true);
+        || (isMember() && resource.data.get('createdBy', '') == email());
 
       function asg() { return get(/databases/$(database)/documents/assignments/$(id)).data; }
-      function canAsg() {
-        return isAdmin()
-          || (isMember() && asg().assignee == request.auth.uid)
-          || (isLead() && asg().team == me().team);
-      }
       match /comments/{cid} {
-        allow read: if canAsg();
-        allow create: if canAsg() && request.resource.data.uid == request.auth.uid
+        allow read: if seesAsg(asg());
+        allow create: if seesAsg(asg()) && request.resource.data.uid == request.auth.uid
           && request.resource.data.text is string
           && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 1000;
         allow delete: if isAdmin() || (isMember() && resource.data.uid == request.auth.uid);
